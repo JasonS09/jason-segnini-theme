@@ -9,43 +9,14 @@ const settings = {
   },
   "packages": [
     {
-      "name": "@frontity/mars-theme",
-      "state": {
-        "theme": {
-          "menu": [
-            [
-              "Home",
-              "/"
-            ],
-            [
-              "Nature",
-              "/category/nature/"
-            ],
-            [
-              "Travel",
-              "/category/travel/"
-            ],
-            [
-              "Japan",
-              "/tag/japan/"
-            ],
-            [
-              "About Us",
-              "/about-us/"
-            ]
-          ],
-          "featured": {
-            "showOnList": false,
-            "showOnPost": false
-          }
-        }
-      }
+      "name":"jason-segnini-theme"
     },
     {
       "name": "@frontity/wp-source",
       "state": {
         "source": {
-          "url": "https://jasonsegnini.com/"
+          "url": "https://jasonsegnini.com/",
+          "homepage": "/home"
         }
       }
     },

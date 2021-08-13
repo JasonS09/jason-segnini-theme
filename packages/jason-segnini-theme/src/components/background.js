@@ -37,7 +37,7 @@ const Background = () => {
     }
 
     useEffect(() => {
-        setTimeout(drawMatrix, 3000, matrixCanv.current)
+        setTimeout(drawMatrix, 2000, matrixCanv.current)
     })
 
     return (

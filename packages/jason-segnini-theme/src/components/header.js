@@ -27,35 +27,37 @@ const Header = ({state,actions}) => {
 
 export default connect(Header)
 
-const StyledHeader = styled.header`
-    border-width: 0 0 8px 0;
-    max-height: 175px;
+const StyledHeader = styled.div`
+    border-width: 0 1px 0 0;
+    max-width: 250px;
     border-style: solid;
+    border-color: #60d75a;
+    height: 100%;
+    position: absolute;
+    background-color: black;
 
     h1 {
-        color: white;
+        color: #60d75a;
     }
 `
 const HeaderContent = styled.div`
-    max-width: 800px;
-    height: 175px;
+    max-width: 175px;
     padding: 2em 1em;
-    margin: 0 0 0 13em;
+    margin: 0 0 0 1em;
 `
 
 const Menu = styled.nav`
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     margin-top: 1em;
 
     & > a {
-        margin-right: 2em;
-        color: white;
+        color: #60d75a;
         text-decoration: none;
     }
 
     & > a:hover {
-        color: #E1E1E1;
+        color: #60d75a;
     }
 `
 

@@ -57,7 +57,7 @@ const AnimatedText = (props) => {
     }
 
     useEffect(() => {
-        setTimeout(writeText, 3000, compRef.current, props.text)
+        setTimeout(writeText, 2000, compRef.current, props.text)
     })
 
     return(

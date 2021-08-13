@@ -3,7 +3,7 @@ import {connect} from "frontity"
 const SearchBar = ({actions}) => {
     let inputState = {value: ''}
 
-    handleChange = (event) => {
+    const handleChange = (event) => {
         inputState = {value: event.target.value}
     }
 

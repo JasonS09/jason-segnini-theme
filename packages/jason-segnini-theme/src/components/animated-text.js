@@ -1,7 +1,7 @@
 import {createRef,useEffect} from "react"
 import Link from "@frontity/components/link"
 
-const AnimatedText = (props) => {
+const AnimatedText = props => {
     const compRef = createRef()
 
     const writeText = (textComponent, childText) => {

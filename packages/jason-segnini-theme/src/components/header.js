@@ -1,12 +1,11 @@
-import {connect,styled} from "frontity"
+import {connect,styled, css} from "frontity"
 import Link from "@frontity/components/link"
 import SearchBar from "./searchbar"
+import AnimatedBox from "./animated-boxes"
 
-const Header = ({state,actions}) => {
-    const data = state.source.get(state.router.link)
-
-    return (
-        <StyledHeader isPostType={data.isPostType} isPage={data.isPage}>
+const Header = ({state,actions}) => (
+    <>
+        <StyledHeader>
             <HeaderContent>
                 <h1>Jason E. Segnini Cubero</h1>
                 { state.theme.isUrlVisible 
@@ -22,19 +21,16 @@ const Header = ({state,actions}) => {
                 <SearchBar/>
             </HeaderContent>
         </StyledHeader>
-    )
-}
+    </>
+)
 
 export default connect(Header)
 
 const StyledHeader = styled.div`
-    border-width: 0 1px 0 0;
-    max-width: 250px;
-    border-style: solid;
-    border-color: #60d75a;
+    width: 250px;
     height: 100%;
-    position: absolute;
     background-color: black;
+    position: absolute;
 
     h1 {
         color: #60d75a;

@@ -13,45 +13,45 @@ const Root = ({state}) => {
 
     return (
         <>
-        <Head>
-            <title>Jason Segnini Theme</title>
-            <meta
-                name="Description"
-                content="Jason Segnini theme, developed with Frontity."
+            <Head>
+                <title>Jason Segnini Theme</title>
+                <meta
+                    name="Description"
+                    content="Jason Segnini theme, developed with Frontity."
+                />
+            </Head>
+            <Global
+                styles={css`
+                    @font-face {
+                        font-family: 'Share Tech Mono';
+                        src: url("${ShareTechMono}");
+                    }
+                    *{
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                    }
+                    html {
+                        font-family: 'Share Tech Mono';
+                        background-color: black;
+                        color: white;
+                    }
+                    body {
+                        height: 100vh;
+                        width: 100vw;
+                    }
+                `}
             />
-        </Head>
-        <Global
-            styles={css`
-                @font-face {
-                    font-family: 'Share Tech Mono';
-                    src: url("${ShareTechMono}");
-                }
-                *{
-                    margin: 0;
-                    padding: 0;
-                    box-sizing: border-box;
-                }
-                html {
-                    font-family: 'Share Tech Mono', monospace;
-                    background-color: black;
-                    color: white;
-                }
-                body {
-                    height: 100vh;
-                    width: 100vw;
-                }
-            `}
-        />
-        <Background/>
-        {!data.isHome && <Header/>}
-        <Main>
-            <Switch>
-                <Loading when={data.isFetching}/>
-                <List when={data.isArchive}/>
-                <Post when={data.isPost || data.isPage}/>
-                <Error when={data.isError}/>
-            </Switch>
-        </Main>
+            <Background/>
+            <Header/>
+            <Main>
+                <Switch>
+                    <Loading when={data.isFetching}/>
+                    <List when={data.isArchive}/>
+                    <Post when={data.isPost || data.isPage}/>
+                    <Error when={data.isError}/>
+                </Switch>
+            </Main>
         </>
     )
 }
@@ -61,7 +61,6 @@ export default connect(Root)
 const Main = styled.main`
     max-width: 800px;
     padding: 1em;
-    margin: auto;
 
     img {
         max-width: 100%;

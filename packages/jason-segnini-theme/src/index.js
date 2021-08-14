@@ -9,13 +9,17 @@ const jasonSegniniTheme = {
   },
   state: {
     theme: {
-      isUrlVisible: false
+      isUrlVisible: false,
+      isBackgroundLoaded: false
     }
   },
   actions: {
     theme: {
       toggleUrl: ({state}) => {
         state.theme.isUrlVisible = !state.theme.isUrlVisible
+      },
+      loadBackground: ({state}) => {
+        state.theme.isBackgroundLoaded = !state.theme.isBackgroundLoaded
       }
     }
   },

@@ -13,13 +13,13 @@ const animatedText = {
       if (node.component === "a" 
           && node.props?.href 
           && !node.props?.href?.startsWith("#"))
-            node.props.link = node.props.href;
+            node.props.link = node.props.href
       
-      node.props["text"] = node.children[0].content;
-      node.children[0].content= "";
-      node.props["comp"] = node.component;
-      node.component = AnimatedText;
-      return node;
+      node.props["text"] = node.children[0].content
+      node.children[0].content= ""
+      node.props["comp"] = node.component
+      node.component = AnimatedText
+      return node
     },
 };
 

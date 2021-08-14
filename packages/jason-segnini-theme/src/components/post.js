@@ -1,8 +1,8 @@
 import {connect, Head, styled} from "frontity"
 import dayjs from "dayjs"
-import AnimatedBox from "./animated-boxes"
+import AnimatedWrapper from "./animated-wrapper"
 
-const Post = ({state, libraries},props) => {
+const Post = ({state, libraries}) => {
     const data = state.source.get(state.router.link)
     const post = state.source[data.type][data.id]
     const author = state.source.author[post.author]
@@ -11,7 +11,7 @@ const Post = ({state, libraries},props) => {
     const Html2React = libraries.html2react.Component
 
     return (
-        <AnimatedBox top right bottom left>
+        <AnimatedWrapper>
             <StyledPost>
                 <Head>
                     <title>{post.title.rendered}</title>
@@ -33,7 +33,7 @@ const Post = ({state, libraries},props) => {
                     <Html2React html={post.content.rendered}/>
                 </PostContent>
             </StyledPost>
-        </AnimatedBox>
+        </AnimatedWrapper>
     )
 }
 

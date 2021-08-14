@@ -1,7 +1,7 @@
-import {connect,styled, css} from "frontity"
+import {connect,styled} from "frontity"
 import Link from "@frontity/components/link"
 import SearchBar from "./searchbar"
-import AnimatedBox from "./animated-boxes"
+import {expandHeight} from "./keyframes"
 
 const Header = ({state,actions}) => (
     <>
@@ -21,21 +21,33 @@ const Header = ({state,actions}) => (
                 <SearchBar/>
             </HeaderContent>
         </StyledHeader>
+        <AnimatedBorder/>
     </>
 )
 
 export default connect(Header)
 
 const StyledHeader = styled.div`
-    width: 250px;
-    height: 100%;
-    background-color: black;
     position: absolute;
+    width: 249px;
+    background-color: black;
+    height: 100%;
+    z-index: 2;
 
     h1 {
         color: #60d75a;
     }
 `
+const AnimatedBorder = styled.div`
+    position: absolute;
+    width: 250px;
+    top: 0;
+    left: 0;
+    z-index:1;
+    border-right: 1px solid #60d75a;
+    animation: ${expandHeight} 1s ease-out forwards;
+`
+
 const HeaderContent = styled.div`
     max-width: 175px;
     padding: 2em 1em;

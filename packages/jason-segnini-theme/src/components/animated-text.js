@@ -5,24 +5,24 @@ const AnimatedText = props => {
     const compRef = createRef()
 
     const writeText = (textComponent, childText) => {
-        let i = 0;
-        const txt = childText;
-        let speed = 50;
-        textComponent.style.display = 'inline-block';
+        let i = 0
+        const txt = childText
+        let speed = 50
+        textComponent.style.display = 'inline-block'
     
         const typeWriter = () => {
-            if (speed === 1000 || speed === 500) speed = 50;
+            if (speed === 1000 || speed === 500) speed = 50
     
             if (i < txt.length) {    
                 let char = txt.charAt(i)
-                if (char === '.') speed = Math.random() < 0.5 ? 500 : 1000;
+                if (char === '.') speed = Math.random() < 0.5 ? 500 : 1000
     
-                textComponent.textContent += char;
-                i++;
-                setTimeout(typeWriter, speed);
+                textComponent.textContent += char
+                i++
+                setTimeout(typeWriter, speed)
             }
         }
-        typeWriter();
+        typeWriter()
     }
 
     const renderSwitch = (comp) => {

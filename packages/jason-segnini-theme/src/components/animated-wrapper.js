@@ -1,14 +1,9 @@
 import {styled, keyframes} from "frontity"
-import {expandHeight} from "./keyframes"
+import {expandHeight, expandWidth} from "../styles/keyframes"
 
 const AnimatedWrapper = props => <AnimatedDiv {...props}></AnimatedDiv>
 
 export default AnimatedWrapper
-
-const expandWidth = keyframes`
-    from {width: 0;}
-    to {width: 100%;}
-`
 
 const bottomBorderColor = keyframes`
     to {

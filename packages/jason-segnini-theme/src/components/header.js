@@ -1,22 +1,19 @@
 import {connect,styled} from "frontity"
-import Link from "@frontity/components/link"
 import SearchBar from "./searchbar"
-import {expandHeight} from "./keyframes"
+import {expandHeight} from "../styles/keyframes"
+import AnimatedText from "./animated-text"
 
-const Header = ({state,actions}) => (
+const Header = () => (
     <>
         <StyledHeader>
             <HeaderContent>
-                <h1>Jason E. Segnini Cubero</h1>
-                { state.theme.isUrlVisible 
-                ? <>Current URL: {state.router.link}<Button onClick={actions.theme.toggleUrl}>&#x3c; Hide Url</Button></> 
-                : <Button onClick={actions.theme.toggleUrl}>Show Url &#x3e;</Button>}
+                <AnimatedText comp="h1" data-timeout="3000" text="Jason E. Segnini Cubero"/>
                 <Menu>
-                    <Link link="/">Home</Link>
+                    <AnimatedText comp="a" data-timeout="3000" link="/" text="Home"/>
                     <br/>
-                    <Link link="/about-us">About Me</Link>
+                    <AnimatedText comp="a" data-timeout="3000" link="/about-us" text="About Me"/>
                     <br/>
-                    <Link link="/contact">Contact</Link>
+                    <AnimatedText comp="a" data-timeout="3000" link="/contact" text="Contact"/>
                 </Menu>
                 <SearchBar/>
             </HeaderContent>
@@ -44,6 +41,7 @@ const AnimatedBorder = styled.div`
     top: 0;
     left: 0;
     z-index:1;
+    background-color: black;
     border-right: 1px solid #60d75a;
     animation: ${expandHeight} 1s ease-out forwards;
 `
@@ -66,16 +64,5 @@ const Menu = styled.nav`
 
     & > a:hover {
         color: #60d75a;
-    }
-`
-
-const Button = styled.button`
-    background: transparent;
-    border: none;
-    color: #aaa;
-
-    :hover {
-        cursor: pointer;
-        color: #888;
     }
 `

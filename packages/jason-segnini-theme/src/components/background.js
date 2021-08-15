@@ -43,9 +43,7 @@ const Background = ({state,actions}) => {
         }
     })
 
-    return (
-        <Canvas ref={matrixCanv}></Canvas>
-    )
+    return <Canvas ref={matrixCanv}></Canvas>
 }
 
 export default connect(Background)

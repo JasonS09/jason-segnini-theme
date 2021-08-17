@@ -14,9 +14,11 @@ const jasonSegniniTheme = {
   },
   actions: {
     theme: {
-      loadBackground: ({state}) => {
-        state.theme.isBackgroundLoaded = !state.theme.isBackgroundLoaded
-      }
+      beforeSSR: async ({state, actions}) => 
+        await actions.source.fetch(state.source.postsPage),
+        
+      loadBackground: ({state}) =>
+        state.theme.isBackgroundLoaded = !state.theme.isBackgroundLoaded 
     }
   },
   libraries: {
@@ -27,3 +29,4 @@ const jasonSegniniTheme = {
 }
 
 export default jasonSegniniTheme
+

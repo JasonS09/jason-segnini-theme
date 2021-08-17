@@ -16,7 +16,8 @@ const settings = {
       "state": {
         "source": {
           "url": "https://jasonsegnini.com/",
-          "homepage": "/home"
+          "homepage": "/home",
+          "postsPage":"/blog"
         }
       }
     },

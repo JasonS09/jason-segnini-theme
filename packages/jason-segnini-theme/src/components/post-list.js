@@ -1,34 +1,43 @@
-import { connect, styled } from "frontity"
-import Link from "@frontity/components/link"
+import {connect, styled} from "frontity"
+import AnimatedText from "./animated-text"
 
-const List = ({state}) => {
-    const data = state.source.get(state.router.link)
-    const query = new URLSearchParams(state.router.link).get('s')
+const PostList = ({state, actions, maxnum, animationTimeout, animationSpeed}) => {
+    const data = state.source.get(state.source.postsPage)
 
     const filteredPosts = (items, query) => {
-        if (!query) {
-            return items
-        }
+        if (maxnum && maxnum < items.length) items.length = maxnum
+        if (!query) return items
 
         return items.filter((item) => {
             const post = state.source[item.type][item.id]
-            const postName = post.title.rendered.toLowerCase()
-            const excerpt = post.excerpt.rendered.toLowerCase()
-            return postName.includes(query) || excerpt.includes(query)
+            query = query.toLowerCase()
+
+            return post.title.rendered.toLowerCase().includes(query)
+                || post.excerpt.rendered.toLowerCase().includes(query)
         })
     }
 
     return (
         <Items>
-            {filteredPosts(data.items, query).map((item) => {
-                const post = state.source[item.type][item.id]
-                return (
-                    <Link key={item.id} link={post.link}>
-                        {post.title.rendered}
-                        <br/>
-                    </Link>
+            {data.isReady 
+            && filteredPosts(data.items, data.searchQuery).map(
+                    (item) => {
+                    const post = state.source[item.type][item.id]
+                    return (
+                        <>
+                            <AnimatedText 
+                                key={item.id} 
+                                link={post.link}
+                                text={post.title.rendered}
+                                data-timeout={animationTimeout}
+                                data-speed={animationSpeed}
+                                comp="a"
+                            />
+                            <br/>
+                        </>
+                    )}
                 )
-            })}
+            }
             <PrevNextTab>
                 {data.previous && (
                     <button
@@ -53,7 +62,7 @@ const List = ({state}) => {
     )
 }
 
-export default connect(List)
+export default connect(PostList)
 
 const Items = styled.div`
     & > a {

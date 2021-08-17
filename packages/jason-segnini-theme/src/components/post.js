@@ -40,7 +40,7 @@ const Post = ({state, libraries}) => {
 export default connect(Post)
 
 const StyledPost = styled.div`
-    background-color: black;
+    background-color: rgba(0,0,0,0.85);
     min-height: 50px;
     margin-top: 30%;
 `

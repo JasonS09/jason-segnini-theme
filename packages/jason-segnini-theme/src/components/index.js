@@ -1,11 +1,13 @@
 import {connect, Global, css, styled, Head} from "frontity"
+import {useEffect} from "react"
 import Switch from "@frontity/components/switch"
-import List from "./list"
+import PostList from "./post-list"
 import Post from "./post"
 import Loading from "./loading"
 import Error from "./error"
 import Header from "./header"
 import Background from "./background"
+import Archive from "./archive"
 import ShareTechMono from "../fonts/ShareTechMono-Regular.ttf"
 
 const Root = ({state}) => {
@@ -44,10 +46,11 @@ const Root = ({state}) => {
             />
             <Background/>
             <Header/>
+            <Archive/>
             <Main>
                 <Switch>
                     <Loading when={data.isFetching}/>
-                    <List when={data.isArchive}/>
+                    <PostList when={data.isArchive}/>
                     <Post when={data.isPost || data.isPage}/>
                     <Error when={data.isError}/>
                 </Switch>

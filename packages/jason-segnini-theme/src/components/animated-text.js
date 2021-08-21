@@ -71,6 +71,9 @@ const AnimatedText = ({
                         white-space: nowrap;
                         animation: ${expandWidth} 2s ease-out ${timeout}ms forwards
                     `} {...rest}>{text}</Link>
+
+        case 'summary':
+            return <summary ref={compRef} {...rest}></summary>
     
         default:
             return <div ref={compRef} {...rest}></div>

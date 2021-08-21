@@ -1,7 +1,6 @@
 import {connect, Global, css, styled, Head} from "frontity"
-import {useEffect} from "react"
 import Switch from "@frontity/components/switch"
-import PostList from "./post-list"
+import PostList from "./list"
 import Post from "./post"
 import Loading from "./loading"
 import Error from "./error"

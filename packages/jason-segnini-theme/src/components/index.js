@@ -1,6 +1,6 @@
 import {connect, Global, css, styled, Head} from "frontity"
 import Switch from "@frontity/components/switch"
-import PostList from "./list"
+import List from "./list"
 import Post from "./post"
 import Loading from "./loading"
 import Error from "./error"
@@ -27,16 +27,24 @@ const Root = ({state}) => {
                         font-family: 'Share Tech Mono';
                         src: url("${ShareTechMono}");
                     }
+
                     *{
                         margin: 0;
                         padding: 0;
                         box-sizing: border-box;
+
+                        ::selection {
+                            color: black;
+                            background-color: #60d75a;
+                        }
                     }
+
                     html {
                         font-family: 'Share Tech Mono';
                         background-color: black;
                         color: white;
                     }
+
                     body {
                         height: 100vh;
                         width: 100vw;
@@ -49,7 +57,7 @@ const Root = ({state}) => {
             <Main>
                 <Switch>
                     <Loading when={data.isFetching}/>
-                    <PostList when={data.isArchive}/>
+                    <List when={data.isArchive} postsPage/>
                     <Post when={data.isPost || data.isPage}/>
                     <Error when={data.isError}/>
                 </Switch>

@@ -1,21 +1,27 @@
-import {connect,styled} from "frontity"
+import {connect, styled} from "frontity"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 
-const Header = () => (
-    <AnimatedWrapper absolute right width="250">
-        <HeaderContent>
-            <AnimatedText comp="h1" data-timeout="3000" text="Jason E. Segnini Cubero"/>
-            <Menu>
-                <AnimatedText comp="a" data-timeout="3000" link="/" text="Home"/>
-                <br/>
-                <AnimatedText comp="a" data-timeout="3000" link="/about-us" text="About Me"/>
-                <br/>
-                <AnimatedText comp="a" data-timeout="3000" link="/contact" text="Contact"/>
-            </Menu>
-        </HeaderContent>
-    </AnimatedWrapper>
-)
+const Header = ({state}) => {
+    const timeout = state.theme.startAnimationTimeout
+    
+    return (
+        <AnimatedWrapper absolute right width="250">
+            <HeaderContent>
+                <AnimatedText comp="h1" data-timeout={timeout} text="Jason E. Segnini Cubero"/>
+                <Menu>
+                    <AnimatedText comp="a" data-timeout={timeout} link="/" text="Home"/>
+                    <br/>
+                    <AnimatedText comp="a" data-timeout={timeout} link="/about-me" text="About Me"/>
+                    <br/>
+                    <AnimatedText comp="a" data-timeout={timeout} link="/blog" text="Blog"/>
+                    <br/>
+                    <AnimatedText comp="a" data-timeout={timeout} link="/contact" text="Contact"/>
+                </Menu>
+            </HeaderContent>
+        </AnimatedWrapper>
+    )
+}
 
 export default connect(Header)
 

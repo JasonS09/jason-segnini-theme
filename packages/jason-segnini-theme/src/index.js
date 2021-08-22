@@ -9,16 +9,13 @@ const jasonSegniniTheme = {
   },
   state: {
     theme: {
-      isBackgroundLoaded: false
+      startAnimationTimeout: 3000
     }
   },
   actions: {
     theme: {
       beforeSSR: async ({state, actions}) => 
-        await actions.source.fetch(state.source.postsPage),
-        
-      loadBackground: ({state}) =>
-        state.theme.isBackgroundLoaded = !state.theme.isBackgroundLoaded 
+        await actions.source.fetch(state.source.postsPage)
     }
   },
   libraries: {

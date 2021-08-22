@@ -1,6 +1,5 @@
 import {connect, styled, css} from "frontity"
 import AnimatedText from "./animated-text"
-import Link from "@frontity/components/link"
 
 const List = ({
     state, 
@@ -8,10 +7,12 @@ const List = ({
     maxnum, 
     animationTimeout, 
     animationSpeed,
-    isPostsPage,
+    postsPage,
     categories
 }) => {
-    const data = state.source.get(state.source.postsPage)
+    const data = postsPage 
+                ? state.source.get(state.router.link) 
+                : state.source.get(state.source.postsPage)
     const items = data.items
 
     const filteredPosts = (query, category) => {
@@ -65,7 +66,7 @@ const List = ({
                     item => {
                     const post = state.source[item.type][item.id]
                     return (
-                        <>{!isPostsPage
+                        <>{!postsPage
                             && <AnimatedText 
                                 key={item.id} 
                                 link={post.link}
@@ -87,17 +88,22 @@ const List = ({
                                 data-speed={animationSpeed}
                                 comp="summary"
                                 css={css`cursor: pointer`}
-                                />
+                            />
                             <Ul>
                                 {filteredPosts(null, item.id).map(
                                     jtem => {
                                         const post = state.source[jtem.type][jtem.id]
                                         return (
-                                            <>{!isPostsPage
+                                            <>{!postsPage
                                                 && <Li>
-                                                    <Link key={jtem.id} link={post.link}>
-                                                        {post.title.rendered}
-                                                    </Link>
+                                                    <AnimatedText 
+                                                        key={jtem.id} 
+                                                        link={post.link}
+                                                        text={post.title.rendered}
+                                                        data-speed="10"
+                                                        comp="a"
+                                                        css={css`cursor: pointer`}
+                                                    />
                                                 </Li>}
                                             </>
                                         )

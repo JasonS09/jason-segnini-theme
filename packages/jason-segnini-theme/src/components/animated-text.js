@@ -1,9 +1,9 @@
-import {createRef,useEffect} from "react"
+import {createRef,useEffect, memo} from "react"
 import {css} from "frontity"
 import {expandWidth} from "../styles/keyframes"
 import Link from "@frontity/components/link"
 
-const AnimatedText = ({
+const AnimatedText = memo(({
     'data-timeout': timeout = 0, 
     'data-speed': speed = 30,
     'data-is-cover-text': isCoverText,
@@ -26,6 +26,7 @@ const AnimatedText = ({
     
             if (i < txt.length) {    
                 let char = txt.charAt(i)
+
                 if (isCoverText && char === '.') 
                     speed = Math.random() < 0.5 ? fPauseSpeed : sPauseSpeed
     
@@ -34,8 +35,17 @@ const AnimatedText = ({
                 setTimeout(typeWriter, speed)
             }
         }
+
         typeWriter()
     }
+
+    const writeTextForLink = css`
+        width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        animation: ${expandWidth} ${(2000*speed)/30}ms ease-out ${timeout}ms forwards
+                    
+    `
 
     useEffect(() => {
         if (comp != 'a')
@@ -65,12 +75,7 @@ const AnimatedText = ({
             return <p ref={compRef} {...rest}></p>
     
         case 'a':
-            return <Link css={css`
-                        width: 0;
-                        overflow: hidden;
-                        white-space: nowrap;
-                        animation: ${expandWidth} 2s ease-out ${timeout}ms forwards
-                    `} {...rest}>{text}</Link>
+            return <Link css={css`${writeTextForLink}`} {...rest}>{text}</Link>
 
         case 'summary':
             return <summary ref={compRef} {...rest}></summary>
@@ -78,6 +83,6 @@ const AnimatedText = ({
         default:
             return <div ref={compRef} {...rest}></div>
     }
-}
+}, () => true)
 
 export default AnimatedText

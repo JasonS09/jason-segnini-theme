@@ -3,24 +3,62 @@ import {expandWidth} from "../styles/keyframes"
 
 const AnimatedWrapper = ({
     width = 1,
+    timeout = 0,
     absolute,
     ...rest
-}) => (
+}) => {
+    timeout = timeout/1000
+
+    const setWidthForAbsolute = css`
+        width: ${width-1}px;
+
+        &::before {
+            width: ${width}px;
+        }
+    `
+
+    const setAnimationsForAllBorders = css`
+        ::before {
+            animation: ${topBorderColor} 0s ease-out ${timeout}s forwards,
+            ${rightBorderColor} 0s ease-out ${timeout}s forwards,
+            ${expandWidth} .25s ease-out ${timeout}s forwards,
+            ${expandHeight} .25s ease-out ${timeout+.25}s forwards;
+        }
+
+        ::after {
+            animation: ${bottomBorderColor} 0s ease-out ${timeout+.5}s forwards,
+            ${leftBorderColor} 0s ease-out ${timeout+.5}s forwards,
+            ${expandWidth} 0.25s ease-out ${timeout+.5}s forwards,
+            ${expandHeight} 0.25s ease-out ${timeout+.75}s forwards;
+        }
+    `
+    
+    return (
     <>
         {!absolute 
-            ? <AllbordersAnimatedDiv {...rest}></AllbordersAnimatedDiv>
-            : <AbsoluteAnimatedDiv {...rest} css={css`
-                    width: ${width-1}px;
-
-                    &::before {
-                        width: ${width}px;
-                    }
-                `}></AbsoluteAnimatedDiv>
+            ? <AllbordersAnimatedDiv css={css`
+                                            ${setAnimationsForAllBorders}
+                                        `} {...rest}></AllbordersAnimatedDiv>
+            : <AbsoluteAnimatedDiv css={css`
+                                            ${setWidthForAbsolute}
+                                        `} {...rest}></AbsoluteAnimatedDiv>
         }
     </>
-)
+)}
 
 export default AnimatedWrapper
+
+const topBorderColor = keyframes`
+    to {
+        border-top-color: #60d75a;
+    }
+`
+
+const rightBorderColor = keyframes`
+    to {
+        border-right-color: #60d75a;
+    }
+`
 
 const bottomBorderColor = keyframes`
     to {
@@ -54,16 +92,16 @@ const AbsoluteAnimatedDiv = styled.div`
     ${props => props.right && "left: 0;"}
     ${props => props.left && "right: 0;"}
 
-    &::before {
+    ::before {
         content: '';
-        z-index:-1;
+        z-index: -1;
         background-color: rgba(0,0,0,0.85);
         animation: ${expandHeight} 1s ease-out forwards;
         ${props => props.right && animateRight}
         ${props => props.left && animateLeft}
     }
 
-    &, &::before {
+    &, ::before {
         position: absolute;
         top: 0;
     }
@@ -73,7 +111,7 @@ const AllbordersAnimatedDiv = styled.div`
     position: relative;
     box-shadow: inset 0 0 0 1px black;
 
-    &::before, &::after {
+    ::before, ::after {
         content: '';
         box-sizing: inherit;
         position: absolute;
@@ -81,21 +119,13 @@ const AllbordersAnimatedDiv = styled.div`
         border-radius: 3px;
     }
 
-    &::before {
+    ::before {
         top: 0;
         left: 0;
-        border-top-color: #60d75a;
-        border-right-color: #60d75a;
-        animation: ${expandWidth} .25s ease-out forwards,
-            ${expandHeight} .25s ease-out .25s forwards;
     }
 
-    &::after {
+    ::after {
         right: 0;
         bottom: 0;
-        animation: ${bottomBorderColor} 0s ease-out .5s forwards,
-            ${leftBorderColor} 0s ease-out .5s forwards,
-            ${expandWidth} 0.25s ease-out .5s forwards,
-            ${expandHeight} 0.25s ease-out .75s forwards;
     }
 `

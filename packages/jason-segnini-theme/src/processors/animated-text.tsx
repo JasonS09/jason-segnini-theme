@@ -9,7 +9,7 @@ const animatedText = {
       && node.children[0].type === "text"
       && node.props["className"] === "animatedText",
 
-    processor: ({ node }) => {
+    processor: ({node}) => {
       if (node.component === "a" 
           && node.props?.href 
           && !node.props?.href?.startsWith("#"))

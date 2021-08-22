@@ -11,7 +11,7 @@ const List = ({
     categories
 }) => {
     const data = postsPage 
-                ? state.source.get(state.router.link) 
+                ? state.source.get(state.router.link)
                 : state.source.get(state.source.postsPage)
     const items = data.items
 
@@ -62,21 +62,22 @@ const List = ({
         <Items>
             {data.isReady
             && (!categories 
-                ? filteredPosts(data.searchQuery).map(
+                ? filteredPosts(postsPage ? data.searchQuery : null).map(
                     item => {
-                    const post = state.source[item.type][item.id]
-                    return (
-                        <>{!postsPage
-                            && <AnimatedText 
-                                key={item.id} 
-                                link={post.link}
-                                text={post.title.rendered}
-                                data-timeout={animationTimeout}
-                                data-speed={animationSpeed}
-                                comp="a"
-                            />}
-                        </>
-                    )}
+                        const post = state.source[item.type][item.id]
+                        return (
+                            <>{!postsPage
+                                && <AnimatedText 
+                                    key={item.id} 
+                                    link={post.link}
+                                    text={post.title.rendered}
+                                    data-timeout={animationTimeout}
+                                    data-speed={animationSpeed}
+                                    comp="a"
+                                />}
+                            </>
+                        )
+                    }
                 )
                 : getCategories().map(
                     item => (

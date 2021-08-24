@@ -79,16 +79,11 @@ const leftBorderColor = keyframes`
 `
 
 const animateRight = css`
-    border-right: 1px solid transparent;
-
-    ::before {
-        border-right: 1px solid #60d75a;
-    }
+    border-right: 1px solid #60d75a;
 `
 
 const animateLeft = css`
-    right: 0; 
-    border-left: 1px solid transparent;
+    right: 0;
 
     ::before {
         right: 0;
@@ -98,16 +93,16 @@ const animateLeft = css`
 
 const AbsoluteAnimatedDiv = styled.div`
     height: 100%;
-    ${props => props.right && animateRight}
     ${props => props.left && animateLeft}
-    transition: width 1s ease-in-out;
     z-index: 1;
+    transition: margin 1s ease-in-out;
 
     ::before {
         content: '';
         width: 100%;
         background-color: rgba(0,0,0,0.85);
         z-index: -1;
+        ${props => props.right && animateRight}
         animation: ${expandHeight} 1s ease-out forwards;
     }
 

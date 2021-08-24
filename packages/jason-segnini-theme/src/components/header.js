@@ -6,48 +6,31 @@ import AnimatedWrapper from "./animated-wrapper"
 
 const Header = ({state}) => {
     const timeout = state.theme.startAnimationTimeout
-    const compRefs = useRef([2])
-    const wrapperWidth = 297
-    const hideOffset = 47
-    const title = 'Jason E. Segnini Cubero'
+    const compRef = useRef(null)
 
-    const hideMenu = (hideButton, header, headerContent) => {
+    const hideMenu = (hideButton, header) => {
         if (state.theme.showMenu) {
             hideButton.children[0].textContent = '>>'
-            header.style.width = hideOffset.toString()+'px'
-            setTimeout(() => headerContent.children[0].children[0].textContent = '', 700)
-            headerContent.style.width = 0
+            header.style.marginLeft = '-250px'
             state.theme.showMenu = false
             return
         }
 
         if (!state.theme.showMenu) {
             hideButton.children[0].textContent = '<<'
-            header.style.width = wrapperWidth.toString()+'px'
-            headerContent.style.width = '175px'
-            setTimeout(() => headerContent.children[0].children[0].textContent = title, 300)
+            header.style.marginLeft = 0
             state.theme.showMenu = true
         }
     }
     
     return (
         <>
-            <AnimatedWrapper 
-                absolute 
-                right 
-                width={wrapperWidth} 
-                hideOffset={hideOffset}
-                ref={(thisElement) => compRefs.current[0] = thisElement} 
-            >
-                <Hide onClick={
-                    (event) => hideMenu(event.target, compRefs.current[0], compRefs.current[1])
-                }>
+            <AnimatedWrapper absolute right width="297" hideOffset="47" ref={compRef}>
+                <Hide onClick={(event) => hideMenu(event.target, compRef.current)}>
                     <AnimatedText comp="h1" data-timeout={timeout} text="<<"/>
                 </Hide>
-                <HeaderContent ref={(thisElement) => compRefs.current[1] = thisElement}>
-                    <TitleContainer>
-                        <AnimatedText comp="h1" data-timeout={timeout} text={title}/>
-                    </TitleContainer>
+                <HeaderContent>
+                    <AnimatedText comp="h1" data-timeout={timeout} text="Jason E. Segnini Cubero"/>
                     <Menu>
                         <AnimatedText comp="a" data-timeout={timeout} link="/" text="Home"/>
                         <br/>
@@ -69,16 +52,10 @@ const HeaderContent = styled.div`
     width: 175px;
     padding: 2em 1em;
     margin: 0 0 0 1em;
-    overflow: hidden;
-    transition: width .8s ease-in-out .13s;
-`
-
-const TitleContainer = styled.div`
-    width: 175px;
 
     h1 {
-        min-height: 108px;
         color: #60d75a;
+        min-height: 108px;
     }
 `
 
@@ -120,9 +97,7 @@ const Hide = styled.div`
     width: 48px;
     height: 41px;
     right: 0;
-    padding: 2px;
-    padding-right: 7px;
-    padding-left: 4px;
+    padding: 2px 7px 0 4px;
     cursor: pointer;
     background-color: rgba(0,0,0,0.85);
 

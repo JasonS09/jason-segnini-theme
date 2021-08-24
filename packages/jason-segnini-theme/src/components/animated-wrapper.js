@@ -1,19 +1,21 @@
 import {styled, keyframes, css} from "frontity"
-import {expandWidth} from "../styles/keyframes"
+import {expandWidth, expandHeight} from "../styles/keyframes"
+import {forwardRef} from "react"
 
-const AnimatedWrapper = ({
-    width = 1,
+const AnimatedWrapper = forwardRef(({
+    width = 0,
+    hideOffset = 0,
     timeout = 0,
     absolute,
     ...rest
-}) => {
+}, ref) => {
     timeout = timeout/1000
 
     const setWidthForAbsolute = css`
-        width: ${width-1}px;
+        width: ${width}px;
 
-        &::before {
-            width: ${width}px;
+        ::before {
+            right: ${hideOffset}px;
         }
     `
 
@@ -36,15 +38,19 @@ const AnimatedWrapper = ({
     return (
     <>
         {!absolute 
-            ? <AllbordersAnimatedDiv css={css`
-                                            ${setAnimationsForAllBorders}
-                                        `} {...rest}></AllbordersAnimatedDiv>
-            : <AbsoluteAnimatedDiv css={css`
-                                            ${setWidthForAbsolute}
-                                        `} {...rest}></AbsoluteAnimatedDiv>
+            ? <AllbordersAnimatedDiv 
+                ref={ref} 
+                css={css`${setAnimationsForAllBorders}`} 
+                {...rest}
+            ></AllbordersAnimatedDiv>
+            : <AbsoluteAnimatedDiv 
+                ref={ref} 
+                css={css`${setWidthForAbsolute}`} 
+                {...rest}
+            ></AbsoluteAnimatedDiv>
         }
     </>
-)}
+)})
 
 export default AnimatedWrapper
 
@@ -72,38 +78,41 @@ const leftBorderColor = keyframes`
     }
 `
 
-const expandHeight = keyframes`
-    from {height: 0;}
-    to {height: 100%;}
-`
-
 const animateRight = css`
-    left: 0;
-    border-right: 1px solid #60d75a;
+    border-right: 1px solid transparent;
+
+    ::before {
+        border-right: 1px solid #60d75a;
+    }
 `
 
 const animateLeft = css`
-    right: 0;
-    border-left: 1px solid #60d75a;
+    right: 0; 
+    border-left: 1px solid transparent;
+
+    ::before {
+        right: 0;
+        border-left: 1px solid #60d75a;
+    }
 `
 
 const AbsoluteAnimatedDiv = styled.div`
     height: 100%;
-    ${props => props.right && "left: 0;"}
-    ${props => props.left && "right: 0;"}
+    ${props => props.right && animateRight}
+    ${props => props.left && animateLeft}
+    transition: width 1s ease-in-out;
+    z-index: 1;
 
     ::before {
         content: '';
-        z-index: -1;
+        width: 100%;
         background-color: rgba(0,0,0,0.85);
+        z-index: -1;
         animation: ${expandHeight} 1s ease-out forwards;
-        ${props => props.right && animateRight}
-        ${props => props.left && animateLeft}
     }
 
     &, ::before {
         position: absolute;
-        top: 0;
     }
 `
 

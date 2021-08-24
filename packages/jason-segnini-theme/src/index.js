@@ -9,7 +9,8 @@ const jasonSegniniTheme = {
   },
   state: {
     theme: {
-      startAnimationTimeout: 3000
+      startAnimationTimeout: 3000,
+      showMenu: true
     }
   },
   actions: {

@@ -47,6 +47,8 @@ export default Background
 
 const Canvas = styled.canvas`
   position: fixed;
+  width: auto;
+  height: auto;
   top: 0;
   left: 0;
   z-index: -1;

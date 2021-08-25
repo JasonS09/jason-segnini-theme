@@ -1,34 +1,24 @@
-import {connect, styled} from "frontity"
-import {expandWidth, expandHeight} from "../styles/keyframes"
-import {useRef} from "react"
+import {connect, styled, css} from "frontity"
+import {useState} from "react"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
+import Hide from "./hide"
 
-const Header = ({state}) => {
+const Header = ({state, actions}) => {
     const timeout = state.theme.startAnimationTimeout
-    const compRef = useRef(null)
+    const isMenuHidden = state.theme.showMenu ? false : true
+    const [menuMarginLeft, setMenuMarginLeft] = useState('0')
 
-    const hideMenu = (hideButton, header) => {
-        if (state.theme.showMenu) {
-            hideButton.children[0].textContent = '>>'
-            header.style.marginLeft = '-250px'
-            state.theme.showMenu = false
-            return
-        }
-
-        if (!state.theme.showMenu) {
-            hideButton.children[0].textContent = '<<'
-            header.style.marginLeft = 0
-            state.theme.showMenu = true
-        }
+    const hideMenu = () => {
+        if (state.theme.showMenu) setMenuMarginLeft('-250px')
+        else setMenuMarginLeft('0')
+        actions.theme.toggleMenu()
     }
     
     return (
         <>
-            <AnimatedWrapper absolute right width="297" hideOffset="47" ref={compRef}>
-                <Hide onClick={(event) => hideMenu(event.target, compRef.current)}>
-                    <AnimatedText comp="h1" data-timeout={timeout} text="<<"/>
-                </Hide>
+            <AnimatedWrapper absolute right width="297" hideOffset="47" css={css`margin-left: ${menuMarginLeft}`}>
+                <Hide isComponentHidden={isMenuHidden} onClick={() => hideMenu()}/>
                 <HeaderContent>
                     <AnimatedText comp="h1" data-timeout={timeout} text="Jason E. Segnini Cubero"/>
                     <Menu>
@@ -88,32 +78,5 @@ const Menu = styled.nav`
             color: black;
             transition: color .5s ease-out;
         }
-    }
-`
-
-const Hide = styled.div`
-    display: block;
-    position: absolute;
-    width: 48px;
-    height: 41px;
-    right: 0;
-    padding: 2px 7px 0 4px;
-    cursor: pointer;
-    background-color: rgba(0,0,0,0.85);
-
-    h1 {
-        color: #60d75a;
-    }
-
-    ::before {
-        content: '';
-        position: absolute;
-        right: 0;
-        bottom: 1px;
-        border-right: 1px solid #60d75a;
-        border-bottom: 1px solid #60d75a;
-        border-radius: 3px;
-        animation: ${expandHeight} .15s ease-out forwards,
-            ${expandWidth} .15s ease-out .15s forwards;
     }
 `

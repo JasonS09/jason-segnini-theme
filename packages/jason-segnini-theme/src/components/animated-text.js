@@ -1,39 +1,46 @@
-import {createRef,useEffect, memo} from "react"
+import {useState} from "react"
 import {css} from "frontity"
 import {expandWidth} from "../styles/keyframes"
 import Link from "@frontity/components/link"
 
-const AnimatedText = memo(({
+const AnimatedText = ({
     'data-timeout': timeout = 0, 
     'data-speed': speed = 30,
-    'data-is-cover-text': isCoverText,
+    'data-cover-text': isCoverText,
     comp,
     text,
     ...rest
 }) => {
-    const compRef = createRef()
+    const [textContent, setTextContent] = useState({
+        content: '',
+        animationFinished: false
+    });
 
-    const writeText = (textComponent, txt) => {
+    const writeText = () => {
         let i = 0
         const baseSpeed = speed
         const fPauseSpeed = baseSpeed*10
         const sPauseSpeed = baseSpeed*20
-        textComponent.style.display = 'inline-block'
     
         const typeWriter = () => {
             if (isCoverText && (speed === fPauseSpeed || speed === sPauseSpeed)) 
                 speed = baseSpeed
     
-            if (i < txt.length) {    
-                let char = txt.charAt(i)
+            if (i < text.length) {    
+                let char = text.charAt(i)
 
                 if (isCoverText && char === '.') 
                     speed = Math.random() < 0.5 ? fPauseSpeed : sPauseSpeed
-    
-                textComponent.textContent += char
+
+                setTextContent(textContent => ({
+                    ...textContent, content: textContent.content + char
+                }))
                 i++
                 setTimeout(typeWriter, speed)
+                return
             }
+            
+            setTextContent(textContent => ({...textContent, animationFinished: true}))
         }
 
         typeWriter()
@@ -43,46 +50,43 @@ const AnimatedText = memo(({
         width: 0;
         overflow: hidden;
         white-space: nowrap;
-        animation: ${expandWidth} ${(2000*speed)/30}ms ease-out ${timeout}ms forwards
-                    
+        animation: ${expandWidth} ${(2000*speed)/30}ms ease-out ${timeout}ms forwards;
     `
-
-    useEffect(() => {
-        if (comp != 'a')
-            setTimeout(writeText, timeout, compRef.current, text)
-    })
+    if (comp != 'a' && textContent.content === '') setTimeout(writeText, timeout)
+    if (textContent.animationFinished && textContent.content != text) 
+        setTextContent(textContent => ({...textContent, content: text}))
 
     switch(comp) {
         case 'h1':
-            return <h1 ref={compRef} {...rest}></h1>
+            return <h1 {...rest}>{textContent.content}</h1>
     
         case 'h2':
-            return <h2 ref={compRef} {...rest}></h2>
+            return <h2 {...rest}>{textContent.content}</h2>
     
         case 'h3':
-            return <h3 ref={compRef} {...rest}></h3>
+            return <h3 {...rest}>{textContent.content}</h3>
     
         case 'h4':
-            return <h4 ref={compRef} {...rest}></h4>
+            return <h4 {...rest}>{textContent.content}</h4>
     
         case 'h5':
-            return <h5 ref={compRef} {...rest}></h5>
+            return <h5 {...rest}>{textContent.content}</h5>
     
         case 'h6':
-            return <h6 ref={compRef} {...rest}></h6>
+            return <h6 {...rest}>{textContent.content}</h6>
     
         case 'p':
-            return <p ref={compRef} {...rest}></p>
+            return <p {...rest}>{textContent.content}</p>
     
         case 'a':
             return <Link css={css`${writeTextForLink}`} {...rest}>{text}</Link>
 
         case 'summary':
-            return <summary ref={compRef} {...rest}></summary>
+            return <summary {...rest}>{textContent.content}</summary>
     
         default:
-            return <div ref={compRef} {...rest}></div>
+            return <div {...rest}>{textContent.content}</div>
     }
-}, () => true)
+}
 
 export default AnimatedText

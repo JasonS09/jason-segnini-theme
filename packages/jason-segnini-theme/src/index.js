@@ -10,18 +10,29 @@ const jasonSegniniTheme = {
   state: {
     theme: {
       startAnimationTimeout: 3000,
-      showMenu: true
+      isBackgroundLoaded: false,
+      showMenu: true,
+      showArchive: true
     }
   },
   actions: {
     theme: {
       beforeSSR: async ({state, actions}) => 
-        await actions.source.fetch(state.source.postsPage)
+        await actions.source.fetch(state.source.postsPage),
+      
+      loadBackground: ({state}) => 
+        state.theme.isBackgroundLoaded = !state.theme.isBackgroundLoaded,
+      
+      toggleMenu: ({state}) =>
+        state.theme.showMenu = !state.theme.showMenu,
+
+      toggleArchive: ({state}) =>
+        state.theme.showArchive = !state.theme.showArchive
     }
   },
   libraries: {
     html2react: {
-      processors: [animatedText,link]
+      processors: [animatedText, link]
     }
   }
 }

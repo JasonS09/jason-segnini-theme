@@ -1,7 +1,7 @@
-import {styled} from "frontity"
-import {useRef,useEffect, memo} from "react"
+import {connect, styled} from "frontity"
+import {useRef, useEffect} from "react"
 
-const Background = memo(() => {
+const Background = ({state, actions}) => {
     const matrixCanv = useRef(null)
 
     const drawMatrix = (canvas) => {
@@ -37,13 +37,16 @@ const Background = memo(() => {
     }
 
     useEffect(() => {
-        setTimeout(drawMatrix, 2000, matrixCanv.current)
+        if (!state.theme.backgroundLoaded) {
+            setTimeout(drawMatrix, 2000, matrixCanv.current)
+            actions.theme.loadBackground()
+        }
     })
 
     return <Canvas ref={matrixCanv}></Canvas>
-}, () => true)
+}
 
-export default Background
+export default connect(Background)
 
 const Canvas = styled.canvas`
   position: fixed;

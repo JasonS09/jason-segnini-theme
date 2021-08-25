@@ -15,7 +15,7 @@ const SearchBar = ({state, actions}) => {
                                                     `}>
                 <Input 
                     type="text" 
-                    onChange={(event) => inputState = {value: event.target.value}} 
+                    onChange={event => inputState = {value: event.target.value}} 
                     placeholder="Search blog posts."
                     css={css`animation: ${expandWidth} 1s ease-out ${timeout}ms forwards`}
                 />

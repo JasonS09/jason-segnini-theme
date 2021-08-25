@@ -1,21 +1,21 @@
 import {styled, keyframes, css} from "frontity"
 import {expandWidth, expandHeight} from "../styles/keyframes"
-import {forwardRef} from "react"
 
-const AnimatedWrapper = forwardRef(({
+const AnimatedWrapper = ({
     width = 0,
     hideOffset = 0,
     timeout = 0,
     absolute,
+    right,
     ...rest
-}, ref) => {
+}) => {
     timeout = timeout/1000
 
     const setWidthForAbsolute = css`
         width: ${width}px;
 
         ::before {
-            right: ${hideOffset}px;
+            ${right ? css`right: ${hideOffset}px;` : css`left: ${hideOffset}px;`}
         }
     `
 
@@ -37,20 +37,19 @@ const AnimatedWrapper = forwardRef(({
     
     return (
     <>
-        {!absolute 
-            ? <AllbordersAnimatedDiv 
-                ref={ref} 
-                css={css`${setAnimationsForAllBorders}`} 
-                {...rest}
-            ></AllbordersAnimatedDiv>
-            : <AbsoluteAnimatedDiv 
-                ref={ref} 
+        {absolute 
+            ? <AbsoluteAnimatedDiv
+                right={right}
                 css={css`${setWidthForAbsolute}`} 
                 {...rest}
             ></AbsoluteAnimatedDiv>
+            : <AllbordersAnimatedDiv 
+                css={css`${setAnimationsForAllBorders}`} 
+                {...rest}
+            ></AllbordersAnimatedDiv>
         }
     </>
-)})
+)}
 
 export default AnimatedWrapper
 

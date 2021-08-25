@@ -9,42 +9,40 @@ const AnimatedWrapper = ({
     right,
     ...rest
 }) => {
-    timeout = timeout/1000
 
-    const setWidthForAbsolute = css`
-        width: ${width}px;
+    const formatSizeProp = (prop) => {
+        if (typeof(prop) != "string") return prop.toString()+'px'
 
-        ::before {
-            ${right ? css`right: ${hideOffset}px;` : css`left: ${hideOffset}px;`}
-        }
-    `
+        if (prop.endsWith('px')
+            || prop.endsWith('em')
+            || prop.endsWith('vh')
+            || prop.endsWith('vw')
+            || prop.endsWith('%'))
+            return prop
 
-    const setAnimationsForAllBorders = css`
-        ::before {
-            animation: ${topBorderColor} 0s ease-out ${timeout}s forwards,
-            ${rightBorderColor} 0s ease-out ${timeout}s forwards,
-            ${expandWidth} .25s ease-out ${timeout}s forwards,
-            ${expandHeight} .25s ease-out ${timeout+.25}s forwards;
-        }
-
-        ::after {
-            animation: ${bottomBorderColor} 0s ease-out ${timeout+.5}s forwards,
-            ${leftBorderColor} 0s ease-out ${timeout+.5}s forwards,
-            ${expandWidth} 0.25s ease-out ${timeout+.5}s forwards,
-            ${expandHeight} 0.25s ease-out ${timeout+.75}s forwards;
-        }
-    `
+        return prop+'px'
+    }
     
     return (
     <>
         {absolute 
-            ? <AbsoluteAnimatedDiv
-                right={right}
-                css={css`${setWidthForAbsolute}`} 
-                {...rest}
-            ></AbsoluteAnimatedDiv>
+            ? (right 
+                ? <AbsoluteAnimatedDiv
+                    right={right}
+                    width={formatSizeProp(width)}
+                    hideOffset={formatSizeProp(hideOffset)}
+                    {...rest}
+                 ></AbsoluteAnimatedDiv>
+                : <WrapperForRight width={formatSizeProp(width)}>
+                    <AbsoluteAnimatedDiv 
+                        right={right}
+                        width={formatSizeProp(width)}
+                        hideOffset={formatSizeProp(hideOffset)}
+                        {...rest}
+                    ></AbsoluteAnimatedDiv>
+                 </WrapperForRight>)
             : <AllbordersAnimatedDiv 
-                css={css`${setAnimationsForAllBorders}`} 
+                timeout={timeout/1000}
                 {...rest}
             ></AllbordersAnimatedDiv>
         }
@@ -90,8 +88,17 @@ const animateLeft = css`
     }
 `
 
+const WrapperForRight = styled.div`
+    position: absolute;
+    right: 0;
+    width: ${props => props.width};
+    height: 100%;
+    overflow: hidden;
+`
+
 const AbsoluteAnimatedDiv = styled.div`
     height: 100%;
+    width: ${props => props.width};
     ${props => props.left && animateLeft}
     z-index: 1;
     transition: margin 1s ease-in-out;
@@ -102,6 +109,10 @@ const AbsoluteAnimatedDiv = styled.div`
         background-color: rgba(0,0,0,0.85);
         z-index: -1;
         ${props => props.right && animateRight}
+        ${props => props.right 
+            ? css`right: ${props.hideOffset};` 
+            : css`left: ${props.hideOffset};`
+        }
         animation: ${expandHeight} 1s ease-out forwards;
     }
 
@@ -125,10 +136,22 @@ const AllbordersAnimatedDiv = styled.div`
     ::before {
         top: 0;
         left: 0;
+        animation: ${props => 
+        css`${topBorderColor} 0s ease-out ${props.timeout}s forwards,
+            ${rightBorderColor} 0s ease-out ${props.timeout}s forwards,
+            ${expandWidth} .25s ease-out ${props.timeout}s forwards,
+            ${expandHeight} .25s ease-out ${props.timeout+.25}s forwards;`
+        }
     }
 
     ::after {
         right: 0;
         bottom: 0;
+        animation: ${props => 
+        css`${bottomBorderColor} 0s ease-out ${props.timeout+.5}s forwards,
+            ${leftBorderColor} 0s ease-out ${props.timeout+.5}s forwards,
+            ${expandWidth} 0.25s ease-out ${props.timeout+.5}s forwards,
+            ${expandHeight} 0.25s ease-out ${props.timeout+.75}s forwards;`
+        }
     }
 `

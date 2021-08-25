@@ -40,7 +40,8 @@ export default connect(Archive)
 const ArchiveContent = styled.div`
     max-width: 175px;
     padding: 2em 1em;
-    margin: auto;
+    margin-left: 6em;
+    margin-top: 1em;
 
     h2, h3 {
         color: #60d75a;

@@ -41,7 +41,8 @@ export default connect(Header)
 const HeaderContent = styled.div`
     width: 175px;
     padding: 2em 1em;
-    margin: 0 0 0 1em;
+    margin-left: 1em;
+    margin-top: 1em;
 
     h1 {
         color: #60d75a;

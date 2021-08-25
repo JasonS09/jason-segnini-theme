@@ -3,7 +3,6 @@ import {expandHeight, expandWidth} from "../styles/keyframes"
 import AnimatedText from "./animated-text"
 
 const Hide = ({state, right, isComponentHidden, ...rest}) => {
-    console.log(isComponentHidden)
     const timeout = state.theme.startAnimationTimeout
 
     const setText = () => {

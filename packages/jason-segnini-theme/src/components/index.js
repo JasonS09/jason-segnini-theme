@@ -54,7 +54,10 @@ const Root = ({state}) => {
             <Background/>
             <Header/>
             <Archive/>
-            <Main>
+            <Main 
+                isMenuHidden={!state.theme.showMenu}
+                isArchiveHidden={!state.theme.showArchive}
+            >
                 <Switch>
                     <Loading when={data.isFetching}/>
                     <List when={data.isArchive} postsPage/>
@@ -68,10 +71,39 @@ const Root = ({state}) => {
 
 export default connect(Root)
 
+const defaultMainConfig = css`
+    width: 50%;
+    margin: 0 25%
+`
+
+const hiddenMenuMainConfig = css`
+    width: 65%;
+    margin-left: 10%;
+`
+
+const hiddenArchiveMainConfig = css`
+    width: 65%;
+    margin-left: 25%;
+    margin-right: 10%;
+`
+
+const hiddenBothMainConfig = css`
+    width: 80%;
+    margin: 0 10%
+`
+
 const Main = styled.main`
-    max-width: 800px;
     padding: 1em;
-    margin: auto;
+    ${props => 
+        props.isMenuHidden 
+            ? props.isArchiveHidden
+                ? hiddenBothMainConfig
+                : hiddenMenuMainConfig
+            : props.isArchiveHidden
+                ? hiddenArchiveMainConfig
+                : defaultMainConfig}
+    transition: width 1s ease-in-out,
+        margin 1s ease-in-out;
 
     img {
         max-width: 100%;

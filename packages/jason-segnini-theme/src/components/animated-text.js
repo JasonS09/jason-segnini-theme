@@ -52,6 +52,7 @@ const AnimatedText = ({
         white-space: nowrap;
         animation: ${expandWidth} ${(2000*speed)/30}ms ease-out ${timeout}ms forwards;
     `
+    
     if (comp != 'a' && textContent.content === '') setTimeout(writeText, timeout)
     if (textContent.animationFinished && textContent.content != text) 
         setTextContent(textContent => ({...textContent, content: text}))

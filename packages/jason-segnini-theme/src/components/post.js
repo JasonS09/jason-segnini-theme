@@ -18,8 +18,8 @@ const Post = ({state, libraries}) => {
                     <meta name="Description" content={post.excerpt.rendered}/>
                 </Head>
                 {!data.isHome && <h2>{post.title.rendered}</h2>}
-                {data.isPost && 
-                <PostInfo>
+                {data.isPost 
+                && <PostInfo>
                     <p>
                         <strong>Posted: </strong>
                         {formattedDate}
@@ -42,7 +42,6 @@ export default connect(Post)
 const StyledPost = styled.div`
     background-color: rgba(0,0,0,0.85);
     min-height: 50px;
-    margin-top: 30%;
 `
 
 const PostInfo = styled.div`

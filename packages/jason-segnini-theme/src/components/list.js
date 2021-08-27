@@ -1,4 +1,5 @@
 import {connect, styled, css} from "frontity"
+import {useState} from "react"
 import AnimatedText from "./animated-text"
 
 const List = ({
@@ -13,6 +14,36 @@ const List = ({
                 ? state.source.get(state.router.link)
                 : state.source.get(state.source.postsPage)
     const items = data.items
+
+    const getCategoriesIds = () => {
+        let ids = []
+        
+        items.forEach(
+            item => {
+                state.source[item.type][item.id].categories.forEach(
+                    category => {
+                        if (!ids.includes(category)) ids.push(category)
+                    }
+                )
+            }
+        )
+
+        return ids
+    }
+
+    const catsIds = categories ? getCategoriesIds() : []
+
+    const [reanimateListItem, setReanimateListItem] = useState(() => {
+        let reanimates = {}
+        catsIds.forEach(id => reanimates = {...reanimates, [id]: false})
+        return reanimates
+    })
+
+    const getCategories = () => {
+        let cats = []
+        catsIds.forEach(id => cats.push(state.source["category"][id]))
+        return cats
+    }
 
     const filteredPosts = (query, category) => {
         if (maxnum && maxnum < items.length) items.length = maxnum
@@ -37,24 +68,6 @@ const List = ({
                 return post.categories.includes(category)
             }
         })
-    }
-
-    const getCategories = () => {
-        let ids = []
-        
-        items.forEach(
-            item => {
-                state.source[item.type][item.id].categories.forEach(
-                    category => {
-                        if (!ids.includes(category)) ids.push(category)
-                    }
-                )
-            }
-        )
-
-        let cats = []
-        ids.forEach(id => cats.push(state.source["category"][id]))
-        return cats
     }
 
     return (
@@ -85,6 +98,11 @@ const List = ({
                                 text={item.name}
                                 data-speed={animationSpeed}
                                 comp="summary"
+                                onClick={() => 
+                                    setReanimateListItem(reanimateListItem => ({
+                                        ...reanimateListItem, [item.id]: !reanimateListItem[item.id]
+                                    }))
+                                }
                                 css={css`cursor: pointer`}
                             />
                             <Ul>
@@ -100,6 +118,7 @@ const List = ({
                                                         text={post.title.rendered}
                                                         data-speed={animationSpeed}
                                                         comp="a"
+                                                        reanimate={reanimateListItem[item.id]}
                                                         css={css`cursor: pointer`}
                                                     />
                                                 </Li>}

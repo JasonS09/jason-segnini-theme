@@ -41,22 +41,7 @@ const Header = ({state, actions}) => {
         }
 
         const animate = (newText) => {
-            switch(item) {
-                case 'home':
-                    setMenuTexts(menuTexts => ({...menuTexts, home: newText}))
-                    break
-            
-                case 'aboutMe':
-                    setMenuTexts(menuTexts => ({...menuTexts, aboutMe: newText}))
-                    break
-            
-                case 'blog':
-                    setMenuTexts(menuTexts => ({...menuTexts, blog: newText}))
-                    break
-
-                case 'contact':
-                    setMenuTexts(menuTexts => ({...menuTexts, contact: newText}))
-            }
+            setMenuTexts(menuTexts => ({...menuTexts, [item]: newText}))
 
             if (i < text.length)  {
                 setTimeout(animate, 30, generateText(text.length))

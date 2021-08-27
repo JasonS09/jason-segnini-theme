@@ -8,6 +8,7 @@ const AnimatedText = ({
     'data-cover-text': isCoverText,
     comp,
     text,
+    reanimate,
     state,
     actions,
     ...rest
@@ -16,8 +17,7 @@ const AnimatedText = ({
     const isWelcomeReceived = state.theme.isWelcomeReceived
     const [textContent, setTextContent] = useState({
         content: '',
-        randChar: '',
-        animationFinished: false
+        randChar: ''
     });
 
     const writeText = () => {
@@ -43,8 +43,12 @@ const AnimatedText = ({
                 setTimeout(typeWriter, speed)
                 return
             }
-            
+
             setTextContent(textContent => ({...textContent, animationFinished: true}))
+
+            if (reanimate) 
+                setTextContent(textContent => ({...textContent, reanimationFinished: true}))
+
             if (!isWelcomeReceived) setTimeout(actions.theme.welcome, 1500)
         }
 
@@ -52,7 +56,7 @@ const AnimatedText = ({
             if (i < text.length) {
                 setTextContent(textContent => ({
                     ...textContent, 
-                    randChar: String.fromCharCode(Math.random() * 128)
+                    randChar: String.fromCharCode(Math.random()*128)
                 }))
                 setTimeout(randEffect, 10)
                 return
@@ -67,11 +71,22 @@ const AnimatedText = ({
     
     if (textContent.content === '' 
         && textContent.randChar === ''
-        && (isWelcomeReceived || data.isHome)) 
+        && (isWelcomeReceived || data.isHome))
         writeText()
 
-    if (textContent.animationFinished && textContent.content != text) 
-        setTextContent(textContent => ({...textContent, content: text}))
+    if (textContent.animationFinished) {
+        if (reanimate) {
+            if (!textContent.reanimationFinished)
+                setTextContent({
+                    content: '',
+                    randChar: ''
+                })
+        }
+        else if (textContent.reanimationFinished)
+            setTextContent(textContent => ({...textContent, reanimationFinished: false}))
+        else if (textContent.content != text)
+            setTextContent(textContent => ({...textContent, content: text}))
+    }
 
     return (
         <Switch>

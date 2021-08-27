@@ -42,34 +42,27 @@ const AnimatedWrapper = ({
                     {...rest}
                 />
             </WrapperForRight>
-            <AllbordersAnimatedDiv {...rest}/>
+            <AllbordersAnimatedDiv {...rest}>
+                <LightEffectTop/>
+                {rest.children}
+            </AllbordersAnimatedDiv>
         </Switch>
     )
 }
 
 export default AnimatedWrapper
 
-const topBorderColor = keyframes`
-    to {
-        border-top-color: #60d75a;
-    }
-`
-
-const rightBorderColor = keyframes`
-    to {
-        border-right-color: #60d75a;
-    }
-`
-
 const bottomBorderColor = keyframes`
-    to {
-        border-bottom-color: #60d75a;
-    }
+    to {border-bottom-color: #60d75a;}
 `
 
 const leftBorderColor = keyframes`
+    to {border-left-color: #60d75a;}
+`
+
+const disappear = keyframes`
     to {
-        border-left-color: #60d75a;
+        height: 0;
     }
 `
 
@@ -84,6 +77,16 @@ const animateLeft = css`
         right: 0;
         border-left: 1px solid #60d75a;
     }
+`
+
+const LightEffectTop = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0), #60d75a);
+    animation: ${expandWidth} 2s ease-out forwards,
+        ${disappear} 2s ease-out 2s forwards;
 `
 
 const WrapperForRight = styled.div`
@@ -121,7 +124,6 @@ const AbsoluteAnimatedDiv = styled.div`
 
 const AllbordersAnimatedDiv = styled.div`
     position: relative;
-    box-shadow: inset 0 0 0 1px black;
 
     ::before, ::after {
         content: '';
@@ -134,9 +136,9 @@ const AllbordersAnimatedDiv = styled.div`
     ::before {
         top: 0;
         left: 0;
-        animation: ${topBorderColor} 0s ease-out forwards,
-            ${rightBorderColor} 0s ease-out forwards,
-            ${expandWidth} .25s ease-out forwards,
+        border-top-color: #60d75a;
+        border-right-color: #60d75a;
+        animation:${expandWidth} .25s ease-out forwards,
             ${expandHeight} .25s ease-out .25s forwards;
     }
 
@@ -145,7 +147,7 @@ const AllbordersAnimatedDiv = styled.div`
         bottom: 0;
         animation: ${bottomBorderColor} 0s ease-out .5s forwards,
             ${leftBorderColor} 0s ease-out .5s forwards,
-            ${expandWidth} 0.25s ease-out .5s forwards,
-            ${expandHeight} 0.25s ease-out .75s forwards;
+            ${expandWidth} .25s ease-out .5s forwards,
+            ${expandHeight} .25s ease-out .75s forwards;
     }
 `

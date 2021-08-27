@@ -9,8 +9,10 @@ import Background from "./background"
 import Archive from "./archive"
 import ShareTechMono from "../fonts/ShareTechMono-Regular.ttf"
 
-const Root = ({state}) => {
+const Root = ({state, actions}) => {
     const data = state.source.get(state.router.link)
+    if (!data.isHome) actions.theme.welcome()
+    const isWelcomeReceived = state.theme.isWelcomeReceived
 
     return (
         <>
@@ -51,9 +53,9 @@ const Root = ({state}) => {
                     }
                 `}
             />
-            <Background/>
-            <Header/>
-            <Archive/>
+            {isWelcomeReceived && <Background/>}
+            {isWelcomeReceived && <Header/>}
+            {isWelcomeReceived && <Archive/>}
             <Main 
                 isMenuHidden={!state.theme.showMenu}
                 isArchiveHidden={!state.theme.showArchive}

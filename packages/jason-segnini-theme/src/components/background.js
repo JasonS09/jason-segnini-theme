@@ -38,7 +38,7 @@ const Background = ({state, actions}) => {
 
     useEffect(() => {
         if (!state.theme.backgroundLoaded) {
-            setTimeout(drawMatrix, 2000, matrixCanv.current)
+            drawMatrix(matrixCanv.current)
             actions.theme.loadBackground()
         }
     })
@@ -50,8 +50,6 @@ export default connect(Background)
 
 const Canvas = styled.canvas`
   position: fixed;
-  width: auto;
-  height: auto;
   top: 0;
   left: 0;
   z-index: -1;

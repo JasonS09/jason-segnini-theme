@@ -9,7 +9,7 @@ const jasonSegniniTheme = {
   },
   state: {
     theme: {
-      startAnimationTimeout: 3000,
+      isWelcomeReceived: false,
       isBackgroundLoaded: false,
       showMenu: true,
       showArchive: true
@@ -19,9 +19,12 @@ const jasonSegniniTheme = {
     theme: {
       beforeSSR: async ({state, actions}) => 
         await actions.source.fetch(state.source.postsPage),
+
+      welcome: ({state}) =>
+        state.theme.isWelcomeReceived = true,
       
       loadBackground: ({state}) => 
-        state.theme.isBackgroundLoaded = !state.theme.isBackgroundLoaded,
+        state.theme.isBackgroundLoaded = true,
       
       toggleMenu: ({state}) =>
         state.theme.showMenu = !state.theme.showMenu,

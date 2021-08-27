@@ -3,30 +3,29 @@ import {expandWidth} from "../styles/keyframes"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 
-const SearchBar = ({state, actions}) => {
-    const timeout = state.theme.startAnimationTimeout
+const SearchBar = ({actions}) => {
     let inputState = {value: ''}
     
     return (
         <>
-            <AnimatedWrapper timeout={timeout} css={css`
-                                                        z-index: 1;
-                                                        width: fit-content;
-                                                    `}>
+            <AnimatedWrapper css={css`
+                                    z-index: 1;
+                                    width: fit-content;
+                                `}>
                 <Input 
                     type="text" 
                     onChange={event => inputState = {value: event.target.value}} 
                     placeholder="Search blog posts."
-                    css={css`animation: ${expandWidth} 1s ease-out ${timeout}ms forwards`}
+                    css={css`animation: ${expandWidth} 1s ease-out forwards`}
                 />
             </AnimatedWrapper>
-            <AnimatedWrapper timeout={timeout} css={css`
-                                                        z-index: 1;
-                                                        width: fit-content;
-                                                        margin: auto;
-                                                    `}>
+            <AnimatedWrapper css={css`
+                                    z-index: 1;
+                                    width: fit-content;
+                                    margin: auto;
+                                `}>
                 <Button onClick={() => actions.router.set("/?s="+inputState.value)}>
-                    <AnimatedText text="Search" comp="p" data-timeout={timeout}/>
+                    <AnimatedText text="Search" comp="p"/>
                 </Button>
             </AnimatedWrapper>
         </>
@@ -63,5 +62,6 @@ const Button = styled.button`
     :hover {
         background-color: #60d75a;
         color: black;
+        border-radius: 3px;
     }
 `

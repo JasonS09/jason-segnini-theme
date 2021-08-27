@@ -7,8 +7,7 @@ import List from "./list"
 import Hide from "./hide"
 
 const Archive = ({state, actions}) => {
-    const timeout = state.theme.startAnimationTimeout
-    const isArchiveHidden = state.theme.showArchive ? false : true
+    const isArchiveHidden = !state.theme.showArchive
     const [archiveMarginRight, setArchiveMarginRight] = useState('0')
 
     const hideArchive = () => {
@@ -21,13 +20,13 @@ const Archive = ({state, actions}) => {
         <AnimatedWrapper absolute left width="297" hideOffset="47" css={css`margin-right: ${archiveMarginRight}`}>
             <Hide right isComponentHidden={isArchiveHidden} onClick={() => hideArchive()}/>
             <ArchiveContent>
-                <AnimatedText comp="h2" data-timeout={timeout} text="Archive" css={css`margin-bottom: 1em`}/>
+                <AnimatedText comp="h2" text="Archive" css={css`margin-bottom: 1em`}/>
                 <br/>
-                <AnimatedText comp="h3" data-timeout={timeout} text="Categories"/>
-                <List animationTimeout={timeout} categories/>
+                <AnimatedText comp="h3" text="Categories"/>
+                <List categories/>
                 <br/>
-                <AnimatedText comp="h3" data-timeout={timeout} text="Latest Posts"/>
-                <List maxnum="5" animationTimeout={timeout}/>
+                <AnimatedText comp="h3" text="Latest Posts"/>
+                <List maxnum="5"/>
                 <br/>
                 <SearchBar/>
             </ArchiveContent>

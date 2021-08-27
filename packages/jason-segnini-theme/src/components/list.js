@@ -4,8 +4,7 @@ import AnimatedText from "./animated-text"
 const List = ({
     state, 
     actions, 
-    maxnum, 
-    animationTimeout, 
+    maxnum,
     animationSpeed,
     postsPage,
     categories
@@ -71,7 +70,6 @@ const List = ({
                                     key={item.id} 
                                     link={post.link}
                                     text={post.title.rendered}
-                                    data-timeout={animationTimeout}
                                     data-speed={animationSpeed}
                                     comp="a"
                                 />}
@@ -85,7 +83,6 @@ const List = ({
                             <AnimatedText 
                                 key={item.id} 
                                 text={item.name}
-                                data-timeout={animationTimeout}
                                 data-speed={animationSpeed}
                                 comp="summary"
                                 css={css`cursor: pointer`}
@@ -101,7 +98,7 @@ const List = ({
                                                         key={jtem.id} 
                                                         link={post.link}
                                                         text={post.title.rendered}
-                                                        data-speed="10"
+                                                        data-speed={animationSpeed}
                                                         comp="a"
                                                         css={css`cursor: pointer`}
                                                     />

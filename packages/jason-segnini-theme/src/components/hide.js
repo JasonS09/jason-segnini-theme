@@ -3,7 +3,6 @@ import {expandHeight, expandWidth} from "../styles/keyframes"
 import AnimatedText from "./animated-text"
 
 const Hide = ({state, right, isComponentHidden, ...rest}) => {
-    const timeout = state.theme.startAnimationTimeout
 
     const setText = () => {
         if (right) {
@@ -17,7 +16,7 @@ const Hide = ({state, right, isComponentHidden, ...rest}) => {
 
     return (
         <HideButton right={right} {...rest}>
-            <AnimatedText comp="h1" data-timeout={timeout} text={setText()}/>
+            <AnimatedText comp="h1" text={setText()}/>
         </HideButton>
     )
 }

@@ -1,15 +1,14 @@
 import {styled, keyframes, css} from "frontity"
 import {expandWidth, expandHeight} from "../styles/keyframes"
+import Switch from "@frontity/components/switch"
 
 const AnimatedWrapper = ({
     width = 0,
     hideOffset = 0,
-    timeout = 0,
     absolute,
     right,
     ...rest
 }) => {
-
     const formatSizeProp = (prop) => {
         if (typeof(prop) != "string") return prop.toString()+'px'
 
@@ -24,30 +23,29 @@ const AnimatedWrapper = ({
     }
     
     return (
-    <>
-        {absolute 
-            ? (right 
-                ? <AbsoluteAnimatedDiv
+        <Switch>
+            <AbsoluteAnimatedDiv
+                when={absolute && right}
+                right={right}
+                width={formatSizeProp(width)}
+                hideOffset={formatSizeProp(hideOffset)}
+                {...rest}
+            />
+            <WrapperForRight 
+                when={absolute} 
+                width={formatSizeProp(width)}
+            >
+                <AbsoluteAnimatedDiv 
                     right={right}
                     width={formatSizeProp(width)}
                     hideOffset={formatSizeProp(hideOffset)}
                     {...rest}
-                 ></AbsoluteAnimatedDiv>
-                : <WrapperForRight width={formatSizeProp(width)}>
-                    <AbsoluteAnimatedDiv 
-                        right={right}
-                        width={formatSizeProp(width)}
-                        hideOffset={formatSizeProp(hideOffset)}
-                        {...rest}
-                    ></AbsoluteAnimatedDiv>
-                 </WrapperForRight>)
-            : <AllbordersAnimatedDiv 
-                timeout={timeout/1000}
-                {...rest}
-            ></AllbordersAnimatedDiv>
-        }
-    </>
-)}
+                />
+            </WrapperForRight>
+            <AllbordersAnimatedDiv {...rest}/>
+        </Switch>
+    )
+}
 
 export default AnimatedWrapper
 
@@ -136,22 +134,18 @@ const AllbordersAnimatedDiv = styled.div`
     ::before {
         top: 0;
         left: 0;
-        animation: ${props => 
-        css`${topBorderColor} 0s ease-out ${props.timeout}s forwards,
-            ${rightBorderColor} 0s ease-out ${props.timeout}s forwards,
-            ${expandWidth} .25s ease-out ${props.timeout}s forwards,
-            ${expandHeight} .25s ease-out ${props.timeout+.25}s forwards;`
-        }
+        animation: ${topBorderColor} 0s ease-out forwards,
+            ${rightBorderColor} 0s ease-out forwards,
+            ${expandWidth} .25s ease-out forwards,
+            ${expandHeight} .25s ease-out .25s forwards;
     }
 
     ::after {
         right: 0;
         bottom: 0;
-        animation: ${props => 
-        css`${bottomBorderColor} 0s ease-out ${props.timeout+.5}s forwards,
-            ${leftBorderColor} 0s ease-out ${props.timeout+.5}s forwards,
-            ${expandWidth} 0.25s ease-out ${props.timeout+.5}s forwards,
-            ${expandHeight} 0.25s ease-out ${props.timeout+.75}s forwards;`
-        }
+        animation: ${bottomBorderColor} 0s ease-out .5s forwards,
+            ${leftBorderColor} 0s ease-out .5s forwards,
+            ${expandWidth} 0.25s ease-out .5s forwards,
+            ${expandHeight} 0.25s ease-out .75s forwards;
     }
 `

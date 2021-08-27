@@ -1,18 +1,22 @@
 import {useState} from "react"
-import {css} from "frontity"
-import {expandWidth} from "../styles/keyframes"
+import {connect} from "frontity"
 import Link from "@frontity/components/link"
+import Switch from "@frontity/components/switch"
 
 const AnimatedText = ({
-    'data-timeout': timeout = 0, 
     'data-speed': speed = 30,
     'data-cover-text': isCoverText,
     comp,
     text,
+    state,
+    actions,
     ...rest
 }) => {
+    const data = state.source.get(state.router.link)
+    const isWelcomeReceived = state.theme.isWelcomeReceived
     const [textContent, setTextContent] = useState({
         content: '',
+        randChar: '',
         animationFinished: false
     });
 
@@ -41,53 +45,65 @@ const AnimatedText = ({
             }
             
             setTextContent(textContent => ({...textContent, animationFinished: true}))
+            if (!isWelcomeReceived) setTimeout(actions.theme.welcome, 1500)
         }
 
-        typeWriter()
-    }
+        const randEffect = () => {
+            if (i < text.length) {
+                setTextContent(textContent => ({
+                    ...textContent, 
+                    randChar: String.fromCharCode(Math.random() * 128)
+                }))
+                setTimeout(randEffect, 10)
+                return
+            }
 
-    const writeTextForLink = css`
-        width: 0;
-        overflow: hidden;
-        white-space: nowrap;
-        animation: ${expandWidth} ${(2000*speed)/30}ms ease-out ${timeout}ms forwards;
-    `
+            setTextContent(textContent => ({...textContent, randChar: ''}))
+        }
+
+        randEffect()
+        setTimeout(typeWriter, speed)
+    }
     
-    if (comp != 'a' && textContent.content === '') setTimeout(writeText, timeout)
+    if (textContent.content === '' 
+        && textContent.randChar === ''
+        && (isWelcomeReceived || data.isHome)) 
+        writeText()
+
     if (textContent.animationFinished && textContent.content != text) 
         setTextContent(textContent => ({...textContent, content: text}))
 
-    switch(comp) {
-        case 'h1':
-            return <h1 {...rest}>{textContent.content}</h1>
-    
-        case 'h2':
-            return <h2 {...rest}>{textContent.content}</h2>
-    
-        case 'h3':
-            return <h3 {...rest}>{textContent.content}</h3>
-    
-        case 'h4':
-            return <h4 {...rest}>{textContent.content}</h4>
-    
-        case 'h5':
-            return <h5 {...rest}>{textContent.content}</h5>
-    
-        case 'h6':
-            return <h6 {...rest}>{textContent.content}</h6>
-    
-        case 'p':
-            return <p {...rest}>{textContent.content}</p>
-    
-        case 'a':
-            return <Link css={css`${writeTextForLink}`} {...rest}>{text}</Link>
-
-        case 'summary':
-            return <summary {...rest}>{textContent.content}</summary>
-    
-        default:
-            return <div {...rest}>{textContent.content}</div>
-    }
+    return (
+        <Switch>
+            <h1 when={comp==='h1'} {...rest}>
+                {textContent.content + textContent.randChar}
+            </h1>
+            <h2 when={comp==='h2'} {...rest}>
+                {textContent.content + textContent.randChar}
+            </h2>
+            <h3 when={comp==='h3'} {...rest}>
+                {textContent.content + textContent.randChar}
+            </h3>
+            <h4 when={comp==='h4'} {...rest}>
+                {textContent.content + textContent.randChar}
+            </h4>
+            <h5 when={comp==='h5'} {...rest}>
+                {textContent.content + textContent.randChar}
+            </h5>
+            <h6 when={comp==='h6'} {...rest}>
+                {textContent.content + textContent.randChar}
+            </h6>
+            <Link when={comp==='a'} {...rest}>
+                {textContent.content + textContent.randChar}
+            </Link>
+            <summary when={comp==='summary'} {...rest}>
+                {textContent.content + textContent.randChar}
+            </summary>
+            <p {...rest}>
+                {textContent.content + textContent.randChar}
+            </p>
+        </Switch>
+    )
 }
 
-export default AnimatedText
+export default connect(AnimatedText)

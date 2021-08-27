@@ -21,7 +21,7 @@ const Header = ({state, actions}) => {
     }
 
     const randEffect = (item, text) => {
-        let original = text
+        const original = text
         let i = 0
         
         const generateText = (size) => {
@@ -59,12 +59,13 @@ const Header = ({state, actions}) => {
             }
 
             if (i < text.length)  {
-                setTimeout(animate, 50, generateText(text.length))
+                setTimeout(animate, 30, generateText(text.length))
                 i++
                 return
             }
 
-            setTimeout(animate, 50, original)
+            if (newText != original)
+                setTimeout(animate, 30, original)
         }
 
         animate(generateText(text.length))
@@ -81,28 +82,28 @@ const Header = ({state, actions}) => {
                             comp="a" 
                             link="/" 
                             text={menuTexts.home} 
-                            onMouseOver={() => randEffect("home", menuTexts.home)}
+                            onMouseOver={() => randEffect('home', 'Home')}
                         />
                         <br/>
                         <AnimatedText 
                             comp="a" 
                             link="/about-me" 
                             text={menuTexts.aboutMe}
-                            onMouseOver={() => randEffect("aboutMe", menuTexts.aboutMe)}
+                            onMouseOver={() => randEffect('aboutMe', 'About Me')}
                         />
                         <br/>
                         <AnimatedText 
                             comp="a" 
                             link="/blog" 
                             text={menuTexts.blog}
-                            onMouseOver={() => randEffect("blog", menuTexts.blog)}
+                            onMouseOver={() => randEffect('blog', 'Blog')}
                         />
                         <br/>
                         <AnimatedText 
                             comp="a" 
                             link="/contact" 
                             text={menuTexts.contact}
-                            onMouseOver={() => randEffect("contact", menuTexts.contact)}
+                            onMouseOver={() => randEffect('contact', 'Contact')}
                         />
                     </Menu>
                 </HeaderContent>

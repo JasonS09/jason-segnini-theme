@@ -43,7 +43,7 @@ const AnimatedWrapper = ({
                 />
             </WrapperForRight>
             <AllbordersAnimatedDiv {...rest}>
-                <LightEffectTop/>
+                <LightEffect/>
                 {rest.children}
             </AllbordersAnimatedDiv>
         </Switch>
@@ -60,10 +60,41 @@ const leftBorderColor = keyframes`
     to {border-left-color: #60d75a;}
 `
 
-const disappear = keyframes`
-    to {
-        height: 0;
+const moveAround = keyframes`
+    0% {
+        top: 0;
+        left: 0;
     }
+    25% {
+        top: 0;
+        left: 100%;
+    }
+    50% {
+        top: 100%;
+        left: 100%;
+    }
+    75% {
+        top: 100%;
+        left: 0;
+    }
+    100% {
+        top: 0;
+        left: 0;
+    }
+`
+
+const fade = keyframes`
+    to {
+        box-shadow: 0 0 0 0;
+        border: 0;
+    }
+`
+
+const showShadow = keyframes`
+    25% {box-shadow: 0 -5px 10px #60d75a;}
+    50% {box-shadow: 5px -5px 10px #60d75a;}
+    75% {box-shadow: 5px 0 10px #60d75a;}
+    100% {box-shadow: 0 0 10px #60d75a;}
 `
 
 const animateRight = css`
@@ -79,14 +110,17 @@ const animateLeft = css`
     }
 `
 
-const LightEffectTop = styled.div`
+const LightEffect = styled.div`
     position: absolute;
-    top: 0;
-    left: 0;
     height: 2px;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0), #60d75a);
-    animation: ${expandWidth} 2s ease-out forwards,
-        ${disappear} 2s ease-out 2s forwards;
+    width: 2px;
+    border: 1px solid #60d75a;
+    border-radius: 50%;
+    box-shadow: 0 0 5px 2px #60d75a,
+        0 0 5px 2px #60d75a inset,
+        -5px 0px 23px 5px #60d75a;
+    animation: ${moveAround} 1s ease-out forwards,
+        ${fade} .25s ease-out 1s forwards;
 `
 
 const WrapperForRight = styled.div`
@@ -124,6 +158,7 @@ const AbsoluteAnimatedDiv = styled.div`
 
 const AllbordersAnimatedDiv = styled.div`
     position: relative;
+    animation: ${showShadow} 1s ease-out forwards;
 
     ::before, ::after {
         content: '';

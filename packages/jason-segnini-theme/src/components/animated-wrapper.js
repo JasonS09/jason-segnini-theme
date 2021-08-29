@@ -26,21 +26,33 @@ const AnimatedWrapper = ({
         <Switch>
             <AbsoluteAnimatedDiv
                 when={absolute && right}
-                right={right}
+                right
                 width={formatSizeProp(width)}
                 hideOffset={formatSizeProp(hideOffset)}
                 {...rest}
-            />
+            >
+                <LightEffect 
+                    absolute
+                    right 
+                    hideOffset={formatSizeProp(hideOffset)}                        
+                />
+                {rest.children}
+            </AbsoluteAnimatedDiv>
             <WrapperForRight 
                 when={absolute} 
                 width={formatSizeProp(width)}
             >
                 <AbsoluteAnimatedDiv 
-                    right={right}
                     width={formatSizeProp(width)}
                     hideOffset={formatSizeProp(hideOffset)}
                     {...rest}
-                />
+                >
+                    <LightEffect 
+                        absolute
+                        hideOffset={formatSizeProp(hideOffset)} 
+                    />
+                    {rest.children}
+                </AbsoluteAnimatedDiv>
             </WrapperForRight>
             <AllbordersAnimatedDiv {...rest}>
                 <LightEffect/>
@@ -83,6 +95,10 @@ const moveAround = keyframes`
     }
 `
 
+const moveDown = keyframes`
+    to {top: 99%;}
+`
+
 const fade = keyframes`
     to {
         box-shadow: 0 0 0 0;
@@ -94,6 +110,12 @@ const showShadow = keyframes`
     25% {box-shadow: 0 -5px 10px #60d75a;}
     50% {box-shadow: 5px -5px 10px #60d75a;}
     75% {box-shadow: 5px 0 10px #60d75a;}
+    100% {box-shadow: 0 0 10px #60d75a;}
+`
+
+const glowEffect = keyframes`
+    0% {box-shadow: 0 0 10px #60d75a;}
+    50% {box-shadow: 0 0 5px #60d75a;}
     100% {box-shadow: 0 0 10px #60d75a;}
 `
 
@@ -119,8 +141,16 @@ const LightEffect = styled.div`
     box-shadow: 0 0 5px 2px #60d75a,
         0 0 5px 2px #60d75a inset,
         -5px 0px 23px 5px #60d75a;
-    animation: ${moveAround} 1s ease-out forwards,
-        ${fade} .25s ease-out 1s forwards;
+    ${props => props.absolute && "top: 0;"}
+    ${props => props.right
+        ? css`right: ${props.hideOffset};`
+        : css`left: ${props.hideOffset}`
+    }
+    animation: ${props=> props.absolute 
+        ? css`${moveDown} 1s ease-out forwards,
+            ${fade} .25s ease-out 1s forwards;`
+        : css`${moveAround} 1s ease-out forwards,
+            ${fade} .25s ease-out 1s forwards;`}
 `
 
 const WrapperForRight = styled.div`
@@ -148,7 +178,9 @@ const AbsoluteAnimatedDiv = styled.div`
             ? css`right: ${props.hideOffset};` 
             : css`left: ${props.hideOffset};`
         }
-        animation: ${expandHeight} 1s ease-out forwards;
+        animation: ${expandHeight} 1s ease-out forwards,
+            ${showShadow} .25s ease-out 1s forwards,
+            ${glowEffect} 3s linear 1.25s forwards infinite;
     }
 
     &, ::before {
@@ -158,7 +190,8 @@ const AbsoluteAnimatedDiv = styled.div`
 
 const AllbordersAnimatedDiv = styled.div`
     position: relative;
-    animation: ${showShadow} 1s ease-out forwards;
+    animation: ${showShadow} 1s ease-out forwards,
+        ${glowEffect} 3s linear 1s forwards infinite;
 
     ::before, ::after {
         content: '';

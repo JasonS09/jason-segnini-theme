@@ -1,4 +1,4 @@
-import {connect, Head, styled} from "frontity"
+import {connect, Head, styled, css} from "frontity"
 import dayjs from "dayjs"
 import AnimatedWrapper from "./animated-wrapper"
 
@@ -11,7 +11,7 @@ const Post = ({state, libraries}) => {
     const Html2React = libraries.html2react.Component
 
     return (
-        <AnimatedWrapper>
+        <AnimatedWrapper css={wrapperStyles}>
             <StyledPost>
                 <Head>
                     <title>{post.title.rendered}</title>
@@ -39,8 +39,29 @@ const Post = ({state, libraries}) => {
 
 export default connect(Post)
 
-const StyledPost = styled.div`
+const wrapperStyles = css`
     background-color: rgba(0,0,0,0.85);
+    transition: transform .25s ease-out;
+
+    :hover {
+        transform: scale(1.01, 1.01);
+        animation: none;
+        box-shadow: 0 0 10px 2px #60d75a;
+        transition: transform .25s ease-out,
+            box-shadow .25s ease-out;
+    }
+
+    :hover::before, :hover::after {
+        border-width: 2px;
+        transition: border-width 0s;
+    }
+
+    ::before, ::after {
+        transition: border-width 0s ease-out .25s;
+    } 
+`
+
+const StyledPost = styled.div`
     min-height: 50px;
 `
 

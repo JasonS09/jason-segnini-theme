@@ -53,12 +53,18 @@ const HideButton = styled.div`
     width: 100%;
     height: 100%;
     z-index: 2;
+    transition: box-shadow .25s ease-out;
     ${props => props.right 
         ? css`
             padding: 3px 5px 0 7px;
             border-radius: 50%;
         `
         : "padding: 3px 7px 0 5px;"}
+    
+    :hover {
+        box-shadow: 0 0 10px 2px #60d75a;
+        transition: box-shadow .25s ease-out;
+    }
 
     h1 {
         color: #60d75a;

@@ -9,16 +9,49 @@ import Hide from "./hide"
 const Archive = ({state, actions}) => {
     const isArchiveHidden = !state.theme.showArchive
     const [archiveMarginRight, setArchiveMarginRight] = useState('0')
+    const [hideStyles, setHideStyles] = useState({})
 
     const hideArchive = () => {
-        if (state.theme.showArchive) setArchiveMarginRight('-250px')
-        else setArchiveMarginRight('0')
+        if (state.theme.showArchive) {
+            setArchiveMarginRight('-250px')
+            setTimeout(() => {
+                setHideStyles({
+                    outer: 
+                        'position: fixed; left: auto; right: 0; background-color: transparent;',
+                    buttonBackground: 
+                        'background-color: rgba(0,0,0,0.85);',
+                    buttonPadding:
+                        'padding: 3px 7px 0 5px;'
+                })
+            }, 700)
+        }
+        else {
+            setArchiveMarginRight('0')
+            setTimeout(() => {
+                setHideStyles({})
+            }, 300)
+        }
         actions.theme.toggleArchive()
     }
 
     return (
         <AnimatedWrapper absolute left width="297" hideOffset="47" css={css`margin-right: ${archiveMarginRight}`}>
-            <Hide right isComponentHidden={isArchiveHidden} onClick={() => hideArchive()}/>
+            <Hide 
+                right 
+                isComponentHidden={isArchiveHidden} 
+                onClick={() => hideArchive()}
+                css={css`
+                        ${hideStyles.outer}
+
+                        & > div {
+                            ${hideStyles.buttonBackground}
+
+                            & > div {
+                                ${hideStyles.buttonPadding}
+                            }
+                        }
+                    `}
+                />
             <ArchiveContent>
                 <AnimatedText comp="h2" text="Archive" css={css`margin-bottom: 1em`}/>
                 <br/>

@@ -1,68 +1,81 @@
 import {connect, styled, css} from "frontity"
-import {expandHeight, expandWidth} from "../styles/keyframes"
 import AnimatedText from "./animated-text"
+import AnimatedWrapper from "./animated-wrapper"
 
 const Hide = ({state, right, isComponentHidden, ...rest}) => {
 
     const setText = () => {
         if (right) {
-            if (isComponentHidden) return "<<"
-            return ">>"
+            if (isComponentHidden) return "<"
+            return ">"
         }
 
-        if (isComponentHidden) return ">>"
-        return "<<"
+        if (isComponentHidden) return ">"
+        return "<"
     }
 
+    const wrapperStyles = css`
+        position: absolute;
+        width: 80%;
+        height: 80%;
+        top: 50%;
+        transform: translateY(-50%);
+        margin: auto;
+        z-index: 1;
+        ${right 
+        ? "border-radius: 50%;"
+        : "right: 0;"};
+
+        ::before, ::after {
+            border-width: 2px;
+            border-style: double;
+            ${right && "border-radius: 50%;"};
+        }
+    `
+
     return (
-        <HideButton right={right} {...rest}>
-            <AnimatedText comp="h1" text={setText()}/>
-        </HideButton>
+        <OuterWrapper right={right} {...rest}>
+            <AnimatedWrapper css={wrapperStyles}>
+                <HideButton right={right}>
+                    <AnimatedText comp="h1" text={setText()}/>
+                </HideButton>
+            </AnimatedWrapper>
+        </OuterWrapper>
     )
 }
 
 export default connect(Hide)
 
-const leftConfig = css`
-    right: 0;
-    padding: 2px 7px 0 4px;
-
-    ::before {
-        right: 0;
-        border-right: 1px solid #60d75a;
-    }
-`
-
-const rightConfig = css`
-    left: 0;
-    padding: 2px 4px 0 7px;
-
-    ::before {
-        left: 0;
-        border-left: 1px solid #60d75a;
-    }
-`
-
 const HideButton = styled.div`
     display: block;
-    position: absolute;
-    width: 48px;
-    height: 41px;
     cursor: pointer;
-    background-color: rgba(0,0,0,0.85);
-    ${props => props.right ? rightConfig : leftConfig}
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    ${props => props.right 
+        ? css`
+            padding: 3px 5px 0 7px;
+            border-radius: 50%;
+        `
+        : "padding: 3px 7px 0 5px;"}
 
     h1 {
         color: #60d75a;
+        text-align: center;
     }
+`
 
-    ::before {
-        content: '';
+const OuterWrapper = styled.div`
         position: absolute;
-        bottom: 1px;
-        border-bottom: 1px solid #60d75a;
-        border-radius: 3px;
-        animation: ${expandHeight} .15s ease-out forwards,
-            ${expandWidth} .15s ease-out .15s forwards;
-    }
+        width: 60px;
+        height: 53px;
+        top: 2%;
+        ${props => props.right 
+            ? css`
+                left: 9%;
+                border-radius: 50%;
+            ` 
+            : "right: 9%;"}
+        background-color: rgba(0,0,0,0.85);
 `

@@ -7,6 +7,7 @@ import Hide from "./hide"
 const Header = ({state, actions}) => {
     const isMenuHidden = !state.theme.showMenu
     const [menuMarginLeft, setMenuMarginLeft] = useState('0')
+    const [hideStyles, setHideStyles] = useState({})
     const [menuTexts, setMenuTexts] = useState({
         home: 'Home',
         aboutMe: 'About Me',
@@ -15,8 +16,25 @@ const Header = ({state, actions}) => {
     })
 
     const hideMenu = () => {
-        if (state.theme.showMenu) setMenuMarginLeft('-250px')
-        else setMenuMarginLeft('0')
+        if (state.theme.showMenu) {
+            setMenuMarginLeft('-250px')
+            setTimeout(() => {
+                setHideStyles({
+                    outer: 
+                        'position: fixed; left: 0; background-color: transparent;',
+                    buttonBackground: 
+                        'background-color: rgba(0,0,0,0.85);',
+                    buttonPadding:
+                        'padding: 3px 5px 0 7px;'
+                })
+            }, 700)
+        }
+        else {
+            setMenuMarginLeft('0')
+            setTimeout(() => {
+                setHideStyles({})
+            }, 300)
+        }
         actions.theme.toggleMenu()
     }
 
@@ -59,7 +77,21 @@ const Header = ({state, actions}) => {
     return (
         <>
             <AnimatedWrapper absolute right width="297" hideOffset="47" css={css`margin-left: ${menuMarginLeft}`}>
-                <Hide isComponentHidden={isMenuHidden} onClick={() => hideMenu()}/>
+                <Hide 
+                    isComponentHidden={isMenuHidden} 
+                    onClick={() => hideMenu()} 
+                    css={css`
+                            ${hideStyles.outer}
+
+                            & > div {
+                                ${hideStyles.buttonBackground}
+                                
+                                & > div {
+                                    ${hideStyles.buttonPadding}
+                                }
+                            }
+                        `}
+                />
                 <HeaderContent>
                     <AnimatedText comp="h1" text="Jason E. Segnini Cubero"/>
                     <Menu>
@@ -121,7 +153,7 @@ const Menu = styled.nav`
         text-decoration: none;
         position: relative;
 
-        &::before {
+        ::before {
             content: '';
             position: absolute;
             height: 100%;
@@ -131,12 +163,12 @@ const Menu = styled.nav`
             border-radius: 2px;
         }
 
-        &:hover::before {
+        :hover::before {
             width: 100%;
             transition: width .5s ease-out;
         }
 
-        &:hover {
+        :hover {
             color: black;
             transition: color .5s ease-out;
         }

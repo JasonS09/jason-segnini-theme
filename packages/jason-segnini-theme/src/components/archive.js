@@ -26,6 +26,9 @@ const Archive = ({state, actions}) => {
             }, 750)
         }
         else {
+            setHideStyles(hideStyles => 
+                ({...hideStyles, buttonPadding: 'padding: 3px 5px 0 7px;'})
+            )
             setArchiveMarginRight('0')
             setTimeout(() => {
                 setHideStyles({})

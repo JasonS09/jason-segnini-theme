@@ -118,6 +118,11 @@ const glowEffect = keyframes`
     100% {box-shadow: 0 0 10px #60d75a;}
 `
 
+const shadows = css`
+    animation: ${showShadow} 1s ease-out forwards,
+        ${glowEffect} 3s linear 1s forwards infinite;
+`
+
 const animateLeft = css`
     right: 0;
 
@@ -203,8 +208,7 @@ const AbsoluteAnimatedDiv = styled.div`
 
 const AllbordersAnimatedDiv = styled.div`
     position: relative;
-    animation: ${showShadow} 1s ease-out forwards,
-        ${glowEffect} 3s linear 1s forwards infinite;
+    ${props => props.shadows && shadows}
 
     ::before, ::after {
         content: '';

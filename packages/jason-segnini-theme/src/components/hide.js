@@ -34,7 +34,7 @@ const Hide = ({state, right, isComponentHidden, ...rest}) => {
 
     return (
         <OuterWrapper right={right} {...rest}>
-            <AnimatedWrapper css={wrapperStyles}>
+            <AnimatedWrapper shadows css={wrapperStyles}>
                 <HideButton right={right}>
                     <AnimatedText comp="h1" text={setText()}/>
                 </HideButton>

@@ -1,4 +1,4 @@
-import {connect, Head, styled, css} from "frontity"
+import {connect, Head, styled, css, keyframes} from "frontity"
 import dayjs from "dayjs"
 import AnimatedWrapper from "./animated-wrapper"
 
@@ -11,64 +11,82 @@ const Post = ({state, libraries}) => {
     const Html2React = libraries.html2react.Component
 
     return (
-        <AnimatedWrapper css={wrapperStyles}>
-            <StyledPost>
-                <Head>
-                    <title>{post.title.rendered}</title>
-                    <meta name="Description" content={post.excerpt.rendered}/>
-                </Head>
-                {!data.isHome && <h2>{post.title.rendered}</h2>}
-                {data.isPost 
-                && <PostInfo>
-                    <p>
-                        <strong>Posted: </strong>
-                        {formattedDate}
-                    </p>
-                    <p>
-                        <strong>Author: </strong>
-                        {author.name}
-                    </p>
-                </PostInfo>}
-                <PostContent>
-                    <Html2React html={post.content.rendered}/>
-                </PostContent>
-            </StyledPost>
-        </AnimatedWrapper>
+        <HoverShadow>
+            <Shadow>
+                <AnimatedWrapper css={wrapperStyles}>
+                    <StyledBorder/>
+                    <StyledPost>
+                        <Head>
+                            <title>{post.title.rendered}</title>
+                            <meta name="Description" content={post.excerpt.rendered}/>
+                        </Head>
+                        {!data.isHome && <h2>{post.title.rendered}</h2>}
+                        {data.isPost 
+                        && <PostInfo>
+                            <p>
+                                <strong>Posted: </strong>
+                                {formattedDate}
+                            </p>
+                            <p>
+                                <strong>Author: </strong>
+                                {author.name}
+                            </p>
+                        </PostInfo>}
+                        <PostContent>
+                            <Html2React html={post.content.rendered}/>
+                        </PostContent>
+                    </StyledPost>
+                </AnimatedWrapper>
+            </Shadow>
+        </HoverShadow>
     )
 }
 
 export default connect(Post)
 
+const glow = keyframes`
+    from {filter: drop-shadow(0 0 7px #60d75a)}
+    to {filter: drop-shadow(0 0 3px #60d75a)}
+`
+
 const wrapperStyles = css`
-    background-color: rgba(0,0,0,0.85);
+    background-color: black;
     transition: transform .25s ease-out;
+    clip-path: polygon(0% 0%, 95.3% 0, 100% 48.5%, 100% 100%, 0 100%);
 
     :hover {
         transform: scale(1.01, 1.01);
 
-        ::before {
-            box-shadow: 0 0 15px #60d75a;
-            transition: border-width 0s, 
-                box-shadow .25s ease-out;
-        }
-
         ::before, ::after {
             border-width: 2px;
-        }
-
-        ::after {
             transition: border-width 0s;
         }
     }
 
-    ::after {
+    ::before, ::after {
         transition: border-width 0s ease-out .25s;
     }
+`
 
-    ::before {
-        transition: border-width 0s ease-out .25s,
-            box-shadow .25s ease-out;
+const Shadow = styled.div`
+    animation: ${glow} 3s ease-out infinite alternate;
+`
+const HoverShadow = styled.div`
+    transition: filter .25s ease-out;
+
+    :hover {
+        filter: drop-shadow(0 0 3px rgba(96, 215, 90, 0.5))
     }
+`
+
+const StyledBorder = styled.div`
+    position: absolute;
+    width: 5%;
+    height: 50%;
+    right: 0;
+    top: 0;
+    background-color: #60d75a;
+    clip-path: polygon(0% 0%, 100% 0, 100% 100%);
 `
 
 const StyledPost = styled.div`

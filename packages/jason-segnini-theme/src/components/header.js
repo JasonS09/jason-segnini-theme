@@ -30,6 +30,9 @@ const Header = ({state, actions}) => {
             }, 750)
         }
         else {
+            setHideStyles(hideStyles => 
+                ({...hideStyles, buttonPadding: 'padding: 3px 7px 0 5px;'})
+            )
             setMenuMarginLeft('0')
             setTimeout(() => {
                 setHideStyles({})
@@ -88,7 +91,7 @@ const Header = ({state, actions}) => {
                                 
                                 & > div {
                                     ${hideStyles.buttonPadding}
-                                }
+                                } 
                             }
                         `}
                 />

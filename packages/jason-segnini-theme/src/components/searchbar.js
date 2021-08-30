@@ -16,7 +16,7 @@ const SearchBar = ({actions}) => {
                     css={css`animation: ${expandWidth} 1s ease-out forwards`}
                 />
             </AnimatedWrapper>
-            <AnimatedWrapper css={bWrapperStyles}>
+            <AnimatedWrapper shadows css={bWrapperStyles}>
                 <Button onClick={() => actions.router.set("/?s="+inputState.value)}>
                     <AnimatedText text="Search" comp="p"/>
                 </Button>

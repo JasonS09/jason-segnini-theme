@@ -27,7 +27,7 @@ const Header = ({state, actions}) => {
                     buttonPadding:
                         'padding: 3px 5px 0 7px;'
                 })
-            }, 700)
+            }, 750)
         }
         else {
             setMenuMarginLeft('0')
@@ -79,7 +79,7 @@ const Header = ({state, actions}) => {
             <AnimatedWrapper absolute right width="297" hideOffset="47" css={css`margin-left: ${menuMarginLeft}`}>
                 <Hide 
                     isComponentHidden={isMenuHidden} 
-                    onClick={() => hideMenu()} 
+                    onClick={() => hideMenu()}
                     css={css`
                             ${hideStyles.outer}
 

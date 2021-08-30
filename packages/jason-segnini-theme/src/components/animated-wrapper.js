@@ -118,16 +118,16 @@ const glowEffect = keyframes`
     100% {box-shadow: 0 0 10px #60d75a;}
 `
 
-const animateRight = css`
-    border-right: 1px solid #60d75a;
-`
-
 const animateLeft = css`
     right: 0;
 
     ::before {
         right: 0;
         border-left: 1px solid #60d75a;
+    }
+
+    ::after {
+        right: 0;
     }
 `
 
@@ -167,22 +167,36 @@ const AbsoluteAnimatedDiv = styled.div`
     z-index: 1;
     transition: margin 1s ease-in-out;
 
+    :hover::after {
+        box-shadow: 0 0 15px #60d75a;
+    }
+
     ::before {
-        content: '';
-        width: 100%;
         background-color: rgba(0,0,0,0.85);
-        z-index: -1;
-        ${props => props.right && animateRight}
         ${props => props.right 
-            ? css`right: ${props.hideOffset};` 
-            : css`left: ${props.hideOffset};`
-        }
+            && "border-right: 1px solid #60d75a;"}
         animation: ${expandHeight} 1s ease-out forwards,
             ${showShadow} .25s ease-out 1s forwards,
             ${glowEffect} 3s linear 1.25s forwards infinite;
     }
 
-    &, ::before {
+    ::after {
+        top: 0;
+        height: 100%;
+        transition: box-shadow .25s ease-out;
+    }
+
+    ::before, ::after {
+        content: '';
+        width: 100%;
+        z-index: -1;
+        ${props => props.right 
+            ? css`right: ${props.hideOffset};` 
+            : css`left: ${props.hideOffset};`
+        }
+    }
+
+    &, ::before, ::after {
         position: absolute;
     }
 `

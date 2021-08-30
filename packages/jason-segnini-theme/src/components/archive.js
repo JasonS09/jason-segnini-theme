@@ -23,7 +23,7 @@ const Archive = ({state, actions}) => {
                     buttonPadding:
                         'padding: 3px 7px 0 5px;'
                 })
-            }, 700)
+            }, 750)
         }
         else {
             setArchiveMarginRight('0')

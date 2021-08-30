@@ -45,26 +45,30 @@ const wrapperStyles = css`
 
     :hover {
         transform: scale(1.01, 1.01);
-        transition: transform .25s ease-out;
+
+        ::before {
+            box-shadow: 0 0 15px #60d75a;
+            transition: border-width 0s, 
+                box-shadow .25s ease-out;
+        }
+
+        ::before, ::after {
+            border-width: 2px;
+        }
+
+        ::after {
+            transition: border-width 0s;
+        }
     }
 
-    :hover::before, :hover::after {
-        border-width: 2px;
-    }
-
-    :hover::after {
-        transition: border-width 0s;
-    }
-
-    :hover::before {
-        box-shadow: 0 0 10px 2px #60d75a;
-        transition: border-width 0s,
-            box-shadow .25s ease-out;;
-    }
-
-    ::before, ::after {
+    ::after {
         transition: border-width 0s ease-out .25s;
-    } 
+    }
+
+    ::before {
+        transition: border-width 0s ease-out .25s,
+            box-shadow .25s ease-out;
+    }
 `
 
 const StyledPost = styled.div`

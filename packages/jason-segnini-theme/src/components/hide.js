@@ -21,7 +21,6 @@ const Hide = ({state, right, isComponentHidden, ...rest}) => {
         top: 50%;
         transform: translateY(-50%);
         margin: auto;
-        z-index: 1;
         ${right 
         ? "border-radius: 50%;"
         : "right: 0;"};
@@ -48,27 +47,21 @@ export default connect(Hide)
 
 const HideButton = styled.div`
     display: block;
-    cursor: pointer;
     position: absolute;
     width: 100%;
     height: 100%;
-    z-index: 2;
-    transition: box-shadow .25s ease-out;
+    transition: box-shadow .10s ease-out;
     ${props => props.right 
         ? css`
             padding: 3px 5px 0 7px;
             border-radius: 50%;
         `
         : "padding: 3px 7px 0 5px;"}
-    
-    :hover {
-        box-shadow: 0 0 10px 2px #60d75a;
-        transition: box-shadow .25s ease-out;
-    }
 
     h1 {
         color: #60d75a;
         text-align: center;
+        transition: text-shadow .10s ease-out;
     }
 `
 
@@ -77,6 +70,7 @@ const OuterWrapper = styled.div`
         width: 60px;
         height: 53px;
         top: 2%;
+        cursor: pointer;
         ${props => props.right 
             ? css`
                 left: 9%;
@@ -84,4 +78,22 @@ const OuterWrapper = styled.div`
             ` 
             : "right: 9%;"}
         background-color: rgba(0,0,0,0.85);
+        transition: transform .10s ease-out;
+
+        :hover {
+            transform: scale(1.01, 1.01);
+
+            ${HideButton} {
+                box-shadow: 0 0 10px 2px #60d75a;
+
+                h1 {
+                text-shadow: 0 0 7px #60d75a,
+                    0 0 42px #60d75a,
+                    0 0 82px #60d75a,
+                    0 0 92px #60d75a,
+                    0 0 102px #60d75a,
+                    0 0 151px #60d75a;
+                }
+            }
+        }
 `

@@ -64,12 +64,11 @@ const AnimatedWrapper = ({
 
 export default AnimatedWrapper
 
-const bottomBorderColor = keyframes`
-    to {border-bottom-color: #60d75a;}
-`
-
-const leftBorderColor = keyframes`
-    to {border-left-color: #60d75a;}
+const afterBorderColor = keyframes`
+    to {
+        border-bottom-color: #60d75a;
+        border-left-color: #60d75a;
+    }
 `
 
 const moveAround = keyframes`
@@ -213,8 +212,7 @@ const AllbordersAnimatedDiv = styled.div`
     ::after {
         right: 0;
         bottom: 0;
-        animation: ${bottomBorderColor} 0s ease-out .5s forwards,
-            ${leftBorderColor} 0s ease-out .5s forwards,
+        animation: ${afterBorderColor} 0s ease-out .5s forwards,
             ${expandWidth} .25s ease-out .5s forwards,
             ${expandHeight} .25s ease-out .75s forwards;
     }

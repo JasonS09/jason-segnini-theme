@@ -45,15 +45,21 @@ const wrapperStyles = css`
 
     :hover {
         transform: scale(1.01, 1.01);
-        animation: none;
-        box-shadow: 0 0 10px 2px #60d75a;
-        transition: transform .25s ease-out,
-            box-shadow .25s ease-out;
+        transition: transform .25s ease-out;
     }
 
     :hover::before, :hover::after {
         border-width: 2px;
+    }
+
+    :hover::after {
         transition: border-width 0s;
+    }
+
+    :hover::before {
+        box-shadow: 0 0 10px 2px #60d75a;
+        transition: border-width 0s,
+            box-shadow .25s ease-out;;
     }
 
     ::before, ::after {

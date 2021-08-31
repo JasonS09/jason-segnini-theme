@@ -1,4 +1,5 @@
-import {connect, Head, styled, css, keyframes} from "frontity"
+import {connect, Head, styled, css} from "frontity"
+import {glow} from "../styles/keyframes"
 import dayjs from "dayjs"
 import AnimatedWrapper from "./animated-wrapper"
 
@@ -43,11 +44,6 @@ const Post = ({state, libraries}) => {
 }
 
 export default connect(Post)
-
-const glow = keyframes`
-    from {filter: drop-shadow(0 0 7px #60d75a)}
-    to {filter: drop-shadow(0 0 3px #60d75a)}
-`
 
 const wrapperStyles = css`
     background-color: black;

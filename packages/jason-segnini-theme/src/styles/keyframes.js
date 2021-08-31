@@ -9,3 +9,8 @@ export const expandHeight = keyframes`
     from {height: 0;}
     to {height: 100%;}
 `
+
+export const glow = keyframes`
+    from {filter: drop-shadow(0 0 7px #60d75a)}
+    to {filter: drop-shadow(0 0 3px #60d75a)}
+`

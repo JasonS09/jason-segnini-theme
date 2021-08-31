@@ -87,11 +87,13 @@ const Header = ({state, actions}) => {
                             ${hideStyles.outer}
 
                             & > div {
-                                ${hideStyles.buttonBackground}
-                                
                                 & > div {
-                                    ${hideStyles.buttonPadding}
-                                } 
+                                    ${hideStyles.buttonBackground}
+                                
+                                    & > div {
+                                        ${hideStyles.buttonPadding}
+                                    } 
+                                }
                             }
                         `}
                 />

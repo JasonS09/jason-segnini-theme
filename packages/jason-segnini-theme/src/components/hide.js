@@ -18,17 +18,22 @@ const Hide = ({state, right, isComponentHidden, ...rest}) => {
 
     const wrapperStyles = css`
         position: absolute;
-        width: 80%;
-        height: 80%;
+        width: 100%;
+        height: 100%;
         top: 50%;
         transform: translateY(-50%);
         margin: auto;
+        background-color: black;
         ${right 
         ? "border-radius: 50%;"
         : css`
                 right: 0;
                 clip-path: polygon(0% 0%, 66% 0, 100% 26%, 100% 74%, 66% 100%, 0 100%);
             `};
+
+        ::before {
+            z-index: 1;
+        }
 
         ::before, ::after {
             border-width: 2px;
@@ -37,27 +42,47 @@ const Hide = ({state, right, isComponentHidden, ...rest}) => {
     `
 
     return (
-        <OuterWrapper right={right} {...rest}>
-            <Switch>
-                <AnimatedWrapper when={right} css={wrapperStyles}>
-                    <HideButton right>
-                        <AnimatedText comp="h1" text={setText()}/>
-                    </HideButton>
-                </AnimatedWrapper>
-                <Shadow>
-                    <AnimatedWrapper css={wrapperStyles}>
-                        <StyledBorder/>
-                        <HideButton>
+        <Switch>
+            <OuterWrapper when={right} right {...rest}>
+                <AnimatedWrapper shadows css={wrapperStyles}>
+                        <HideButton right>
                             <AnimatedText comp="h1" text={setText()}/>
                         </HideButton>
+                </AnimatedWrapper>
+            </OuterWrapper>
+            <OuterWrapper {...rest}>
+                <HoverShadow>
+                    <AnimatedWrapper css={wrapperStyles}>
+                        <StyledBorder/>
+                            <HideButton>
+                                <AnimatedText comp="h1" text={setText()}/>
+                            </HideButton>
                     </AnimatedWrapper>
-                </Shadow>
-            </Switch>
-        </OuterWrapper>
+                </HoverShadow>
+            </OuterWrapper>
+        </Switch>
     )
 }
 
 export default connect(Hide)
+
+const leftConfig = css`
+    width: 47px;
+    height: 40px;
+    right: 9%;
+    animation: ${glow} 3s ease-out infinite alternate;
+`
+
+const HoverShadow = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: filter .25s ease-out;
+
+    :hover {
+        filter: drop-shadow(0 0 3px rgba(96, 215, 90, 0.5))
+    }
+`
 
 const StyledBorder = styled.div`
     position: absolute;
@@ -66,13 +91,7 @@ const StyledBorder = styled.div`
     right: 0;
     background-color: #60d75a;
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 100% 70%, 100% 30%);
-`
-
-const Shadow = styled.div`
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    animation: ${glow} 3s ease-out infinite alternate;
+    z-index: 1;
 `
 
 const HideButton = styled.div`
@@ -83,10 +102,10 @@ const HideButton = styled.div`
     transition: box-shadow .25s ease-out;
     ${props => props.right 
         ? css`
-            padding: 3px 5px 0 7px;
+            padding: 4px 5px 0 7px;
             border-radius: 50%;
         `
-        : "padding: 3px 7px 0 5px;"}
+        : "padding: 1px 7px 0 5px;"}
 
     h1 {
         color: #60d75a;
@@ -95,31 +114,30 @@ const HideButton = styled.div`
     }
 `
 
+const rightConfig = css`
+    width: 47px;
+    height: 43px;
+    left: 9%;
+    border-radius: 50%;
+    
+    :hover {
+        ${HideButton} {
+            box-shadow: 0 0 10px 2px #60d75a;
+        }
+    } 
+`
+
 const OuterWrapper = styled.div`
         position: absolute;
-        width: 60px;
-        height: 53px;
-        top: 2%;
+        top: 3%;
         cursor: pointer;
-        ${props => props.right 
-            ? css`
-                    left: 9%;
-                    border-radius: 50%;
-                ` 
-            : css`
-                    right: 9%;
-                    clip-path: polygon(0% 0%, 75% 0, 100% 20%, 100% 80%, 75% 100%, 0 100%);
-                `}
-        background-color: black;
+        ${props => props.right ? rightConfig : leftConfig}
         transition: transform .25s ease-out;
 
         :hover {
-            transform: scale(1.01, 1.01);
+            transform: scale(1.1, 1.1);
 
             ${HideButton} {
-                ${props => props.right 
-                    && "box-shadow: 0 0 10px 2px #60d75a;"}
-
                 h1 {
                     text-shadow: 0 0 7px #60d75a;
                 }

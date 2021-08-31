@@ -17,17 +17,15 @@ const Archive = ({state, actions}) => {
             setTimeout(() => {
                 setHideStyles({
                     outer: 
-                        'position: fixed; left: auto; right: 0; background-color: transparent;',
-                    buttonBackground: 
-                        'background-color: rgba(0,0,0,0.85);',
+                        'position: fixed; left: auto; right: 1em;',
                     buttonPadding:
-                        'padding: 3px 7px 0 5px;'
+                        'padding: 4px 7px 0 5px;'
                 })
-            }, 750)
+            }, 725)
         }
         else {
             setHideStyles(hideStyles => 
-                ({...hideStyles, buttonPadding: 'padding: 3px 5px 0 7px;'})
+                ({...hideStyles, buttonPadding: 'padding: 4px 5px 0 7px;'})
             )
             setArchiveMarginRight('0')
             setTimeout(() => {
@@ -47,8 +45,6 @@ const Archive = ({state, actions}) => {
                         ${hideStyles.outer}
 
                         & > div {
-                            ${hideStyles.buttonBackground}
-
                             & > div {
                                 ${hideStyles.buttonPadding}
                             }

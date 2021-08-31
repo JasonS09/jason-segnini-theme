@@ -21,17 +21,15 @@ const Header = ({state, actions}) => {
             setTimeout(() => {
                 setHideStyles({
                     outer: 
-                        'position: fixed; left: 0; background-color: transparent;',
-                    buttonBackground: 
-                        'background-color: rgba(0,0,0,0.85);',
+                        'position: fixed; left: 1em;',
                     buttonPadding:
-                        'padding: 3px 5px 0 7px;'
+                        'padding: 1px 5px 0 7px;'
                 })
-            }, 750)
+            }, 725)
         }
         else {
             setHideStyles(hideStyles => 
-                ({...hideStyles, buttonPadding: 'padding: 3px 7px 0 5px;'})
+                ({...hideStyles, buttonPadding: 'padding: 1px 7px 0 5px;'})
             )
             setMenuMarginLeft('0')
             setTimeout(() => {
@@ -88,11 +86,11 @@ const Header = ({state, actions}) => {
 
                             & > div {
                                 & > div {
-                                    ${hideStyles.buttonBackground}
-                                
                                     & > div {
-                                        ${hideStyles.buttonPadding}
-                                    } 
+                                        & > div {
+                                            ${hideStyles.buttonPadding}
+                                        } 
+                                    }
                                 }
                             }
                         `}

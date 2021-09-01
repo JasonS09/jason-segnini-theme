@@ -5,9 +5,11 @@ export const expandWidth = keyframes`
     to {width: 100%;}
 `
 
-export const expandHeight = keyframes`
+export const expandHeight = (
+    totalHeight = 100
+    ) => keyframes`
     from {height: 0;}
-    to {height: 100%;}
+    to {height: ${totalHeight}%;}
 `
 
 export const glow = keyframes`

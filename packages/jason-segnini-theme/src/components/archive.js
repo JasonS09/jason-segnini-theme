@@ -13,7 +13,7 @@ const Archive = ({state, actions}) => {
     const [hideStyles, setHideStyles] = useState({})
 
     return (
-        <AnimatedWrapper absolute left width="297" hideOffset="47" css={css`margin-right: ${archiveMarginRight}`}>
+        <AnimatedWrapper absolute width="297" hideOffset="47" css={css`margin-right: ${archiveMarginRight}`}>
             <Hide 
                 right 
                 isComponentHidden={isArchiveHidden} 

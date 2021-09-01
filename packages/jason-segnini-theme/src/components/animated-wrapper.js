@@ -31,6 +31,7 @@ const AnimatedWrapper = ({
                 hideOffset={formatSizeProp(hideOffset)}
                 {...rest}
             >
+                <TopBorder right/>
                 <LightEffect 
                     absolute
                     right 
@@ -47,6 +48,7 @@ const AnimatedWrapper = ({
                     hideOffset={formatSizeProp(hideOffset)}
                     {...rest}
                 >
+                    <TopBorder/>
                     <LightEffect 
                         absolute
                         hideOffset={formatSizeProp(hideOffset)} 
@@ -117,21 +119,79 @@ const glowEffect = keyframes`
     to {box-shadow: 0 0 10px #60d75a;}
 `
 
+const glowEffectForRight = keyframes`
+    from {
+            box-shadow: 
+                -6px -4px 5px 2px black,
+                -6px 4px 5px 2px black,
+                3px 0 5px #60d75a;
+        }
+    to {
+            box-shadow:
+                -6px -4px 10px 2px black,
+                -6px 4px 10px 2px black,
+                3px 0 10px #60d75a;
+        }
+`
+
+const glowEffectForLeft = keyframes`
+    from {
+            box-shadow: 
+                6px -4px 5px 5px black, 
+                6px 4px 5px 2px black,
+                -3px 0 5px #60d75a;
+        }
+    to {
+            box-shadow:
+                6px -4px 10px 5px black,
+                6px 4px 5px 2px black,
+                -3px 0 10px #60d75a;
+        }
+`
+
 const shadows = css`
     animation: ${showShadow} 1s ease-out forwards,
         ${glowEffect} 3s linear 1s infinite alternate;
 `
 
 const animateLeft = css`
-    right: 0;
-
-    ::before {
+    &, ::before, ::after {
         right: 0;
-        border-left: 1px solid #60d75a;
     }
 
     ::after {
-        right: 0;
+        top: 9.5%;
+        border-left: 1px solid #60d75a;
+        animation: ${expandHeight(91)} .95s ease-out .05s forwards,
+            ${glowEffectForLeft} 3s linear infinite alternate;
+    }
+`
+
+const animateRight = css`
+    top: 8.8%;
+    border-right: 1px solid #60d75a;
+    animation: ${expandHeight(91)} .95s ease-out .05s forwards,
+        ${glowEffectForRight} 3s linear infinite alternate;
+`
+
+const TopBorder = styled.div`
+    position: absolute;
+    width: 84.2%;
+    top: 0;
+    ${props => props.right
+        ? css`
+                border-right: 1px solid #60d75a;
+                animation: 
+                    ${expandHeight(2.5)} .05s ease-out forwards,
+                    ${glowEffectForRight} 3s linear infinite alternate;
+            `
+        : css`
+                right: 0;
+                border-left: 1px solid #60d75a;
+                animation: 
+                    ${expandHeight(2.4)} .05s ease-out forwards,
+                    ${glowEffectForLeft} 3s linear infinite alternate;
+            `
     }
 `
 
@@ -167,25 +227,20 @@ const WrapperForRight = styled.div`
 const AbsoluteAnimatedDiv = styled.div`
     height: 100%;
     width: ${props => props.width};
-    ${props => props.left && animateLeft}
+    ${props => !props.right && animateLeft}
     z-index: 1;
     transition: margin 1s ease-in-out;
 
-    :hover::after {
+    :hover::before {
         box-shadow: 0 0 15px #60d75a;
+    }
+
+    ::after {
+        ${props => props.right && animateRight}
     }
 
     ::before {
         background-color: rgba(0,0,0,0.85);
-        ${props => props.right 
-            && "border-right: 1px solid #60d75a;"}
-        animation: ${expandHeight} 1s ease-out forwards,
-            ${showShadow} .25s ease-out 1s forwards,
-            ${glowEffect} 3s linear 1.25s infinite alternate;
-    }
-
-    ::after {
-        top: 0;
         height: 100%;
         transition: box-shadow .25s ease-out;
     }
@@ -223,7 +278,7 @@ const AllbordersAnimatedDiv = styled.div`
         border-top-color: #60d75a;
         border-right-color: #60d75a;
         animation:${expandWidth} .25s ease-out forwards,
-            ${expandHeight} .25s ease-out .25s forwards;
+            ${expandHeight()} .25s ease-out .25s forwards;
     }
 
     ::after {
@@ -231,6 +286,6 @@ const AllbordersAnimatedDiv = styled.div`
         bottom: 0;
         animation: ${afterBorderColor} 0s ease-out .5s forwards,
             ${expandWidth} .25s ease-out .5s forwards,
-            ${expandHeight} .25s ease-out .75s forwards;
+            ${expandHeight()} .25s ease-out .75s forwards;
     }
 `

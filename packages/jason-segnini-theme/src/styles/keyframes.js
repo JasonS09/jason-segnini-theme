@@ -14,3 +14,7 @@ export const glow = keyframes`
     from {filter: drop-shadow(0 0 7px #60d75a)}
     to {filter: drop-shadow(0 0 3px #60d75a)}
 `
+
+export const setBackgroundColor = keyframes`
+    to {background-color: #60d75a;}
+`

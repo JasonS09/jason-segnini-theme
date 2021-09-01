@@ -1,5 +1,5 @@
 import {connect, Head, styled, css} from "frontity"
-import {glow} from "../styles/keyframes"
+import {glow, setBackgroundColor} from "../styles/keyframes"
 import dayjs from "dayjs"
 import AnimatedWrapper from "./animated-wrapper"
 
@@ -48,30 +48,47 @@ export default connect(Post)
 const wrapperStyles = css`
     background-color: black;
     transition: transform .25s ease-out;
-    clip-path: polygon(0% 0%, 95.3% 0, 100% 48.5%, 100% 100%, 0 100%);
+    clip-path: polygon(
+        0% 0%, 
+        95.3% 0, 
+        100% 48.5%, 
+        100% 100%, 
+        0 100%
+    );
 
     :hover {
         transform: scale(1.01, 1.01);
 
         ::before, ::after {
-            border-width: 2px;
+            border-width: 2px; 
+        }
+
+        ::before {
+            transition: border-width .05s ease-out .05s;
+        }
+
+        ::after {
             transition: border-width 0s;
         }
     }
 
-    ::before, ::after {
+    ::before {
+        transition: border-width 0s;
+    }
+
+    ::after {
         transition: border-width 0s ease-out .25s;
     }
 `
 
 const Shadow = styled.div`
-    animation: ${glow} 3s ease-out infinite alternate;
+    animation: ${glow} 3s ease-out 1s infinite alternate;
 `
 const HoverShadow = styled.div`
     transition: filter .25s ease-out;
 
     :hover {
-        filter: drop-shadow(0 0 3px rgba(96, 215, 90, 0.5))
+        filter: drop-shadow(0 0 3px rgba(96,215,90,0.5))
     }
 `
 
@@ -81,8 +98,9 @@ const StyledBorder = styled.div`
     height: 50%;
     right: 0;
     top: 0;
-    background-color: #60d75a;
     clip-path: polygon(0% 0%, 100% 0, 100% 100%);
+    animation: 
+        ${setBackgroundColor} .05s ease-out .20s forwards;
 `
 
 const StyledPost = styled.div`

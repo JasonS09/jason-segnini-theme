@@ -113,14 +113,13 @@ const showShadow = keyframes`
 `
 
 const glowEffect = keyframes`
-    0% {box-shadow: 0 0 10px #60d75a;}
-    50% {box-shadow: 0 0 5px #60d75a;}
-    100% {box-shadow: 0 0 10px #60d75a;}
+    from {box-shadow: 0 0 5px #60d75a;}
+    to {box-shadow: 0 0 10px #60d75a;}
 `
 
 const shadows = css`
     animation: ${showShadow} 1s ease-out forwards,
-        ${glowEffect} 3s linear 1s forwards infinite;
+        ${glowEffect} 3s linear 1s infinite alternate;
 `
 
 const animateLeft = css`
@@ -182,7 +181,7 @@ const AbsoluteAnimatedDiv = styled.div`
             && "border-right: 1px solid #60d75a;"}
         animation: ${expandHeight} 1s ease-out forwards,
             ${showShadow} .25s ease-out 1s forwards,
-            ${glowEffect} 3s linear 1.25s forwards infinite;
+            ${glowEffect} 3s linear 1.25s infinite alternate;
     }
 
     ::after {

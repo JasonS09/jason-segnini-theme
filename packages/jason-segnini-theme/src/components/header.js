@@ -1,5 +1,6 @@
 import {connect, styled, css} from "frontity"
 import {useState} from "react"
+import {hide} from "../scripts/hide"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 import Hide from "./hide"
@@ -14,30 +15,6 @@ const Header = ({state, actions}) => {
         blog: 'Blog',
         contact: 'Contact'
     })
-
-    const hideMenu = () => {
-        if (state.theme.showMenu) {
-            setMenuMarginLeft('-250px')
-            setTimeout(() => {
-                setHideStyles({
-                    outer: 
-                        'position: fixed; left: 1em;',
-                    buttonPadding:
-                        'padding: 1px 5px 0 7px;'
-                })
-            }, 725)
-        }
-        else {
-            setHideStyles(hideStyles => 
-                ({...hideStyles, buttonPadding: 'padding: 1px 7px 0 5px;'})
-            )
-            setMenuMarginLeft('0')
-            setTimeout(() => {
-                setHideStyles({})
-            }, 300)
-        }
-        actions.theme.toggleMenu()
-    }
 
     const randEffect = (item, text) => {
         const original = text
@@ -80,16 +57,21 @@ const Header = ({state, actions}) => {
             <AnimatedWrapper absolute right width="297" hideOffset="47" css={css`margin-left: ${menuMarginLeft}`}>
                 <Hide 
                     isComponentHidden={isMenuHidden} 
-                    onClick={() => hideMenu()}
+                    onClick={() => hide(
+                        state.theme.showMenu,
+                        setHideStyles,
+                        'padding: 0;',
+                        setMenuMarginLeft,
+                        'position: fixed; left: 1em;',
+                        actions.theme.toggleMenu
+                    )}
                     css={css`
                             ${hideStyles.outer}
 
-                            & > div {
-                                & > div {
-                                    & > div {
-                                        & > div {
-                                            ${hideStyles.buttonPadding}
-                                        } 
+                            & > div:first-child {
+                                div:nth-child(3) {
+                                    h1 {
+                                        ${hideStyles.iconPadding}
                                     }
                                 }
                             }

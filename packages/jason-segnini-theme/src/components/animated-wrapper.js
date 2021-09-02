@@ -1,5 +1,5 @@
 import {styled, keyframes, css} from "frontity"
-import {expandWidth, expandHeight} from "../styles/keyframes"
+import {expandWidth, expandHeight, glow, setBackgroundColor} from "../styles/keyframes"
 import Switch from "@frontity/components/switch"
 
 const AnimatedWrapper = ({
@@ -21,37 +21,60 @@ const AnimatedWrapper = ({
 
         return prop+'px'
     }
+
+    const fHideOffset = formatSizeProp(hideOffset)
+    width = formatSizeProp(width)
     
     return (
         <Switch>
             <AbsoluteAnimatedDiv
                 when={absolute && right}
                 right
-                width={formatSizeProp(width)}
-                hideOffset={formatSizeProp(hideOffset)}
+                width={width}
+                hideOffset={fHideOffset}
                 {...rest}
             >
                 <TopBorder right/>
+                <CuteCircle/>
+                <StyledCorner hideOffset={fHideOffset}/>
+                <BottomBorder hideOffset={fHideOffset}/>
                 <LightEffect 
                     absolute
                     right 
-                    hideOffset={formatSizeProp(hideOffset)}                        
+                    hideOffset={hideOffset}                        
+                />
+                <LightEffect 
+                    absolute
+                    right 
+                    hideOffset={hideOffset}
+                    css={css`
+                        top: auto;
+                        bottom: 5%;
+                        right: 21%;
+                        border: none;
+                        box-shadow: none;
+                        animation: 
+                            ${makeAppear} .10s ease-out .75s forwards,
+                            ${showShadow(10, 2, 4)} .10s ease-out .75s forwards,
+                            ${moveDownForRightAlt} .25s ease-out .75s forwards,
+                            ${fade} .10s ease-out 1s forwards;
+                    `}                        
                 />
                 {rest.children}
             </AbsoluteAnimatedDiv>
             <WrapperForRight 
                 when={absolute} 
-                width={formatSizeProp(width)}
+                width={width}
             >
                 <AbsoluteAnimatedDiv 
-                    width={formatSizeProp(width)}
-                    hideOffset={formatSizeProp(hideOffset)}
+                    width={width}
+                    hideOffset={fHideOffset}
                     {...rest}
                 >
                     <TopBorder/>
                     <LightEffect 
                         absolute
-                        hideOffset={formatSizeProp(hideOffset)} 
+                        hideOffset={fHideOffset} 
                     />
                     {rest.children}
                 </AbsoluteAnimatedDiv>
@@ -96,8 +119,38 @@ const moveAround = keyframes`
     }
 `
 
-const moveDown = keyframes`
+const moveDownForLeft = keyframes`
     to {top: 99%;}
+`
+
+const moveDownForRight = keyframes`
+    60% {
+        top: 94%;
+        right: 15.82%;
+    }
+    70% {
+        top: 94.6%;
+        right: 17.2%;
+    }
+    80% {
+        top: 94.6%;
+        right: 65%;
+    }
+    100% {
+        top: 90%;
+        right: 76%;
+    }
+`
+
+const moveDownForRightAlt = keyframes`
+    60% {
+        bottom: 2%;
+        right: 15.82%;
+    }
+    100% {
+        bottom: 0;
+        right: 15.82%;
+    }
 `
 
 const fade = keyframes`
@@ -107,71 +160,169 @@ const fade = keyframes`
     }
 `
 
-const showShadow = keyframes`
-    25% {box-shadow: 0 -5px 10px #60d75a;}
-    50% {box-shadow: 5px -5px 10px #60d75a;}
-    75% {box-shadow: 5px 0 10px #60d75a;}
-    100% {box-shadow: 0 0 10px #60d75a;}
+const makeAppear = keyframes`
+    from {border-width: 0}
+    to {border-width: 1px}
 `
 
-const glowEffect = keyframes`
-    from {box-shadow: 0 0 5px #60d75a;}
-    to {box-shadow: 0 0 10px #60d75a;}
+const showShadow = (
+    blur = 10, 
+    fromSpread = 0, 
+    toSpread = 0
+) => keyframes`
+    0% {box-shadow: 0 0 0 #60d75a;}
+    50% {box-shadow: 0 0 ${blur}px ${fromSpread}px #60d75a;}
+    100% {box-shadow: 0 0 5px ${toSpread}px #60d75a;}
 `
 
-const glowEffectForRight = keyframes`
-    from {
-            box-shadow: 
-                -6px -4px 5px 2px black,
-                -6px 4px 5px 2px black,
-                3px 0 5px #60d75a;
-        }
-    to {
-            box-shadow:
-                -6px -4px 10px 2px black,
-                -6px 4px 10px 2px black,
-                3px 0 10px #60d75a;
-        }
+const glowEffect = (spread = 0) => keyframes`
+    from {box-shadow: 0 0 5px ${spread}px #60d75a;}
+    to {box-shadow: 0 0 10px ${spread}px #60d75a;}
 `
 
-const glowEffectForLeft = keyframes`
-    from {
-            box-shadow: 
-                6px -4px 5px 5px black, 
-                6px 4px 5px 2px black,
-                -3px 0 5px #60d75a;
-        }
-    to {
-            box-shadow:
-                6px -4px 10px 5px black,
-                6px 4px 5px 2px black,
-                -3px 0 10px #60d75a;
-        }
-`
-
-const shadows = css`
-    animation: ${showShadow} 1s ease-out forwards,
-        ${glowEffect} 3s linear 1s infinite alternate;
-`
-
-const animateLeft = css`
-    &, ::before, ::after {
-        right: 0;
+const animateLeft = (hideOffset) => css`
+    ::before {
+        height: 100%;
     }
 
     ::after {
         top: 9.5%;
         border-left: 1px solid #60d75a;
-        animation: ${expandHeight(91)} .95s ease-out .05s forwards,
-            ${glowEffectForLeft} 3s linear infinite alternate;
+        animation: 
+            ${expandHeight(91)} .95s ease-out .05s forwards;
+    }
+
+    ::before, ::after {
+        left: ${hideOffset}
+    }
+
+    &, ::before, ::after {
+        right: 0;
     }
 `
 
-const animateRight = css`
-    top: 8.8%;
-    border-right: 1px solid #60d75a;
-    animation: ${expandHeight(91)} .95s ease-out .05s forwards,
-        ${glowEffectForRight} 3s linear infinite alternate;
+const animateRight = (hideOffset) => css`
+    ::before {
+        height: 95%;
+        clip-path: polygon(
+            0% 0%, 
+            100% 0%, 
+            100% 99%, 
+            97% 100%, 
+            0 100%
+        );
+    }
+
+    ::after {
+        top: 8.8%;
+        border-right: 2px solid #60d75a;
+        clip-path: polygon(
+            0% 0%, 
+            100% 0, 
+            100% 
+            93.3%, 
+            96% 100%, 
+            0 100%
+        );
+        animation: 
+            ${expandHeight(91)} .55s ease-out .05s forwards;
+    }
+
+    ::before, ::after {
+        right: ${hideOffset};
+    }
+`
+
+const CuteCircle = styled.div`
+    position: absolute;
+    bottom: 10%;
+    left: 21.5%;
+    border: 0 solid #60d75a;
+    border-radius: 50%;
+    width: 3%;
+    height: 1.2%;
+    animation: ${makeAppear} .5s ease-out 1s forwards,
+        ${showShadow(10, 3, 1)} .5s ease-out 1s 1 alternate,
+        ${glowEffect(1)} 3s linear 1.5s infinite alternate;
+`
+
+const BottomBorder = styled.div`
+    position: absolute;
+    bottom: 0;
+    height: 5%;
+    width: 100%;
+    right: ${props => props.hideOffset};
+    background-color: rgba(0,0,0,.85);
+    clip-path: polygon(
+        0% 0%, 
+        91% 0%, 
+        100% 46%, 
+        100% 100%, 
+        0% 100%
+    );
+
+    ::before {
+        content: '';
+        position: absolute;
+        width: 10%;
+        height: 50%;
+        top: 0;
+        right: 0;
+        clip-path: polygon(0% 0%, 100% 0, 100% 100%);
+        z-index: 1;
+        animation: 
+            ${setBackgroundColor} .60s ease-out .75s forwards;
+    }
+
+    ::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        width: 99.4%;
+        border-right: 2px solid #60d75a;
+        animation: 
+            ${expandHeight()} .40s ease-out .75s forwards;
+    }
+`
+
+const StyledCorner = styled.div`
+    position: absolute;
+    height: 5%;
+    bottom: 5%;
+    right: ${props => props.hideOffset};
+    border-bottom: 1px solid #60d75a;
+    clip-path: polygon(
+        0% 0%, 
+        100% 0%, 
+        100% 80%, 
+        95% 100%, 
+        20% 100%, 
+        0 5%
+    );
+    animation: 
+        ${expandWidth(60)} .15s ease-out .65s forwards;
+
+    ::before {
+        right: 0;
+        width: 5%;
+        clip-path: polygon(100% 80%, 0 100%, 100% 100%);
+        animation: 
+            ${setBackgroundColor} .5s ease-out .60s forwards;
+    }
+
+    ::after {
+        left: 0;
+        width: 20%;
+        clip-path: polygon(0% 0%, 100% 100%, 0% 100%);
+        animation: 
+            ${setBackgroundColor} .20s ease-out .80s forwards;
+    }
+
+    ::before, ::after {
+        content: '';
+        position: absolute;
+        height: 100%;
+    }
 `
 
 const TopBorder = styled.div`
@@ -180,18 +331,16 @@ const TopBorder = styled.div`
     top: 0;
     ${props => props.right
         ? css`
-                border-right: 1px solid #60d75a;
-                animation: 
-                    ${expandHeight(2.5)} .05s ease-out forwards,
-                    ${glowEffectForRight} 3s linear infinite alternate;
-            `
+            border-right: 1px solid #60d75a;
+            animation: 
+                ${expandHeight(2.5)} .05s ease-out forwards;
+        `
         : css`
-                right: 0;
-                border-left: 1px solid #60d75a;
-                animation: 
-                    ${expandHeight(2.4)} .05s ease-out forwards,
-                    ${glowEffectForLeft} 3s linear infinite alternate;
-            `
+            right: 0;
+            border-left: 1px solid #60d75a;
+            animation: 
+                ${expandHeight(2.4)} .05s ease-out forwards;
+        `
     }
 `
 
@@ -205,15 +354,27 @@ const LightEffect = styled.div`
         0 0 5px 2px #60d75a inset,
         -5px 0px 23px 5px #60d75a;
     ${props => props.absolute && "top: 0;"}
-    ${props => props.right
-        ? css`right: ${props.hideOffset};`
-        : css`left: ${props.hideOffset}`
+    ${props => (props.absolute && props.right)
+        ? css`right: ${props.hideOffset}px;`
+        : css`left: ${props.hideOffset}px`
     }
     animation: ${props=> props.absolute 
-        ? css`${moveDown} 1s ease-out forwards,
-            ${fade} .25s ease-out 1s forwards;`
-        : css`${moveAround} 1s ease-out forwards,
-            ${fade} .25s ease-out 1s forwards;`}
+        ? (
+            props.right
+            ? css`
+                ${moveDownForRight} 1s ease-out forwards,
+                ${fade} .25s ease-out 1s forwards;
+            `
+            : css`
+                ${moveDownForLeft} 1s ease-out forwards,
+                ${fade} .25s ease-out 1s forwards;
+            `
+        )
+        : css`
+            ${moveAround} 1s ease-out forwards,
+            ${fade} .25s ease-out 1s forwards;
+        `
+    }
 `
 
 const WrapperForRight = styled.div`
@@ -227,32 +388,20 @@ const WrapperForRight = styled.div`
 const AbsoluteAnimatedDiv = styled.div`
     height: 100%;
     width: ${props => props.width};
-    ${props => !props.right && animateLeft}
+    ${props => props.right 
+        ? animateRight(props.hideOffset)
+        : animateLeft(props.hideOffset)}
     z-index: 1;
     transition: margin 1s ease-in-out;
 
-    :hover::before {
-        box-shadow: 0 0 15px #60d75a;
-    }
-
-    ::after {
-        ${props => props.right && animateRight}
-    }
-
     ::before {
-        background-color: rgba(0,0,0,0.85);
-        height: 100%;
-        transition: box-shadow .25s ease-out;
+        background-color: rgba(0,0,0,.85);
     }
 
     ::before, ::after {
         content: '';
         width: 100%;
         z-index: -1;
-        ${props => props.right 
-            ? css`right: ${props.hideOffset};` 
-            : css`left: ${props.hideOffset};`
-        }
     }
 
     &, ::before, ::after {
@@ -262,7 +411,13 @@ const AbsoluteAnimatedDiv = styled.div`
 
 const AllbordersAnimatedDiv = styled.div`
     position: relative;
-    ${props => props.shadows && shadows}
+    ${props => props.shadows 
+        && css`
+            animation: 
+                ${showShadow()} .5s ease-out 1s forwards,
+                ${glowEffect()} 3s linear 1.5s infinite alternate;
+        `
+    }
 
     ::before, ::after {
         content: '';
@@ -277,15 +432,17 @@ const AllbordersAnimatedDiv = styled.div`
         left: 0;
         border-top-color: #60d75a;
         border-right-color: #60d75a;
-        animation:${expandWidth} .25s ease-out forwards,
+        animation: 
+            ${expandWidth()} .25s ease-out forwards,
             ${expandHeight()} .25s ease-out .25s forwards;
     }
 
     ::after {
         right: 0;
         bottom: 0;
-        animation: ${afterBorderColor} 0s ease-out .5s forwards,
-            ${expandWidth} .25s ease-out .5s forwards,
+        animation: 
+            ${afterBorderColor} 0s ease-out .5s forwards,
+            ${expandWidth()} .25s ease-out .5s forwards,
             ${expandHeight()} .25s ease-out .75s forwards;
     }
 `

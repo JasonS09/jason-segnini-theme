@@ -12,41 +12,37 @@ const Post = ({state, libraries}) => {
     const Html2React = libraries.html2react.Component
 
     return (
-        <HoverShadow>
-            <Shadow>
-                <AnimatedWrapper css={wrapperStyles}>
-                    <StyledBorder/>
-                    <StyledPost>
-                        <Head>
-                            <title>{post.title.rendered}</title>
-                            <meta name="Description" content={post.excerpt.rendered}/>
-                        </Head>
-                        {!data.isHome && <h2>{post.title.rendered}</h2>}
-                        {data.isPost 
-                        && <PostInfo>
-                            <p>
-                                <strong>Posted: </strong>
-                                {formattedDate}
-                            </p>
-                            <p>
-                                <strong>Author: </strong>
-                                {author.name}
-                            </p>
-                        </PostInfo>}
-                        <PostContent>
-                            <Html2React html={post.content.rendered}/>
-                        </PostContent>
-                    </StyledPost>
-                </AnimatedWrapper>
-            </Shadow>
-        </HoverShadow>
+        <AnimatedWrapper css={wrapperStyles}>
+            <StyledBorder/>
+            <StyledPost>
+                <Head>
+                    <title>{post.title.rendered}</title>
+                    <meta name="Description" content={post.excerpt.rendered}/>
+                </Head>
+                {!data.isHome && <h2>{post.title.rendered}</h2>}
+                {data.isPost 
+                && <PostInfo>
+                    <p>
+                        <strong>Posted: </strong>
+                        {formattedDate}
+                    </p>
+                    <p>
+                        <strong>Author: </strong>
+                        {author.name}
+                    </p>
+                </PostInfo>}
+                <PostContent>
+                    <Html2React html={post.content.rendered}/>
+                </PostContent>
+            </StyledPost>
+        </AnimatedWrapper>
     )
 }
 
 export default connect(Post)
 
 const wrapperStyles = css`
-    background-color: black;
+    background-color: rgba(0,0,0,.85);
     transition: transform .25s ease-out;
     clip-path: polygon(
         0% 0%, 
@@ -78,17 +74,6 @@ const wrapperStyles = css`
 
     ::after {
         transition: border-width 0s ease-out .25s;
-    }
-`
-
-const Shadow = styled.div`
-    animation: ${glow} 3s ease-out 1s infinite alternate;
-`
-const HoverShadow = styled.div`
-    transition: filter .25s ease-out;
-
-    :hover {
-        filter: drop-shadow(0 0 3px rgba(96,215,90,0.5))
     }
 `
 

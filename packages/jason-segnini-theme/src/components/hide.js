@@ -16,39 +16,10 @@ const Hide = ({state, right, isComponentHidden, ...rest}) => {
         return "<"
     }
 
-    const wrapperStyles = css`
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        background-color: black;
-        ${right 
-        ? "border-radius: 50%;"
-        : css`
-                right: 0;
-                clip-path: polygon(
-                    0% 0%, 
-                    66% 0, 
-                    100% 26%, 
-                    100% 74%, 
-                    66% 100%, 
-                    0 100%
-                );
-            `};
-
-        ::before {
-            z-index: 1;
-        }
-
-        ::before, ::after {
-            border-width: 2px;
-            ${right && "border-radius: 50%;"};
-        }
-    `
-
     return (
         <Switch>
             <OuterWrapper when={right} right {...rest}>
-                <AnimatedWrapper shadows css={wrapperStyles}>
+                <AnimatedWrapper shadows css={wrapperStyles(true)}>
                         <HideButton right>
                             <AnimatedText comp="h1" text={setText()}/>
                         </HideButton>
@@ -56,7 +27,7 @@ const Hide = ({state, right, isComponentHidden, ...rest}) => {
             </OuterWrapper>
             <OuterWrapper {...rest}>
                 <HoverShadow>
-                    <AnimatedWrapper css={wrapperStyles}>
+                    <AnimatedWrapper css={wrapperStyles()}>
                         <StyledBorder/>
                         <HideButton>
                             <AnimatedText comp="h1" text={setText()}/>
@@ -74,13 +45,43 @@ const leftConfig = css`
     width: 47px;
     height: 40px;
     right: 9%;
-    animation: ${glow} 3s ease-out infinite alternate;
+    animation: ${glow()} 3s ease-out infinite alternate;
 `
 
 const center = css`
     top: 50%;
     left: 50%;
     transform: translateY(-50%) translateX(-50%);
+`
+
+const wrapperStyles = (right) => css`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    ${right 
+        ? "border-radius: 50%;"
+        : css`
+            right: 0;
+            clip-path: polygon(
+                0% 0%, 
+                66% 0, 
+                100% 26%, 
+                100% 74%, 
+                66% 100%, 
+                0 100%
+            );
+        `
+    };
+
+    ::before {
+        z-index: 1;
+    }
+
+    ::before, ::after {
+        border-width: 2px;
+        ${right && "border-radius: 50%;"};
+    }
 `
 
 const HoverShadow = styled.div`

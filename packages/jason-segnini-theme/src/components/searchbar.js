@@ -13,7 +13,6 @@ const SearchBar = ({actions}) => {
                     type="text" 
                     onChange={event => inputState = {value: event.target.value}} 
                     placeholder="Search blog posts."
-                    css={css`animation: ${expandWidth} 1s ease-out forwards`}
                 />
             </AnimatedWrapper>
             <AnimatedWrapper shadows css={bWrapperStyles}>
@@ -54,7 +53,7 @@ const Input = styled.input`
     ${common}
     margin-bottom: 1em;
     padding: 2px 1px;
-    width: 0;
+    animation: ${expandWidth()} 1s ease-out forwards;
 
     :focus {
         outline: none;

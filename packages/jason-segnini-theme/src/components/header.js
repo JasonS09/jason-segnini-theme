@@ -68,8 +68,8 @@ const Header = ({state, actions}) => {
                     css={css`
                             ${hideStyles.outer}
 
-                            & > div:first-child {
-                                div:nth-child(3) {
+                            & > div:first-of-type {
+                                div:nth-of-type(3) {
                                     h1 {
                                         ${hideStyles.iconPadding}
                                     }

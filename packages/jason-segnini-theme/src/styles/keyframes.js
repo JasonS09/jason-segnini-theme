@@ -1,20 +1,22 @@
 import {keyframes} from "frontity"
 
-export const expandWidth = keyframes`
+export const expandWidth = (
+    width = 100
+) => keyframes`
     from {width: 0;}
-    to {width: 100%;}
+    to {width: ${width}%;}
 `
 
 export const expandHeight = (
-    totalHeight = 100
+    height = 100
     ) => keyframes`
     from {height: 0;}
-    to {height: ${totalHeight}%;}
+    to {height: ${height}%;}
 `
 
-export const glow = keyframes`
-    from {filter: drop-shadow(0 0 7px #60d75a)}
-    to {filter: drop-shadow(0 0 3px #60d75a)}
+export const glow = (from = 3, to = 7) => keyframes`
+    from {filter: drop-shadow(0 0 ${from}px #60d75a)}
+    to {filter: drop-shadow(0 0 ${to}px #60d75a)}
 `
 
 export const setBackgroundColor = keyframes`

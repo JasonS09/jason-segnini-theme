@@ -1,14 +1,11 @@
-import {connect, styled, css} from "frontity"
+import {connect, styled} from "frontity"
 import {useState} from "react"
-import {hide} from "../scripts/hide"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 import Hide from "./hide"
 
 const Header = ({state, actions}) => {
     const isMenuHidden = !state.theme.showMenu
-    const [menuMarginLeft, setMenuMarginLeft] = useState('0')
-    const [hideStyles, setHideStyles] = useState({})
     const [menuTexts, setMenuTexts] = useState({
         home: 'Home',
         aboutMe: 'About Me',
@@ -54,28 +51,16 @@ const Header = ({state, actions}) => {
     
     return (
         <>
-            <AnimatedWrapper absolute right width="297" hideOffset="47" css={css`margin-left: ${menuMarginLeft}`}>
+            <AnimatedWrapper 
+                absolute 
+                right 
+                width="297" 
+                hideOffset="47" 
+                isComponentHidden={isMenuHidden}
+            >
                 <Hide 
                     isComponentHidden={isMenuHidden} 
-                    onClick={() => hide(
-                        state.theme.showMenu,
-                        setHideStyles,
-                        'padding: 0;',
-                        setMenuMarginLeft,
-                        'position: fixed; left: 1em;',
-                        actions.theme.toggleMenu
-                    )}
-                    css={css`
-                            ${hideStyles.outer}
-
-                            & > div:first-of-type {
-                                div:nth-of-type(3) {
-                                    h1 {
-                                        ${hideStyles.iconPadding}
-                                    }
-                                }
-                            }
-                        `}
+                    onClick={() => actions.theme.toggleMenu()}
                 />
                 <HeaderContent>
                     <AnimatedText comp="h1" text="Jason E. Segnini Cubero"/>

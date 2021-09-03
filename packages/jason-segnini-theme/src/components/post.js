@@ -1,5 +1,5 @@
 import {connect, Head, styled, css} from "frontity"
-import {glow, setBackgroundColor} from "../styles/keyframes"
+import {setBackgroundColor} from "../styles/keyframes"
 import dayjs from "dayjs"
 import AnimatedWrapper from "./animated-wrapper"
 
@@ -51,27 +51,21 @@ const wrapperStyles = css`
         100% 100%, 
         0 100%
     );
-
     :hover {
         transform: scale(1.01, 1.01);
-
         ::before, ::after {
             border-width: 2px; 
         }
-
         ::before {
             transition: border-width .05s ease-out .05s;
         }
-
         ::after {
             transition: border-width 0s;
         }
     }
-
     ::before {
         transition: border-width 0s;
     }
-
     ::after {
         transition: border-width 0s ease-out .25s;
     }
@@ -98,7 +92,6 @@ const PostInfo = styled.div`
     padding: 0.5em;
     border-left: 4px solid lightseagreen;
     font-size: 0.8em;
-
     & > p {
         margin: 0;
     }

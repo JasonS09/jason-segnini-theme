@@ -95,7 +95,6 @@ const hiddenBothMainConfig = css`
 `
 
 const Main = styled.main`
-    min-height: 20%;
     padding: 1em;
     ${props => 
         props.isMenuHidden 

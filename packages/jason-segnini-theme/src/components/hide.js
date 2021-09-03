@@ -1,10 +1,37 @@
 import {connect, styled, css} from "frontity"
+import {useState} from "react"
 import {glow, setBackgroundColor} from "../styles/keyframes"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 import Switch from "@frontity/components/switch"
 
 const Hide = ({state, right, isComponentHidden, ...rest}) => {
+    const [hideStyles, setHideStyles] = useState(null)
+
+    if (isComponentHidden && !hideStyles) {
+        setTimeout(() => {
+            setHideStyles(right 
+                ? css`
+                    position: fixed; 
+                    left: auto; 
+                    right: 1em;
+                    width: 47px;
+                    height: 43px;
+                `
+                : css`
+                    position: fixed; 
+                    left: 1em;
+                    width: 47px;
+                    height: 40px;
+                `
+            )
+        }, 725)
+    }
+    else if (!isComponentHidden) {
+        setTimeout(() => {
+            setHideStyles(null)
+        }, 300)
+    }
 
     const setText = () => {
         if (right) {
@@ -18,18 +45,21 @@ const Hide = ({state, right, isComponentHidden, ...rest}) => {
 
     return (
         <Switch>
-            <OuterWrapper when={right} right {...rest}>
+            <OuterWrapper when={right} right css={hideStyles} {...rest}>
                 <AnimatedWrapper shadows css={wrapperStyles(true)}>
-                        <HideButton right>
+                        <HideButton 
+                            right 
+                            isComponentHidden={isComponentHidden}
+                        >
                             <AnimatedText comp="h1" text={setText()}/>
                         </HideButton>
                 </AnimatedWrapper>
             </OuterWrapper>
-            <OuterWrapper {...rest}>
+            <OuterWrapper css={hideStyles} {...rest}>
                 <HoverShadow>
                     <AnimatedWrapper css={wrapperStyles()}>
                         <StyledBorder/>
-                        <HideButton>
+                        <HideButton isComponentHidden={isComponentHidden}>
                             <AnimatedText comp="h1" text={setText()}/>
                         </HideButton>
                     </AnimatedWrapper>
@@ -42,8 +72,8 @@ const Hide = ({state, right, isComponentHidden, ...rest}) => {
 export default connect(Hide)
 
 const leftConfig = css`
-    width: 47px;
-    height: 40px;
+    width: 15.8%;
+    height: 5.3%;
     right: 9%;
     animation: ${glow()} 3s ease-out infinite alternate;
 `
@@ -73,6 +103,7 @@ const wrapperStyles = (right) => css`
             );
         `
     };
+    ${center}
 
     ::before {
         z-index: 1;
@@ -129,16 +160,19 @@ const HideButton = styled.div`
         text-align: center;
         transition: text-shadow .25s ease-out;
         ${props => props.right 
-            ? "padding-left: 4px;"
-            : "padding-right: 6px;"
+            ? props.isComponentHidden
+                ? "padding-right: 2px;"
+                : "padding-left: 4px;"
+            : !props.isComponentHidden
+               && "padding-right: 6px;"
         }
         ${center}
     }
 `
 
 const rightConfig = css`
-    width: 47px;
-    height: 43px;
+    width: 15.8%;
+    height: 5.7%;
     left: 9%;
     border-radius: 50%;
     
@@ -146,7 +180,7 @@ const rightConfig = css`
         ${HideButton} {
             box-shadow: 0 0 10px 0 #60d75a;
         }
-    } 
+    }
 `
 
 const OuterWrapper = styled.div`

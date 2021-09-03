@@ -1,14 +1,18 @@
 import {styled, keyframes, css} from "frontity"
-import {expandWidth, expandHeight, glow, setBackgroundColor} from "../styles/keyframes"
-import Switch from "@frontity/components/switch"
+import {useRef, useEffect, useState} from "react"
+import {expandWidth, expandHeight, setBackgroundColor} from "../styles/keyframes"
 
 const AnimatedWrapper = ({
     width = 0,
     hideOffset = 0,
     absolute,
     right,
+    isComponentHidden,
     ...rest
 }) => {
+    const [dimensions, setDimensions] = useState({})
+    const ref = useRef(null)
+
     const formatSizeProp = (prop) => {
         if (typeof(prop) != "string") return prop.toString()+'px'
 
@@ -22,68 +26,91 @@ const AnimatedWrapper = ({
         return prop+'px'
     }
 
+    useEffect(() => {
+        if (ref.current && Object.keys(dimensions).length === 0) 
+            setDimensions({
+                width: ref.current.clientWidth,
+                height: ref.current.clientHeight
+            })
+    })
+
     const fHideOffset = formatSizeProp(hideOffset)
     width = formatSizeProp(width)
     
     return (
-        <Switch>
-            <AbsoluteAnimatedDiv
-                when={absolute && right}
-                right
-                width={width}
-                hideOffset={fHideOffset}
-                {...rest}
-            >
-                <TopBorder right/>
-                <CuteCircle/>
-                <StyledCorner hideOffset={fHideOffset}/>
-                <BottomBorder hideOffset={fHideOffset}/>
-                <LightEffect 
-                    absolute
-                    right 
-                    hideOffset={hideOffset}                        
-                />
-                <LightEffect 
-                    absolute
-                    right 
-                    hideOffset={hideOffset}
-                    css={css`
-                        top: auto;
-                        bottom: 5%;
-                        right: 21%;
-                        border: none;
-                        box-shadow: none;
-                        animation: 
-                            ${makeAppear} .10s ease-out .75s forwards,
-                            ${showShadow(10, 2, 4)} .10s ease-out .75s forwards,
-                            ${moveDownForRightAlt} .25s ease-out .75s forwards,
-                            ${fade} .10s ease-out 1s forwards;
-                    `}                        
-                />
-                {rest.children}
-            </AbsoluteAnimatedDiv>
-            <WrapperForRight 
-                when={absolute} 
-                width={width}
-            >
-                <AbsoluteAnimatedDiv 
+        <>
+            {absolute 
+             ? right
+                ? <AbsoluteAnimatedDiv
+                    right
                     width={width}
                     hideOffset={fHideOffset}
+                    isComponentHidden={isComponentHidden}
+                    ref={ref}
                     {...rest}
                 >
-                    <TopBorder/>
+                    <TopBorder right/>
+                    <CuteCircle/>
+                    <StyledCorner hideOffset={fHideOffset}/>
+                    <BottomBorder hideOffset={fHideOffset}/>
                     <LightEffect 
                         absolute
-                        hideOffset={fHideOffset} 
+                        right 
+                        hideOffset={hideOffset}
+                        width={dimensions.width}
+                        height={dimensions.height}
+                    />
+                    <LightEffect 
+                        absolute
+                        right 
+                        hideOffset={hideOffset}
+                        css={css`
+                            top: auto;
+                            bottom: 5%;
+                            right: 21%;
+                            border: none;
+                            box-shadow: none;
+                            animation: 
+                                ${makeAppear} .10s ease-out .75s forwards,
+                                ${showShadow(10, 2, 4)} .10s ease-out .75s forwards,
+                                ${moveDownForRightAlt(
+                                    dimensions.width, dimensions.height
+                                )} .25s ease-out .75s forwards,
+                                ${fade} .10s ease-out 1s forwards;
+                        `}                        
                     />
                     {rest.children}
                 </AbsoluteAnimatedDiv>
-            </WrapperForRight>
-            <AllbordersAnimatedDiv {...rest}>
-                <LightEffect/>
+                : <WrapperForRight  
+                    width={width}
+                    ref={ref}
+                >
+                    <AbsoluteAnimatedDiv 
+                        width={width}
+                        hideOffset={fHideOffset}
+                        isComponentHidden={isComponentHidden}
+                        {...rest}
+                    >
+                        <TopBorder/>
+                        <ButtonBackground/>
+                        <BottomBorderForRight hideOffset={fHideOffset}/>
+                        <LightEffect 
+                            absolute
+                            hideOffset={hideOffset}
+                            width={dimensions.width}
+                            height={dimensions.height}
+                        />
+                        {rest.children}
+                    </AbsoluteAnimatedDiv>
+                </WrapperForRight>
+            : <AllbordersAnimatedDiv ref={ref} {...rest}>
+                <LightEffect 
+                    width={dimensions.width} 
+                    height={dimensions.height} 
+                />
                 {rest.children}
-            </AllbordersAnimatedDiv>
-        </Switch>
+            </AllbordersAnimatedDiv>}
+        </>
     )
 }
 
@@ -96,61 +123,42 @@ const afterBorderColor = keyframes`
     }
 `
 
-const moveAround = keyframes`
-    0% {
-        top: 0;
-        left: 0;
-    }
-    25% {
-        top: 0;
-        left: 100%;
-    }
-    50% {
-        top: 100%;
-        left: 100%;
-    }
-    75% {
-        top: 100%;
-        left: 0;
-    }
-    100% {
-        top: 0;
-        left: 0;
-    }
+const moveAround = (width, height) => keyframes`
+    25% {transform: translateX(${width}px);}
+    50% {transform: translate(${width}px, ${height}px);}
+    75% {transform: translateY(${height}px);}
 `
 
-const moveDownForLeft = keyframes`
-    to {top: 99%;}
+const moveDownForLeft = (width, height) => keyframes`
+    96% {transform: translateY(${(96*height)/100}px);}
+    100% {transform: translate(${(5*width)/100}px, ${height}px);}
 `
 
-const moveDownForRight = keyframes`
-    60% {
-        top: 94%;
-        right: 15.82%;
-    }
-    70% {
-        top: 94.6%;
-        right: 17.2%;
-    }
-    80% {
-        top: 94.6%;
-        right: 65%;
-    }
-    100% {
-        top: 90%;
-        right: 76%;
-    }
+const moveDownForRight = (width, height) => keyframes`
+    60% {transform: translateY(${(94*height)/100}px);}
+    70% {transform: translate(
+            ${(-1.4*width)/100}px, 
+            ${(94.6*height)/100}px
+        );}
+    80% {transform: translate(
+            ${(-49.2*width)/100}px,
+            ${(94.6*height)/100}px
+        );}
+    100% {transform: translate(
+            ${(-60.2*width)/100}px,
+            ${(90*height)/100}px
+        );}
 `
 
-const moveDownForRightAlt = keyframes`
-    60% {
-        bottom: 2%;
-        right: 15.82%;
-    }
-    100% {
-        bottom: 0;
-        right: 15.82%;
-    }
+const moveDownForRightAlt = (width, height) => keyframes`
+    60% {transform: translate(
+            ${(5.18*width)/100}px,
+            ${(3*height)/100}px
+        );}
+    100% {transform: translate(
+        ${(5.18*width)/100}px, 
+        ${5*height/100}px
+        );}
 `
 
 const fade = keyframes`
@@ -180,20 +188,37 @@ const glowEffect = (spread = 0) => keyframes`
     to {box-shadow: 0 0 10px ${spread}px #60d75a;}
 `
 
-const animateLeft = (hideOffset) => css`
+const animateLeft = (hideOffset, isComponentHidden) => css`
+    ${isComponentHidden 
+        && css`margin-right: -250px`}
+
     ::before {
         height: 100%;
+        clip-path: polygon(
+            0 0, 
+            100% 0, 
+            100% 100%, 
+            4.4% 100%, 
+            0 97%
+        );
     }
 
     ::after {
         top: 9.5%;
         border-left: 1px solid #60d75a;
+        clip-path: polygon(
+            0 0, 
+            100% 0, 
+            100% 100%, 
+            4.4% 100%, 
+            0 96%
+        );
         animation: 
             ${expandHeight(91)} .95s ease-out .05s forwards;
     }
 
     ::before, ::after {
-        left: ${hideOffset}
+        left: ${hideOffset};
     }
 
     &, ::before, ::after {
@@ -201,7 +226,10 @@ const animateLeft = (hideOffset) => css`
     }
 `
 
-const animateRight = (hideOffset) => css`
+const animateRight = (hideOffset, isComponentHidden) => css`
+    ${isComponentHidden 
+        && css`margin-left: -250px`}
+
     ::before {
         height: 95%;
         clip-path: polygon(
@@ -231,6 +259,41 @@ const animateRight = (hideOffset) => css`
     ::before, ::after {
         right: ${hideOffset};
     }
+`
+
+const BottomBorderForRight = styled.div`
+    position: absolute;
+    width: 10%;
+    height: 3.3%;
+    bottom: 0;
+    left: ${props => props.hideOffset};
+    clip-path: polygon(
+        0% 10%, 
+        0 0, 
+        100% 0, 
+        100% 100%, 
+        45% 100%
+    );
+
+    ::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: #60d75a;
+        clip-path: polygon(0 100%, 50% 100%, 0 0);
+    }
+`
+
+const ButtonBackground = styled.div`
+    position: absolute;
+    top: 2.3%;
+    left: 5.5%;
+    width: 21%;
+    height: 7%;
+    border-radius: 50%;
+    border: 2px solid #60d75a;
+    clip-path: polygon(50% 0, 50% 100%, 100% 100%, 100% 0);
 `
 
 const CuteCircle = styled.div`
@@ -362,16 +425,25 @@ const LightEffect = styled.div`
         ? (
             props.right
             ? css`
-                ${moveDownForRight} 1s ease-out forwards,
+                ${moveDownForRight(
+                    props.width,
+                    props.height
+                )} 1s ease-out forwards,
                 ${fade} .25s ease-out 1s forwards;
             `
             : css`
-                ${moveDownForLeft} 1s ease-out forwards,
+                ${moveDownForLeft(
+                    props.width,
+                    props.height
+                )} 1s ease-out forwards,
                 ${fade} .25s ease-out 1s forwards;
             `
         )
         : css`
-            ${moveAround} 1s ease-out forwards,
+            ${moveAround(
+                props.width, 
+                props.height
+            )} 1s ease-out forwards,
             ${fade} .25s ease-out 1s forwards;
         `
     }
@@ -389,8 +461,15 @@ const AbsoluteAnimatedDiv = styled.div`
     height: 100%;
     width: ${props => props.width};
     ${props => props.right 
-        ? animateRight(props.hideOffset)
-        : animateLeft(props.hideOffset)}
+        ? animateRight(
+            props.hideOffset, 
+            props.isComponentHidden
+        )
+        : animateLeft(
+            props.hideOffset, 
+            props.isComponentHidden
+        )
+    }
     z-index: 1;
     transition: margin 1s ease-in-out;
 

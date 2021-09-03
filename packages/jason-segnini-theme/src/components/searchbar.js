@@ -8,14 +8,20 @@ const SearchBar = ({actions}) => {
     
     return (
         <>
-            <AnimatedWrapper css={iWrapperStyles}>
+            <AnimatedWrapper css={css`
+                ${wrapperStyles}
+                padding-left: 1px;
+            `}>
                 <Input 
                     type="text" 
                     onChange={event => inputState = {value: event.target.value}} 
                     placeholder="Search blog posts."
                 />
             </AnimatedWrapper>
-            <AnimatedWrapper shadows css={bWrapperStyles}>
+            <AnimatedWrapper shadows css={css`
+                ${wrapperStyles}
+                margin: auto;
+            `}>
                 <Button onClick={() => actions.router.set("/?s="+inputState.value)}>
                     <AnimatedText text="Search" comp="p"/>
                 </Button>
@@ -26,17 +32,9 @@ const SearchBar = ({actions}) => {
 
 export default connect(SearchBar);
 
-const iWrapperStyles = css`
+const wrapperStyles = css`
     z-index: 1;
     width: fit-content;
-    box-shadow: none !important;
-    padding-left: 1px;
-`
-
-const bWrapperStyles = css`
-    z-index: 1;
-    width: fit-content;
-    margin: auto;
 `
 
 const common = css`

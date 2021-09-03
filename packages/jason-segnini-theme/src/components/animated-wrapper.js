@@ -1,3 +1,4 @@
+
 import {styled, keyframes, css} from "frontity"
 import {useRef, useEffect, useState} from "react"
 import {expandWidth, expandHeight, setBackgroundColor} from "../styles/keyframes"
@@ -26,6 +27,9 @@ const AnimatedWrapper = ({
         return prop+'px'
     }
 
+    hideOffset = formatSizeProp(hideOffset)
+    width = formatSizeProp(width)
+
     useEffect(() => {
         if (ref.current && Object.keys(dimensions).length === 0) 
             setDimensions({
@@ -33,9 +37,6 @@ const AnimatedWrapper = ({
                 height: ref.current.clientHeight
             })
     })
-
-    const fHideOffset = formatSizeProp(hideOffset)
-    width = formatSizeProp(width)
     
     return (
         <>
@@ -44,15 +45,15 @@ const AnimatedWrapper = ({
                 ? <AbsoluteAnimatedDiv
                     right
                     width={width}
-                    hideOffset={fHideOffset}
+                    hideOffset={hideOffset}
                     isComponentHidden={isComponentHidden}
                     ref={ref}
                     {...rest}
                 >
                     <TopBorder right/>
                     <CuteCircle/>
-                    <StyledCorner hideOffset={fHideOffset}/>
-                    <BottomBorder hideOffset={fHideOffset}/>
+                    <StyledCorner hideOffset={hideOffset}/>
+                    <BottomBorder hideOffset={hideOffset}/>
                     <LightEffect 
                         absolute
                         right 
@@ -87,13 +88,13 @@ const AnimatedWrapper = ({
                 >
                     <AbsoluteAnimatedDiv 
                         width={width}
-                        hideOffset={fHideOffset}
+                        hideOffset={hideOffset}
                         isComponentHidden={isComponentHidden}
                         {...rest}
                     >
                         <TopBorder/>
                         <ButtonBackground/>
-                        <BottomBorderForRight hideOffset={fHideOffset}/>
+                        <BottomBorderForRight hideOffset={hideOffset}/>
                         <LightEffect 
                             absolute
                             hideOffset={hideOffset}
@@ -156,8 +157,8 @@ const moveDownForRightAlt = (width, height) => keyframes`
             ${(3*height)/100}px
         );}
     100% {transform: translate(
-        ${(5.18*width)/100}px, 
-        ${5*height/100}px
+            ${(5.18*width)/100}px, 
+            ${(5*height)/100}px
         );}
 `
 
@@ -293,7 +294,12 @@ const ButtonBackground = styled.div`
     height: 7%;
     border-radius: 50%;
     border: 2px solid #60d75a;
-    clip-path: polygon(50% 0, 50% 100%, 100% 100%, 100% 0);
+    clip-path: polygon(
+        50% 0, 
+        50% 100%, 
+        100% 100%, 
+        100% 0
+    );
 `
 
 const CuteCircle = styled.div`
@@ -418,8 +424,8 @@ const LightEffect = styled.div`
         -5px 0px 23px 5px #60d75a;
     ${props => props.absolute && "top: 0;"}
     ${props => (props.absolute && props.right)
-        ? css`right: ${props.hideOffset}px;`
-        : css`left: ${props.hideOffset}px`
+        ? css`right: ${props.hideOffset};`
+        : css`left: ${props.hideOffset}`
     }
     animation: ${props=> props.absolute 
         ? (

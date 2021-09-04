@@ -56,14 +56,13 @@ const Hide = ({state, right, isComponentHidden, ...rest}) => {
                 </AnimatedWrapper>
             </OuterWrapper>
             <OuterWrapper css={hideStyles} {...rest}>
-                <HoverShadow>
-                    <AnimatedWrapper css={wrapperStyles()}>
-                        <StyledBorder/>
-                        <HideButton isComponentHidden={isComponentHidden}>
-                            <AnimatedText comp="h1" text={setText()}/>
-                        </HideButton>
+                <Shadow/>
+                <AnimatedWrapper css={wrapperStyles()}>
+                    <StyledBorder/>
+                    <HideButton isComponentHidden={isComponentHidden}>
+                        <AnimatedText comp="h1" text={setText()}/>
+                    </HideButton>
                     </AnimatedWrapper>
-                </HoverShadow>
             </OuterWrapper>
         </Switch>
     )
@@ -75,7 +74,6 @@ const leftConfig = css`
     width: 15.8%;
     height: 5.3%;
     right: 9%;
-    animation: ${glow()} 3s ease-out infinite alternate;
 `
 
 const center = css`
@@ -88,9 +86,11 @@ const wrapperStyles = (right) => css`
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: black;
     ${right 
-        ? "border-radius: 50%;"
+        ? css`
+            border-radius: 50%;
+            background-color: rgba(0,0,0,0.85);
+        `
         : css`
             right: 0;
             clip-path: polygon(
@@ -115,15 +115,26 @@ const wrapperStyles = (right) => css`
     }
 `
 
-const HoverShadow = styled.div`
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    transition: filter .25s ease-out;
-    ${center}
+const Shadow = styled.div`
+    animation: ${glow()} 3s ease-out alternate infinite;
 
-    :hover {
-        filter: drop-shadow(0 0 3px rgba(96, 215, 90, 0.5))
+    ::before {
+        content: '';
+        background-color: black;
+        clip-path: polygon(
+                0% 0%, 
+                66% 0, 
+                100% 26%, 
+                100% 74%, 
+                66% 100%, 
+                0 100%
+            );
+    }
+
+    &, ::before {
+        position: absolute;
+        width: 100%;
+        height: 100%;
     }
 `
 
@@ -197,6 +208,11 @@ const OuterWrapper = styled.div`
                 h1 {
                     text-shadow: 0 0 7px #60d75a;
                 }
+            }
+
+            ${Shadow} {
+                animation: 
+                    ${glow(5, 9)} 1s ease-out alternate infinite;
             }
         }
 `

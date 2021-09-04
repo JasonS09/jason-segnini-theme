@@ -1,5 +1,5 @@
 import {connect, Head, styled, css} from "frontity"
-import {setBackgroundColor} from "../styles/keyframes"
+import {glow, setBackgroundColor} from "../styles/keyframes"
 import dayjs from "dayjs"
 import AnimatedWrapper from "./animated-wrapper"
 
@@ -12,38 +12,39 @@ const Post = ({state, libraries}) => {
     const Html2React = libraries.html2react.Component
 
     return (
-        <AnimatedWrapper css={wrapperStyles}>
-            <StyledBorder/>
-            <StyledPost>
-                <Head>
-                    <title>{post.title.rendered}</title>
-                    <meta name="Description" content={post.excerpt.rendered}/>
-                </Head>
-                {!data.isHome && <h2>{post.title.rendered}</h2>}
-                {data.isPost 
-                && <PostInfo>
-                    <p>
-                        <strong>Posted: </strong>
-                        {formattedDate}
-                    </p>
-                    <p>
-                        <strong>Author: </strong>
-                        {author.name}
-                    </p>
-                </PostInfo>}
-                <PostContent>
-                    <Html2React html={post.content.rendered}/>
-                </PostContent>
-            </StyledPost>
-        </AnimatedWrapper>
+        <PostContainer>
+            <Shadow/>
+            <AnimatedWrapper css={wrapperStyles}>
+                <StyledBorder/>
+                <StyledPost>
+                    <Head>
+                        <title>{post.title.rendered}</title>
+                        <meta name="Description" content={post.excerpt.rendered}/>
+                    </Head>
+                    {!data.isHome && <h2>{post.title.rendered}</h2>}
+                    {data.isPost 
+                    && <PostInfo>
+                        <p>
+                            <strong>Posted: </strong>
+                            {formattedDate}
+                        </p>
+                        <p>
+                            <strong>Author: </strong>
+                            {author.name}
+                        </p>
+                    </PostInfo>}
+                    <PostContent>
+                        <Html2React html={post.content.rendered}/>
+                    </PostContent>
+                </StyledPost>
+            </AnimatedWrapper>
+        </PostContainer>
     )
 }
 
 export default connect(Post)
 
 const wrapperStyles = css`
-    background-color: rgba(0,0,0,.85);
-    transition: transform .25s ease-out;
     clip-path: polygon(
         0% 0%, 
         95.3% 0, 
@@ -51,23 +52,68 @@ const wrapperStyles = css`
         100% 100%, 
         0 100%
     );
+
     :hover {
-        transform: scale(1.01, 1.01);
+
         ::before, ::after {
             border-width: 2px; 
         }
+
         ::before {
             transition: border-width .05s ease-out .05s;
         }
+
         ::after {
             transition: border-width 0s;
         }
+
     }
+
     ::before {
         transition: border-width 0s;
     }
+
     ::after {
         transition: border-width 0s ease-out .25s;
+    }
+`
+
+const Shadow = styled.div`
+    top: 0;
+    animation: ${glow()} 3s ease-out alternate infinite;
+
+    ::before {
+        content: '';
+        background-color: black;
+        clip-path: polygon(
+            0% 0%, 
+            95.3% 0, 
+            100% 48.5%, 
+            100% 100%, 
+            0 100%
+        );
+    }
+
+    &, ::before {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+`
+
+const PostContainer = styled.div`
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform .25s ease-out;
+
+    :hover {
+        transform: scale(1.01, 1.01);
+
+        ${Shadow} {
+            animation: 
+                ${glow(5, 9)} 1s ease-out alternate infinite;
+        }
     }
 `
 

@@ -15,8 +15,8 @@ export const expandHeight = (
 `
 
 export const glow = (from = 3, to = 7) => keyframes`
-    from {filter: drop-shadow(0 0 ${from}px #60d75a)}
-    to {filter: drop-shadow(0 0 ${to}px #60d75a)}
+    from {filter: drop-shadow(0 0 ${from}px #60d75a) opacity(0.85)}
+    to {filter: drop-shadow(0 0 ${to}px #60d75a) opacity(0.85)}
 `
 
 export const setBackgroundColor = keyframes`

@@ -42,10 +42,12 @@ const Archive = ({state, actions}) => {
 export default connect(Archive)
 
 const ArchiveContent = styled.div`
+    position: relative;
     max-width: 175px;
     padding: 2em 1em;
     margin-left: 6em;
     margin-top: 1em;
+    z-index: 2;
 
     h2, h3 {
         color: #60d75a;

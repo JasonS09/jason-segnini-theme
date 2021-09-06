@@ -5,7 +5,8 @@ import {
     expandWidth, 
     expandHeight, 
     glow, 
-    makeAppear
+    makeAppear,
+    glowForPolygon
 } from "../styles/keyframes"
 
 const AnimatedWrapper = ({
@@ -55,10 +56,10 @@ const AnimatedWrapper = ({
                     ref={ref}
                     {...rest}
                 >
-                    <TopBorder right/>
+                    <ShadowForRight hideOffset={hideOffset}/>
                     <CuteCircle/>
                     <StyledCorner hideOffset={hideOffset}/>
-                    <BottomBorder hideOffset={hideOffset}/>
+                    <BottomBorderForRight hideOffset={hideOffset}/>
                     <LightEffect 
                         absolute
                         right 
@@ -87,7 +88,7 @@ const AnimatedWrapper = ({
                     />
                     {rest.children}
                 </AbsoluteAnimatedDiv>
-                : <WrapperForRight  
+                : <WrapperForLeft  
                     width={width}
                     ref={ref}
                 >
@@ -97,9 +98,9 @@ const AnimatedWrapper = ({
                         isComponentHidden={isComponentHidden}
                         {...rest}
                     >
-                        <TopBorder/>
+                        <ShadowForLeft hideOffset={hideOffset}/>
                         <ButtonBackground/>
-                        <BottomBorderForRight hideOffset={hideOffset}/>
+                        <BottomBorderForLeft hideOffset={hideOffset}/>
                         <LightEffect 
                             absolute
                             hideOffset={hideOffset}
@@ -108,7 +109,7 @@ const AnimatedWrapper = ({
                         />
                         {rest.children}
                     </AbsoluteAnimatedDiv>
-                </WrapperForRight>
+                </WrapperForLeft>
             : <AllbordersAnimatedDiv ref={ref} {...rest}>
                 <LightEffect 
                     width={dimensions.width} 
@@ -168,25 +169,25 @@ const moveDownForRightAlt = (width, height) => keyframes`
 `
 
 const fade = keyframes`
-    to {
-        box-shadow: 0 0 0 0;
-        border: 0;
-    }
+    to {filter: opacity(0);}
 `
 
 const animateLeft = (hideOffset, isComponentHidden) => css`
     ${isComponentHidden 
         && css`margin-right: -250px`}
+    right: 0;
+
+    :hover {
+        ${ShadowForLeft} {
+            animation: 
+                ${glowForPolygon(5, 9)} .25s ease-out forwards;
+        }
+    }
 
     ::before {
-        height: 100%;
-        clip-path: polygon(
-            0 0, 
-            100% 0, 
-            100% 100%, 
-            4.4% 100%, 
-            0 97%
-        );
+        border-left: 1px solid #60d75a;
+        animation: 
+            ${expandHeight(2.4)} .05s ease-out forwards;
     }
 
     ::after {
@@ -206,25 +207,23 @@ const animateLeft = (hideOffset, isComponentHidden) => css`
     ::before, ::after {
         left: ${hideOffset};
     }
-
-    &, ::before, ::after {
-        right: 0;
-    }
 `
 
 const animateRight = (hideOffset, isComponentHidden) => css`
     ${isComponentHidden 
         && css`margin-left: -250px`}
 
+    :hover {
+        ${ShadowForRight} {
+            animation: 
+                ${glowForPolygon(5, 9)} .25s ease-out forwards;
+        }
+    }
+
     ::before {
-        height: 95%;
-        clip-path: polygon(
-            0% 0%, 
-            100% 0%, 
-            100% 99%, 
-            97% 100%, 
-            0 100%
-        );
+        border-right: 1px solid #60d75a;
+        animation: 
+            ${expandHeight(2.5)} .05s ease-out forwards;
     }
 
     ::after {
@@ -247,7 +246,72 @@ const animateRight = (hideOffset, isComponentHidden) => css`
     }
 `
 
-const BottomBorderForRight = styled.div`
+const ShadowForLeft = styled.div`
+    left: ${props => props.hideOffset};
+    animation: ${glowForPolygon(9, 3)} .25s ease-out 1,
+        ${glowForPolygon()} 3s ease-out .25s alternate infinite;
+
+    ::before {
+        content: '';
+        background-color: black;
+        clip-path: polygon(
+            0 0, 
+            100% 0, 
+            100% 100%, 
+            4.4% 100%, 
+            0 97%
+        );
+    }
+
+    &, ::before {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+`
+
+const ShadowForRight = styled.div`
+    height: 100%;
+    animation: ${glowForPolygon(9, 3)} .25s ease-out 1,
+        ${glowForPolygon()} 3s ease-out .25s alternate infinite;
+
+    ::before {
+        height: 95%;
+        background-color: black;
+        clip-path: polygon(
+            0% 0%, 
+            100% 0%, 
+            100% 99%, 
+            97% 100%, 
+            0 100%
+        );
+    }
+
+    ::after {
+        bottom: 0;
+        height: 5%;
+        background-color: black;
+        clip-path: polygon(
+            0% 0%, 
+            91% 0%, 
+            100% 46%, 
+            100% 100%, 
+            0% 100%
+        );
+    }
+
+    ::before, ::after {
+        content: '';
+        right: ${props => props.hideOffset}
+    }
+
+    &, ::before, ::after {
+        position: absolute;
+        width: 100%;
+    }
+`
+
+const BottomBorderForLeft = styled.div`
     position: absolute;
     width: 10%;
     height: 3.3%;
@@ -301,13 +365,12 @@ const CuteCircle = styled.div`
         ${glow(5, 10, 1, 1)} 3s linear 1.75s infinite alternate;
 `
 
-const BottomBorder = styled.div`
+const BottomBorderForRight = styled.div`
     position: absolute;
     bottom: 0;
     height: 5%;
     width: 100%;
     right: ${props => props.hideOffset};
-    background-color: rgba(0,0,0,.85);
     clip-path: polygon(
         0% 0%, 
         91% 0%, 
@@ -386,25 +449,6 @@ const StyledCorner = styled.div`
     }
 `
 
-const TopBorder = styled.div`
-    position: absolute;
-    width: 84.2%;
-    top: 0;
-    ${props => props.right
-        ? css`
-            border-right: 1px solid #60d75a;
-            animation: 
-                ${expandHeight(2.5)} .05s ease-out forwards;
-        `
-        : css`
-            right: 0;
-            border-left: 1px solid #60d75a;
-            animation: 
-                ${expandHeight(2.4)} .05s ease-out forwards;
-        `
-    }
-`
-
 const LightEffect = styled.div`
     position: absolute;
     height: 2px;
@@ -447,7 +491,7 @@ const LightEffect = styled.div`
     }
 `
 
-const WrapperForRight = styled.div`
+const WrapperForLeft = styled.div`
     position: absolute;
     right: 0;
     width: ${props => props.width};
@@ -468,17 +512,12 @@ const AbsoluteAnimatedDiv = styled.div`
             props.isComponentHidden
         )
     }
-    z-index: 1;
     transition: margin 1s ease-in-out;
-
-    ::before {
-        background-color: rgba(0,0,0,.85);
-    }
 
     ::before, ::after {
         content: '';
         width: 100%;
-        z-index: -1;
+        z-index: 1;
     }
 
     &, ::before, ::after {

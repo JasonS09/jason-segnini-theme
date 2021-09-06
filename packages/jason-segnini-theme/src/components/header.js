@@ -102,10 +102,12 @@ const Header = ({state, actions}) => {
 export default connect(Header)
 
 const HeaderContent = styled.div`
+    position: relative;
     width: 175px;
     padding: 2em 1em;
     margin-left: 1em;
     margin-top: 1em;
+    z-index: 2;
 
     h1 {
         color: #60d75a;
@@ -119,28 +121,29 @@ const Menu = styled.nav`
     margin: 1em 0;
 
     a {
+        position: relative;
         color: #60d75a;
         text-decoration: none;
-        position: relative;
+        max-height: 18.4px;
 
         ::before {
             content: '';
             position: absolute;
             height: 100%;
-            width: 0%;
+            width: 0;
+            border-radius: 2px;
             background-color: #60d75a;
             z-index: -1;
-            border-radius: 2px;
-        }
-
-        :hover::before {
-            width: 100%;
-            transition: width .5s ease-out;
         }
 
         :hover {
             color: black;
             transition: color .5s ease-out;
+
+            ::before {
+                width: 100%;
+                transition: width .5s ease-out;
+            }   
         }
     }
 `

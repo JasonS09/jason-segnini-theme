@@ -1,5 +1,5 @@
 import {connect, Head, styled, css} from "frontity"
-import {glow, setBackgroundColor} from "../styles/keyframes"
+import {glowForPolygon, makeAppear} from "../styles/keyframes"
 import dayjs from "dayjs"
 import AnimatedWrapper from "./animated-wrapper"
 
@@ -80,7 +80,9 @@ const wrapperStyles = css`
 
 const Shadow = styled.div`
     top: 0;
-    animation: ${glow()} 3s ease-out alternate infinite;
+    animation: 
+        ${glowForPolygon(9, 3)} .25s ease-out 1,
+        ${glowForPolygon()} 3s ease-out .25s alternate infinite;
 
     ::before {
         content: '';
@@ -112,7 +114,7 @@ const PostContainer = styled.div`
 
         ${Shadow} {
             animation: 
-                ${glow(5, 9)} 1s ease-out alternate infinite;
+                ${glowForPolygon(5, 9)} .25s ease-out forwards;
         }
     }
 `
@@ -123,9 +125,11 @@ const StyledBorder = styled.div`
     height: 50%;
     right: 0;
     top: 0;
+    background-color: #60d75a;
     clip-path: polygon(0% 0%, 100% 0, 100% 100%);
+    filter: opacity(0);
     animation: 
-        ${setBackgroundColor} .05s ease-out .20s forwards;
+        ${makeAppear()} .05s ease-out .20s forwards;
 `
 
 const StyledPost = styled.div`

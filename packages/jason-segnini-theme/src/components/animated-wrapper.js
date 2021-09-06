@@ -1,7 +1,12 @@
 
 import {styled, keyframes, css} from "frontity"
 import {useRef, useEffect, useState} from "react"
-import {expandWidth, expandHeight, setBackgroundColor} from "../styles/keyframes"
+import {
+    expandWidth, 
+    expandHeight, 
+    glow, 
+    makeAppear
+} from "../styles/keyframes"
 
 const AnimatedWrapper = ({
     width = 0,
@@ -72,8 +77,8 @@ const AnimatedWrapper = ({
                             border: none;
                             box-shadow: none;
                             animation: 
-                                ${makeAppear} .10s ease-out .75s forwards,
-                                ${showShadow(10, 2, 4)} .10s ease-out .75s forwards,
+                                ${makeAppear()} .10s ease-out .75s forwards,
+                                ${glow(0, 10, 0, 4)} .10s ease-out .75s forwards,
                                 ${moveDownForRightAlt(
                                     dimensions.width, dimensions.height
                                 )} .25s ease-out .75s forwards,
@@ -167,26 +172,6 @@ const fade = keyframes`
         box-shadow: 0 0 0 0;
         border: 0;
     }
-`
-
-const makeAppear = keyframes`
-    from {border-width: 0}
-    to {border-width: 1px}
-`
-
-const showShadow = (
-    blur = 10, 
-    fromSpread = 0, 
-    toSpread = 0
-) => keyframes`
-    0% {box-shadow: 0 0 0 #60d75a;}
-    50% {box-shadow: 0 0 ${blur}px ${fromSpread}px #60d75a;}
-    100% {box-shadow: 0 0 5px ${toSpread}px #60d75a;}
-`
-
-const glowEffect = (spread = 0) => keyframes`
-    from {box-shadow: 0 0 5px ${spread}px #60d75a;}
-    to {box-shadow: 0 0 10px ${spread}px #60d75a;}
 `
 
 const animateLeft = (hideOffset, isComponentHidden) => css`
@@ -306,13 +291,14 @@ const CuteCircle = styled.div`
     position: absolute;
     bottom: 10%;
     left: 21.5%;
-    border: 0 solid #60d75a;
+    border: 1px solid #60d75a;
     border-radius: 50%;
     width: 3%;
     height: 1.2%;
-    animation: ${makeAppear} .5s ease-out 1s forwards,
-        ${showShadow(10, 3, 1)} .5s ease-out 1s 1 alternate,
-        ${glowEffect(1)} 3s linear 1.5s infinite alternate;
+    filter: opacity(0);
+    animation: ${makeAppear()} .5s ease-out 1s forwards,
+        ${glow(5, 10, 2, 1)} .25s ease-out 1.5s 2 alternate,
+        ${glow(5, 10, 1, 1)} 3s linear 1.75s infinite alternate;
 `
 
 const BottomBorder = styled.div`
@@ -338,9 +324,11 @@ const BottomBorder = styled.div`
         top: 0;
         right: 0;
         clip-path: polygon(0% 0%, 100% 0, 100% 100%);
+        background-color: #60d75a;
         z-index: 1;
+        filter: opacity(0);
         animation: 
-            ${setBackgroundColor} .60s ease-out .75s forwards;
+            ${makeAppear()} .60s ease-out .75s forwards;
     }
 
     ::after {
@@ -374,17 +362,21 @@ const StyledCorner = styled.div`
     ::before {
         right: 0;
         width: 5%;
+        background-color: #60d75a;
         clip-path: polygon(100% 80%, 0 100%, 100% 100%);
+        filter: opacity(0);
         animation: 
-            ${setBackgroundColor} .5s ease-out .60s forwards;
+            ${makeAppear()} .5s ease-out .60s forwards;
     }
 
     ::after {
         left: 0;
         width: 20%;
+        background-color: #60d75a;
         clip-path: polygon(0% 0%, 100% 100%, 0% 100%);
+        filter: opacity(0);
         animation: 
-            ${setBackgroundColor} .20s ease-out .80s forwards;
+            ${makeAppear()} .20s ease-out .80s forwards;
     }
 
     ::before, ::after {
@@ -499,8 +491,8 @@ const AllbordersAnimatedDiv = styled.div`
     ${props => props.shadows 
         && css`
             animation: 
-                ${showShadow()} .5s ease-out 1s forwards,
-                ${glowEffect()} 3s linear 1.5s infinite alternate;
+                ${glow(5, 10)} .25s ease-out 1s 2 alternate,
+                ${glow(5, 10)} 3s linear 1.5s infinite alternate;
         `
     }
 

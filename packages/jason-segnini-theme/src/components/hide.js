@@ -1,6 +1,10 @@
 import {connect, styled, css} from "frontity"
 import {useState} from "react"
-import {glow, setBackgroundColor} from "../styles/keyframes"
+import {
+    glow, 
+    glowForPolygon, 
+    makeAppear
+} from "../styles/keyframes"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 import Switch from "@frontity/components/switch"
@@ -46,18 +50,16 @@ const Hide = ({state, right, isComponentHidden, ...rest}) => {
     return (
         <Switch>
             <OuterWrapper when={right} right css={hideStyles} {...rest}>
-                <AnimatedWrapper shadows css={wrapperStyles(true)}>
-                        <HideButton 
-                            right 
-                            isComponentHidden={isComponentHidden}
-                        >
-                            <AnimatedText comp="h1" text={setText()}/>
-                        </HideButton>
-                </AnimatedWrapper>
+                <HideButton 
+                    right 
+                    isComponentHidden={isComponentHidden}
+                >
+                    <AnimatedText comp="h1" text={setText()}/>
+                </HideButton>
             </OuterWrapper>
             <OuterWrapper css={hideStyles} {...rest}>
                 <Shadow/>
-                <AnimatedWrapper css={wrapperStyles()}>
+                <AnimatedWrapper css={wrapperStyles}>
                     <StyledBorder/>
                     <HideButton isComponentHidden={isComponentHidden}>
                         <AnimatedText comp="h1" text={setText()}/>
@@ -82,27 +84,19 @@ const center = css`
     transform: translateY(-50%) translateX(-50%);
 `
 
-const wrapperStyles = (right) => css`
+const wrapperStyles = css`
     position: absolute;
     width: 100%;
     height: 100%;
-    ${right 
-        ? css`
-            border-radius: 50%;
-            background-color: rgba(0,0,0,0.85);
-        `
-        : css`
-            right: 0;
-            clip-path: polygon(
-                0% 0%, 
-                66% 0, 
-                100% 26%, 
-                100% 74%, 
-                66% 100%, 
-                0 100%
-            );
-        `
-    };
+    right: 0;
+    clip-path: polygon(
+        0% 0%, 
+        66% 0, 
+        100% 26%, 
+        100% 74%, 
+        66% 100%, 
+        0 100%
+    );
     ${center}
 
     ::before {
@@ -111,12 +105,12 @@ const wrapperStyles = (right) => css`
 
     ::before, ::after {
         border-width: 2px;
-        ${right && "border-radius: 50%;"};
     }
 `
 
 const Shadow = styled.div`
-    animation: ${glow()} 3s ease-out alternate infinite;
+    animation:  ${glowForPolygon(9, 3)} .25s ease-out 1,
+        ${glowForPolygon()} 3s ease-out .25s alternate infinite;
 
     ::before {
         content: '';
@@ -143,6 +137,7 @@ const StyledBorder = styled.div`
     width: 40%;
     height: 100%;
     right: 0;
+    background-color: #60d75a;
     clip-path: polygon(
         0% 0%, 
         100% 0%, 
@@ -152,17 +147,37 @@ const StyledBorder = styled.div`
         100% 30%
     );
     z-index: 1;
+    filter: opacity(0);
     animation: 
-        ${setBackgroundColor} .10s ease-out .20s forwards;
+        ${makeAppear()} .10s ease-out .20s forwards;
 `
 
 const HideButton = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
-    transition: box-shadow .25s ease-out;
     ${props => props.right 
-        && "border-radius: 50%;"
+        && css`
+            border: 2px solid #60d75a;
+            background-color: rgba(0,0,0,.85);
+            filter: opacity(0);
+            animation: 
+                ${makeAppear()} .25s ease-out forwards,
+                ${glow(5, 10, 0, 2)} .375s ease-out .25s 2 alternate,
+                ${glow(5, 10)} 3s ease-out 1s alternate infinite;
+
+            ::before {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                transition: box-shadow .25s ease-out;
+            }
+
+            &, ::before {
+                border-radius: 50%;
+            }
+        `
     }
 
     h1 {
@@ -189,7 +204,9 @@ const rightConfig = css`
     
     :hover {
         ${HideButton} {
-            box-shadow: 0 0 10px 0 #60d75a;
+            ::before {
+                box-shadow: 0 0 10px 0 #60d75a;
+            }
         }
     }
 `
@@ -212,7 +229,7 @@ const OuterWrapper = styled.div`
 
             ${Shadow} {
                 animation: 
-                    ${glow(5, 9)} 1s ease-out alternate infinite;
+                    ${glowForPolygon(5, 9)} .25s ease-out forwards;
             }
         }
 `

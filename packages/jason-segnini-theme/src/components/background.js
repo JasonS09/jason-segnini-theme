@@ -21,7 +21,7 @@ const Background = ({state, actions}) => {
             ctx.fillRect(0, 0, w, h)
         
             ctx.fillStyle = '#0f0'
-            ctx.font = '15pt monospace'
+            ctx.font = '15pt Share Tech Mono'
         
             ypos.forEach((y, ind) => {
                 const text = String.fromCharCode(Math.random() * 128)

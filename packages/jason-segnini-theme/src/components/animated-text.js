@@ -114,6 +114,13 @@ const AnimatedText = ({
             <summary when={comp==='summary'} {...rest}>
                 {textContent.content + textContent.randChar}
             </summary>
+            <text when={comp==='text'} {...rest}>
+                {textContent.content + textContent.randChar}
+                {rest.children}
+            </text>
+            <tspan when={comp==='tspan'} {...rest}>
+                {textContent.content + textContent.randChar}
+            </tspan>
             <p {...rest}>
                 {textContent.content + textContent.randChar}
             </p>

@@ -4,6 +4,7 @@ import {glow, makeAppear} from "../styles/keyframes"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 import Hide from "./hide"
+import Logo from "./logo"
 
 const Header = ({state, actions}) => {
     const isMenuHidden = !state.theme.showMenu
@@ -85,7 +86,7 @@ const Header = ({state, actions}) => {
                     onClick={() => actions.theme.toggleMenu()}
                 />
                 <HeaderContent ref={headerContent}>
-                    <AnimatedText comp="h1" text="Jason E. Segnini Cubero"/>
+                    <Logo/>
                     <Menu>
                         <AnimatedText 
                             comp="a" 
@@ -226,11 +227,6 @@ const HeaderContent = styled.div`
     margin-left: 1em;
     margin-top: 1em;
     z-index: 2;
-
-    h1 {
-        color: #60d75a;
-        min-height: 108px;
-    }
 `
 
 const Menu = styled.nav`

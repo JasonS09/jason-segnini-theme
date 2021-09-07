@@ -8,6 +8,7 @@ import Header from "./header"
 import Background from "./background"
 import Archive from "./archive"
 import ShareTechMono from "../fonts/ShareTechMono-Regular.ttf"
+import Orbitron from "../fonts/Orbitron-VariableFont_wght.ttf"
 
 const Root = ({state, actions}) => {
     const data = state.source.get(state.router.link)
@@ -30,6 +31,13 @@ const Root = ({state, actions}) => {
                         src: url("${ShareTechMono}");
                     }
 
+                    @font-face {
+                        font-family: 'Orbitron';
+                        src: url("${Orbitron}") format("ttf supports variations");
+                        font-weight: 400 900;
+                        font-stretch: 25% 150%;
+                    }
+
                     *{
                         margin: 0;
                         padding: 0;
@@ -50,6 +58,12 @@ const Root = ({state, actions}) => {
                     body {
                         height: 100vh;
                         width: 100vw;
+
+                        h1, h2 {
+                            font-family: 'Orbitron';
+                            font-size: 20px;
+                            letter-spacing: 3px;
+                        }
                     }
                 `}
             />

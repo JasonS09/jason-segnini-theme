@@ -1,4 +1,5 @@
 import {connect, styled, css} from "frontity"
+import {glowForText} from "../styles/keyframes"
 import SearchBar from "./searchbar"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
@@ -51,5 +52,7 @@ const ArchiveContent = styled.div`
 
     h2, h3 {
         color: #60d75a;
+        animation: 
+            ${glowForText} 3s ease-out alternate infinite;
     }
 `

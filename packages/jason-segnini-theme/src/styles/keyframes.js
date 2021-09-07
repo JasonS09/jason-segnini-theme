@@ -35,6 +35,11 @@ export const glowForPolygon = (from = 3, to = 7) => keyframes`
     }
 `
 
+export const glowForText = keyframes`
+    from {text-shadow: 0 0 2px #60d75a}
+    to {text-shadow: 0 0 5px #60d75a}
+`
+
 export const makeAppear = (opacity = 1) => keyframes`
     from {filter: opacity(0)}
     to {filter: opacity(${opacity})}

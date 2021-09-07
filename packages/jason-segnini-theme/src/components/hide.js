@@ -181,6 +181,8 @@ const HideButton = styled.div`
     }
 
     h1 {
+        font-family: 'Share Tech Mono';
+        letter-spacing: normal;
         position: absolute;
         color: #60d75a;
         text-align: center;
@@ -188,9 +190,9 @@ const HideButton = styled.div`
         ${props => props.right 
             ? props.isComponentHidden
                 ? "padding-right: 2px;"
-                : "padding-left: 4px;"
+                : "padding-left: 3px;"
             : !props.isComponentHidden
-               && "padding-right: 6px;"
+               && "padding-right: 3px;"
         }
         ${center}
     }

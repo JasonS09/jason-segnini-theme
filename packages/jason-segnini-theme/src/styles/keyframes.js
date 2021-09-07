@@ -39,3 +39,7 @@ export const makeAppear = (opacity = 1) => keyframes`
     from {filter: opacity(0)}
     to {filter: opacity(${opacity})}
 `
+
+export const fade = keyframes`
+    to {filter: opacity(0);}
+`

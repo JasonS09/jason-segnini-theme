@@ -6,7 +6,8 @@ import {
     expandHeight, 
     glow, 
     makeAppear,
-    glowForPolygon
+    glowForPolygon,
+    fade
 } from "../styles/keyframes"
 
 const AnimatedWrapper = ({
@@ -166,10 +167,6 @@ const moveDownForRightAlt = (width, height) => keyframes`
             ${(5.18*width)/100}px, 
             ${(5*height)/100}px
         );}
-`
-
-const fade = keyframes`
-    to {filter: opacity(0);}
 `
 
 const animateLeft = (hideOffset, isComponentHidden) => css`

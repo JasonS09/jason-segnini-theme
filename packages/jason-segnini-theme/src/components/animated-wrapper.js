@@ -188,7 +188,7 @@ const animateLeft = (hideOffset, isComponentHidden) => css`
     }
 
     ::after {
-        top: 9.5%;
+        top: 9.4%;
         border-left: 1px solid #60d75a;
         clip-path: polygon(
             0 0, 
@@ -329,6 +329,8 @@ const BottomBorderForLeft = styled.div`
         height: 100%;
         background-color: #60d75a;
         clip-path: polygon(0 100%, 50% 100%, 0 0);
+        filter: opacity(0);
+        animation: ${makeAppear()} .4s ease-out .96s forwards;
     }
 `
 

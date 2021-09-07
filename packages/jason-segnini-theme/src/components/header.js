@@ -14,9 +14,9 @@ const Header = ({state, actions}) => {
         blog: 'Blog',
         contact: 'Contact'
     })
-    const [prevActive, setPrevActive] = useState('')
     const [contentWidth, setContentWidth] = useState(0)
-    const ref = useRef(null)
+    const headerContent = useRef(null)
+    const prevActive = useRef('')
 
     const randEffect = (item, text) => {
         const original = text
@@ -55,18 +55,20 @@ const Header = ({state, actions}) => {
     }
 
     useEffect(() => {
-        if (ref.current && contentWidth === 0) {
+        if (headerContent.current && contentWidth === 0) {
             let padding = parseFloat(
                             getComputedStyle(
-                                ref.current
+                                headerContent.current
                             ).paddingLeft)
                         + parseFloat(
                             getComputedStyle(
-                                ref.current
+                                headerContent.current
                             ).paddingRight)
-            let width = ref.current.clientWidth
+            let width = headerContent.current.clientWidth
             setContentWidth(width - padding)
         }
+
+        prevActive.current = active
     })
     
     return (
@@ -82,7 +84,7 @@ const Header = ({state, actions}) => {
                     isComponentHidden={isMenuHidden} 
                     onClick={() => actions.theme.toggleMenu()}
                 />
-                <HeaderContent ref={ref}>
+                <HeaderContent ref={headerContent}>
                     <AnimatedText comp="h1" text="Jason E. Segnini Cubero"/>
                     <Menu>
                         <AnimatedText 
@@ -90,11 +92,10 @@ const Header = ({state, actions}) => {
                             link="/" 
                             text={menuTexts.home} 
                             onMouseOver={() => randEffect('home', 'Home')}
-                            onClick={() => setPrevActive(active)}
                             css={setMenuElementStyle(
                                     '/', 
                                     active, 
-                                    prevActive, 
+                                    prevActive.current, 
                                     contentWidth
                                 )}
                         />
@@ -104,11 +105,10 @@ const Header = ({state, actions}) => {
                             link="/about-me" 
                             text={menuTexts.aboutMe}
                             onMouseOver={() => randEffect('aboutMe', 'About Me')}
-                            onClick={() => setPrevActive(active)}
                             css={setMenuElementStyle(
                                     '/about-me/', 
                                     active, 
-                                    prevActive, 
+                                    prevActive.current, 
                                     contentWidth
                                 )}
                         />
@@ -118,11 +118,10 @@ const Header = ({state, actions}) => {
                             link="/blog" 
                             text={menuTexts.blog}
                             onMouseOver={() => randEffect('blog', 'Blog')}
-                            onClick={() => setPrevActive(active)}
                             css={setMenuElementStyle(
                                     '/blog/', 
                                     active, 
-                                    prevActive, 
+                                    prevActive.current, 
                                     contentWidth
                                 )}
                         />
@@ -132,11 +131,10 @@ const Header = ({state, actions}) => {
                             link="/contact" 
                             text={menuTexts.contact}
                             onMouseOver={() => randEffect('contact', 'Contact')}
-                            onClick={() => setPrevActive(active)}
                             css={setMenuElementStyle(
                                     '/contact/', 
                                     active, 
-                                    prevActive, 
+                                    prevActive.current, 
                                     contentWidth
                                 )}
                         />
@@ -215,7 +213,8 @@ const changeActive = (contentWidth) => css`
     }
 
     ::before {
-        animation: ${makeAppear()} 1s ease-out forwards;
+        filter: opacity(0);
+        animation: ${makeAppear()} 0s ease-out .5s forwards;
         width: 0;
     }
 `

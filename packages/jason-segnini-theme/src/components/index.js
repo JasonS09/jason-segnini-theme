@@ -59,9 +59,20 @@ const Root = ({state, actions}) => {
                         height: 100vh;
                         width: 100vw;
 
-                        h1, h2 {
-                            font-family: 'Orbitron';
+                        h1 {
+                            font-size: 25px;
+                        }
+
+                        h2 {
                             font-size: 20px;
+                        }
+
+                        h3 {
+                            font-size: 15px;
+                        }
+
+                        h1, h2, h3 {
+                            font-family: 'Orbitron';
                             letter-spacing: 3px;
                         }
                     }

@@ -352,8 +352,8 @@ const ButtonBackground = styled.div`
 
 const CuteCircle = styled.div`
     position: absolute;
-    bottom: 10%;
-    left: 21.5%;
+    bottom: 9.7%;
+    left: 21.8%;
     border: 1px solid #60d75a;
     border-radius: 50%;
     width: 3%;

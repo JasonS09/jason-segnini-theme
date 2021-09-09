@@ -24,14 +24,18 @@ export const glow = (
     to {box-shadow: 0 0 ${toBlur}px ${toSpread}px #60d75a;}
 `
 
-export const glowForPolygon = (from = 3, to = 7) => keyframes`
+export const glowForPolygon = (
+    from = 3, 
+    to = 7, 
+    opacity = .85
+) => keyframes`
     from {
         filter: drop-shadow(0 0 ${from}px #60d75a) 
-            opacity(.85)
+            opacity(${opacity})
     }
     to {
         filter: drop-shadow(0 0 ${to}px #60d75a) 
-            opacity(.85)
+            opacity(${opacity})
     }
 `
 

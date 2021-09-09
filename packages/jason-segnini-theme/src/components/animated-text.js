@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {useState, useEffect, useLayoutEffect} from "react"
 import {connect} from "frontity"
 import Link from "@frontity/components/link"
 import Switch from "@frontity/components/switch"
@@ -17,75 +17,76 @@ const AnimatedText = ({
     const isWelcomeReceived = state.theme.isWelcomeReceived
     const [textContent, setTextContent] = useState({
         content: '',
-        randChar: ''
+        randChar: '',
+        i: 0,
+        randTimer: 0,
+        animationFinished: false
     });
 
     const writeText = () => {
-        let i = 0
-        const baseSpeed = speed
-        const fPauseSpeed = baseSpeed*10
-        const sPauseSpeed = baseSpeed*20
+        let char = text.charAt(textContent.i)
     
-        const typeWriter = () => {
-            if (isCoverText && (speed === fPauseSpeed || speed === sPauseSpeed)) 
-                speed = baseSpeed
-    
-            if (i < text.length) {    
-                let char = text.charAt(i)
+        if (isCoverText && char === '.') 
+            speed = Math.random() < 0.5 ? speed*10 : speed*20
 
-                if (isCoverText && char === '.') 
-                    speed = Math.random() < 0.5 ? fPauseSpeed : sPauseSpeed
-
-                setTextContent(textContent => ({
-                    ...textContent, content: textContent.content + char
-                }))
-                i++
-                setTimeout(typeWriter, speed)
-                return
-            }
-
-            setTextContent(textContent => ({...textContent, animationFinished: true}))
-
-            if (reanimate) 
-                setTextContent(textContent => ({...textContent, reanimationFinished: true}))
-
-            if (!isWelcomeReceived) setTimeout(actions.theme.welcome, 1500)
-        }
-
-        const randEffect = () => {
-            if (i < text.length) {
-                setTextContent(textContent => ({
-                    ...textContent, 
-                    randChar: String.fromCharCode(Math.random()*128)
-                }))
-                setTimeout(randEffect, 10)
-                return
-            }
-
-            setTextContent(textContent => ({...textContent, randChar: ''}))
-        }
-
-        randEffect()
-        setTimeout(typeWriter, speed)
+        setTextContent(
+            textContent => ({
+                content: textContent.content + char,
+                randChar: '',
+                i: textContent.i + 1,
+                randTimer: speed
+            })
+        )
     }
-    
-    if (textContent.content === '' 
-        && textContent.randChar === ''
-        && (isWelcomeReceived || data.isHome))
-        writeText()
 
-    if (textContent.animationFinished) {
-        if (reanimate) {
-            if (!textContent.reanimationFinished)
-                setTextContent({
-                    content: '',
-                    randChar: ''
-                })
+    useEffect(() => {
+        if (textContent.i === text.length)
+            setTextContent(textContent => ({
+                ...textContent,
+                animationFinished: true
+            }))
+    }, [textContent.i])
+
+    useLayoutEffect(() => {
+        if (textContent.animationFinished && reanimate)
+            setTextContent({
+                content: '',
+                i: 0,
+                randTimer: 0,
+                animationFinished: false
+            })
+    }, [reanimate])
+
+    if (textContent.animationFinished 
+        && textContent.content != text) 
+            setTextContent(
+                textContent => (
+                    {...textContent, content: text}
+                )
+            )
+    
+    else if (isWelcomeReceived || data.isHome) {
+        if (!textContent.animationFinished) {
+            if (textContent.randTimer > 0) {
+                setTimeout(
+                    setTextContent,
+                    10,
+                    textContent => ({
+                        ...textContent, 
+                        randChar: String.fromCharCode(
+                            Math.random()*128,
+                        ),
+                        randTimer: textContent.randTimer-10
+                    })
+                )
+            }
+            else writeText()   
         }
-        else if (textContent.reanimationFinished)
-            setTextContent(textContent => ({...textContent, reanimationFinished: false}))
-        else if (textContent.content != text)
-            setTextContent(textContent => ({...textContent, content: text}))
+        else if (textContent.randChar != '')
+            setTextContent(textContent => ({...textContent, randChar: ''}))
+
+        if (!isWelcomeReceived) 
+            setTimeout(actions.theme.welcome, 1500)
     }
 
     return (

@@ -9,54 +9,62 @@ import Logo from "./logo"
 const Header = ({state, actions}) => {
     const isMenuHidden = !state.theme.showMenu
     const active = state.router.link
-    const [menuTexts, setMenuTexts] = useState({
-        home: 'Home',
-        aboutMe: 'About Me',
-        blog: 'Blog',
-        contact: 'Contact'
+    const [menuStates, setMenuStates] = useState({
+        homeText: 'Home',
+        aboutMeText: 'About Me',
+        blogText: 'Blog',
+        contactText: 'Contact',
+        iHome: 0,
+        iAboutMe: 0,
+        iBlog: 0,
+        iContact: 0,
+        contentWidth: 0
     })
-    const [contentWidth, setContentWidth] = useState(0)
     const headerContent = useRef(null)
     const prevActive = useRef('')
 
-    const randEffect = (item, text) => {
-        const original = text
+    const generateText = (size) => {
         let i = 0
-        
-        const generateText = (size) => {
-            let j = 0
 
-            const pushChar = (char) => {
-                if (j < size) {
-                    j++ 
-                    return char 
-                        + pushChar(String.fromCharCode(Math.random()*128))
-                }
-
-                return char
+        const pushChar = (char) => {
+            if (i < size) {
+                i++ 
+                return char 
+                    + pushChar(String.fromCharCode(Math.random()*128))
             }
 
-            return pushChar(String.fromCharCode(Math.random()*128))
+            return char
         }
 
-        const animate = (newText) => {
-            setMenuTexts(menuTexts => ({...menuTexts, [item]: newText}))
+        return pushChar(String.fromCharCode(Math.random()*128))
+    }
 
-            if (i < text.length)  {
-                setTimeout(animate, 30, generateText(text.length))
-                i++
-                return
-            }
-
-            if (newText != original)
-                setTimeout(animate, 30, original)
+    const randEffect = (item, iterator, text) => {
+        if (menuStates[iterator] === text.length) {
+            setMenuStates(
+                menuStates => ({
+                    ...menuStates, 
+                    [item]: text,
+                    [iterator]: 0
+                })
+            )
+            return
         }
 
-        animate(generateText(text.length))
+        if (menuStates[iterator] < text.length) {
+            setMenuStates(
+                menuStates => ({
+                    ...menuStates, 
+                    [item]: generateText(text.length),
+                    [iterator]: menuStates[iterator]+1
+                })
+            )
+        }
     }
 
     useEffect(() => {
-        if (headerContent.current && contentWidth === 0) {
+        if (headerContent.current 
+            && menuStates.contentWidth === 0) {
             let padding = parseFloat(
                             getComputedStyle(
                                 headerContent.current
@@ -66,11 +74,25 @@ const Header = ({state, actions}) => {
                                 headerContent.current
                             ).paddingRight)
             let width = headerContent.current.clientWidth
-            setContentWidth(width - padding)
+            setMenuStates(menuStates => ({
+                ...menuStates,
+                contentWidth: width-padding
+            }))
         }
-
         prevActive.current = active
-    })
+    }, [state.router.link])
+
+    if (menuStates.iHome > 0)
+        setTimeout(randEffect, 30, 'homeText', 'iHome', 'Home')
+
+    if (menuStates.iAboutMe > 0)
+        setTimeout(randEffect, 30, 'aboutMeText', 'iAboutMe', 'About Me')
+        
+    if (menuStates.iBlog > 0)
+        setTimeout(randEffect, 30, 'blogText', 'iBlog', 'Blog')
+
+    if (menuStates.iContact > 0)
+        setTimeout(randEffect, 30, 'contactText', 'iContact', 'Contact')
     
     return (
         <>
@@ -91,52 +113,52 @@ const Header = ({state, actions}) => {
                         <AnimatedText 
                             comp="a" 
                             link="/" 
-                            text={menuTexts.home} 
-                            onMouseOver={() => randEffect('home', 'Home')}
+                            text={menuStates.homeText} 
+                            onMouseOver={() => randEffect('homeText', 'iHome', 'Home')}
                             css={setMenuElementStyle(
                                     '/', 
                                     active, 
                                     prevActive.current, 
-                                    contentWidth
+                                    menuStates.contentWidth
                                 )}
                         />
                         <br/>
                         <AnimatedText 
                             comp="a" 
                             link="/about-me" 
-                            text={menuTexts.aboutMe}
-                            onMouseOver={() => randEffect('aboutMe', 'About Me')}
+                            text={menuStates.aboutMeText}
+                            onMouseOver={() => randEffect('aboutMeText', 'iAboutMe', 'About Me')}
                             css={setMenuElementStyle(
                                     '/about-me/', 
                                     active, 
                                     prevActive.current, 
-                                    contentWidth
+                                    menuStates.contentWidth
                                 )}
                         />
                         <br/>
                         <AnimatedText 
                             comp="a" 
                             link="/blog" 
-                            text={menuTexts.blog}
-                            onMouseOver={() => randEffect('blog', 'Blog')}
+                            text={menuStates.blogText}
+                            onMouseOver={() => randEffect('blogText', 'iBlog', 'Blog')}
                             css={setMenuElementStyle(
                                     '/blog/', 
                                     active, 
                                     prevActive.current, 
-                                    contentWidth
+                                    menuStates.contentWidth
                                 )}
                         />
                         <br/>
                         <AnimatedText 
                             comp="a" 
                             link="/contact" 
-                            text={menuTexts.contact}
-                            onMouseOver={() => randEffect('contact', 'Contact')}
+                            text={menuStates.contactText}
+                            onMouseOver={() => randEffect('contactText', 'iContact', 'Contact')}
                             css={setMenuElementStyle(
                                     '/contact/', 
                                     active, 
                                     prevActive.current, 
-                                    contentWidth
+                                    menuStates.contentWidth
                                 )}
                         />
                     </Menu>
@@ -232,7 +254,7 @@ const HeaderContent = styled.div`
 const Menu = styled.nav`
     display: flex;
     flex-direction: column;
-    margin: 1em 0;
+    margin-top: 2em;
 
     a {
         position: relative;

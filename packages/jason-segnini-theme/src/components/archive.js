@@ -25,7 +25,7 @@ const Archive = ({state, actions}) => {
                 <AnimatedText 
                     comp="h2" 
                     text="Archive" 
-                    css={css`margin-bottom: 1em`}
+                    css={css`margin-bottom: 8px`}
                 />
                 <br/>
                 <AnimatedText comp="h3" text="Categories"/>
@@ -49,6 +49,11 @@ const ArchiveContent = styled.div`
     margin-left: 6em;
     margin-top: 1em;
     z-index: 2;
+
+    h2 {
+        font-family: 'Hacked';
+        font-size: 30px;
+    }
 
     h2, h3 {
         color: #60d75a;

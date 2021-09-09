@@ -44,7 +44,7 @@ const Logo = () => {
                     comp="text" 
                     text="Jason E." 
                     x="0" 
-                    y="20%"
+                    y="30%"
                     textLength="143"
                     lengthAdjust="spacing"
                     css={textStyles}>
@@ -61,7 +61,7 @@ const Logo = () => {
                             comp="tspan" 
                             text="Cubero" 
                             x="0" 
-                            y="80%"
+                            y="70%"
                             textLength="143"
                             lengthAdjust="spacing"
                             css={textStyles}
@@ -79,19 +79,20 @@ const Logo = () => {
                         x1="50%" 
                         y1="0" 
                         x2="5%" 
-                        y2="95%"
+                        y2="78%"
                         delay=".50"
                         ref={fig => figs.current[2] = fig}
                         size={sizes[2]} 
                     />
                     <Circle 
                         cx="5%" 
-                        cy="95%" 
+                        cy="78%" 
                         r="3%"  
                         delay=".75" 
                         ref={fig => figs.current[3] = fig}
                         size={sizes[3]}
                     />
+                    <Ellipse cx="50%" cy="95%" rx="50%" ry="3%"/>
             </svg>
         )
     }
@@ -104,9 +105,9 @@ const draw = keyframes`
 
 const textStyles = css`
     fill: #60d75a;
-    font-family: 'Share Tech Mono';
+    font-family: 'Hacked';
     text-align: center;
-    font-size: 30px;
+    font-size: 25px;
     user-select: none;
     animation: 
         ${glowForText} 3s ease-out alternate infinite;
@@ -135,4 +136,5 @@ const Circle = styled.circle`
 
 const Ellipse = styled.ellipse`
     fill: #60d75a;
+    filter: blur(5px) opacity(.5);
 `

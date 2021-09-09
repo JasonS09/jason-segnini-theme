@@ -1,4 +1,3 @@
-
 import {styled, keyframes, css} from "frontity"
 import {useRef, useEffect, useState} from "react"
 import {
@@ -201,9 +200,7 @@ const animateLeft = (hideOffset, isComponentHidden) => css`
             ${expandHeight(91)} .95s ease-out .05s forwards;
     }
 
-    ::before, ::after {
-        left: ${hideOffset};
-    }
+    ::before, ::after {left: ${hideOffset};}
 `
 
 const animateRight = (hideOffset, isComponentHidden) => css`
@@ -238,9 +235,7 @@ const animateRight = (hideOffset, isComponentHidden) => css`
             ${expandHeight(91)} .55s ease-out .05s forwards;
     }
 
-    ::before, ::after {
-        right: ${hideOffset};
-    }
+    ::before, ::after {right: ${hideOffset};}
 `
 
 const ShadowForLeft = styled.div`
@@ -519,9 +514,7 @@ const AbsoluteAnimatedDiv = styled.div`
         z-index: 1;
     }
 
-    &, ::before, ::after {
-        position: absolute;
-    }
+    &, ::before, ::after {position: absolute;}
 `
 
 const AllbordersAnimatedDiv = styled.div`

@@ -9,6 +9,7 @@ import Background from "./background"
 import Archive from "./archive"
 import ShareTechMono from "../fonts/ShareTechMono-Regular.ttf"
 import Orbitron from "../fonts/Orbitron-VariableFont_wght.ttf"
+import Hacked from "../fonts/Hacked-KerX.ttf"
 
 const Root = ({state, actions}) => {
     const data = state.source.get(state.router.link)
@@ -36,6 +37,11 @@ const Root = ({state, actions}) => {
                         src: url("${Orbitron}") format("ttf supports variations");
                         font-weight: 400 900;
                         font-stretch: 25% 150%;
+                    }
+
+                    @font-face {
+                        font-family: 'Hacked';
+                        src: url("${Hacked}");
                     }
 
                     *{

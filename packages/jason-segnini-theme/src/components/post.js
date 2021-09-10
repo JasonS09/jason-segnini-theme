@@ -105,8 +105,6 @@ const Shadow = styled.div`
 
 const PostContainer = styled.div`
     position: relative;
-    width: 100%;
-    height: 100%;
     transition: transform .25s ease-out;
 
     :hover {

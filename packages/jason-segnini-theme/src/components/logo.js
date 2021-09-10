@@ -1,7 +1,8 @@
-import {styled, css, keyframes} from "frontity"
-import {glowForText, glowForPolygon} from "../styles/keyframes"
+import {styled, css} from "frontity"
+import {glowForText, glowForPolygon, draw} from "../styles/keyframes"
 import {useRef, useState, useEffect} from "react"
 import AnimatedText from "./animated-text"
+import Lobo from "./lobo"
 
 const Logo = () => {
     const [sizes, setSizes] = useState([])
@@ -30,78 +31,77 @@ const Logo = () => {
     })
 
     return (
-            <svg width="143" height="173">
-                <Line 
-                    x1="98%" 
-                    y1="83%" 
-                    x2="50%" 
-                    y2="0"
-                    delay=".25"
-                    ref={fig => figs.current[1] = fig}
-                    size={sizes[1]} 
-                />
-                <AnimatedText 
-                    comp="text" 
-                    text="Jason E." 
-                    x="0" 
-                    y="30%"
-                    textLength="143"
-                    lengthAdjust="spacing"
-                    css={textStyles}>
-                        <AnimatedText 
-                            comp="tspan" 
-                            text="Segnini" 
-                            x="0" 
-                            y="50%"
-                            textLength="143"
-                            lengthAdjust="spacing"
-                            css={textStyles}
-                        />
-                        <AnimatedText 
-                            comp="tspan" 
-                            text="Cubero" 
-                            x="0" 
-                            y="70%"
-                            textLength="143"
-                            lengthAdjust="spacing"
-                            css={textStyles}
-                        />
-                    </AnimatedText>
+            <Div>
+                <Lobo css={loboStyles}/>
+                <Svg width="143" height="173">
                     <Line 
-                        x1="45%" 
-                        y1="70%" 
-                        x2="98%" 
-                        y2="83%"
-                        ref={fig => figs.current[0] = fig}
-                        size={sizes[0]} 
+                        x1="98%" 
+                        y1="83%" 
+                        x2="50%" 
+                        y2="0"
+                        delay=".25"
+                        ref={fig => figs.current[1] = fig}
+                        size={sizes[1]} 
                     />
-                    <Line 
-                        x1="50%" 
-                        y1="0" 
-                        x2="5%" 
-                        y2="78%"
-                        delay=".50"
-                        ref={fig => figs.current[2] = fig}
-                        size={sizes[2]} 
-                    />
-                    <Circle 
-                        cx="5%" 
-                        cy="78%" 
-                        r="3%"  
-                        delay=".75" 
-                        ref={fig => figs.current[3] = fig}
-                        size={sizes[3]}
-                    />
-                    <Ellipse cx="50%" cy="95%" rx="50%" ry="3%"/>
-            </svg>
+                    <AnimatedText 
+                        comp="text" 
+                        text="Jason E." 
+                        x="0" 
+                        y="30%"
+                        textLength="143"
+                        lengthAdjust="spacing"
+                        css={textStyles}>
+                            <AnimatedText 
+                                comp="tspan" 
+                                text="Segnini" 
+                                x="0" 
+                                y="50%"
+                                textLength="143"
+                                lengthAdjust="spacing"
+                                css={textStyles}
+                            />
+                            <AnimatedText 
+                                comp="tspan" 
+                                text="Cubero" 
+                                x="0" 
+                                y="70%"
+                                textLength="143"
+                                lengthAdjust="spacing"
+                                css={textStyles}
+                            />
+                        </AnimatedText>
+                        <Line 
+                            x1="45%" 
+                            y1="70%" 
+                            x2="98%" 
+                            y2="83%"
+                            ref={fig => figs.current[0] = fig}
+                            size={sizes[0]} 
+                        />
+                        <Line 
+                            x1="50%" 
+                            y1="0" 
+                            x2="5%" 
+                            y2="78%"
+                            delay=".50"
+                            ref={fig => figs.current[2] = fig}
+                            size={sizes[2]} 
+                        />
+                        <Circle 
+                            cx="5%" 
+                            cy="78%" 
+                            r="3%"  
+                            delay=".75" 
+                            ref={fig => figs.current[3] = fig}
+                            size={sizes[3]}
+                        />
+                        <Ellipse cx="50%" cy="95%" rx="50%" ry="3%"/>
+                </Svg>
+            </Div>
         )
     }
 
 export default Logo
-
-const draw = keyframes`
-    to {stroke-dashoffset: 0;}
-`
 
 const textStyles = css`
     fill: #60d75a;
@@ -111,6 +111,51 @@ const textStyles = css`
     user-select: none;
     animation: 
         ${glowForText} 3s ease-out alternate infinite;
+`
+
+const Svg = styled.svg`
+    filter: opacity(1);
+    transition: filter 1s ease-out;
+`
+
+const loboStyles = css`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    z-index: 1;
+    filter: opacity(0);
+    transition: filter 1s ease-out;
+
+    path {
+        animation: 
+            ${glowForPolygon(
+                3, 7, 1
+            )} 3s ease-out alternate infinite;
+    }
+
+    :hover {
+        filter: opacity(1);
+        
+        path {
+            animation:
+                ${draw} 10s ease-out forwards,
+                ${glowForPolygon(
+                    3, 7, 1
+                )} 3s ease-out alternate infinite;
+        }
+
+        + ${Svg} {
+            filter: opacity(0);
+
+            line, circle, text, tspan {
+                animation: 
+                    ${glowForPolygon(
+                        3, 7, 1
+                    )} 3s ease-out alternate infinite;
+            }
+        }
+    }
 `
 
 const common = (size = 0, delay = 0) => css`
@@ -124,6 +169,10 @@ const common = (size = 0, delay = 0) => css`
             7, 14, 1,
         )} 3s ease-out ${delay}s alternate infinite,
         ${draw} .25s ease-out ${delay}s forwards;
+`
+
+const Div = styled.div`
+    position: relative;
 `
 
 const Line = styled.line`

@@ -1,9 +1,11 @@
 import {connect, styled, css} from "frontity"
 import {useState} from "react"
 import AnimatedText from "./animated-text"
+import AnimatedWrapper from "./animated-wrapper"
 
 const List = ({
-    state, 
+    state,
+    libraries, 
     actions, 
     maxnum,
     animationSpeed,
@@ -14,6 +16,7 @@ const List = ({
                 ? state.source.get(state.router.link)
                 : state.source.get(state.source.postsPage)
     const items = data.items
+    const Html2React = libraries.html2react.Component
 
     const getCategoriesIds = () => {
         let ids = []
@@ -78,8 +81,28 @@ const List = ({
                     item => {
                         const post = state.source[item.type][item.id]
                         return (
-                            <>{!postsPage
-                                && <AnimatedText 
+                            <>{postsPage
+                                ? <>
+                                        <AnimatedWrapper 
+                                            type='polygonal'
+                                            key={item.id}
+                                        >
+                                            <Title>
+                                                <AnimatedText
+                                                    comp="a"
+                                                    link={post.link}
+                                                    text={post.title.rendered}
+                                                    data-speed={animationSpeed}
+                                                    css={linkStyles}
+                                                />
+                                            </Title>
+                                            <Excerpt>
+                                                <Html2React html={post.excerpt.rendered}/>
+                                            </Excerpt>
+                                        </AnimatedWrapper>
+                                        <br/>
+                                    </>
+                                : <AnimatedText 
                                     key={item.id} 
                                     link={post.link}
                                     text={post.title.rendered}
@@ -157,6 +180,31 @@ const List = ({
 }
 
 export default connect(List)
+
+const linkStyles = css`
+    font-family: 'Orbitron';
+    font-size: 20px;
+    letter-spacing: 3px;
+    transition: text-shadow .25s ease-out;
+
+    :hover {
+        text-shadow: 0 0 7px #60d75a;
+    }
+`
+
+const Title = styled.div`
+    position: relative;
+    display: inline-block;
+    width: fit-content;
+    max-width: 95%;
+    padding-top: 10px;
+    padding-left: 1em;
+    z-index: 1;
+`
+
+const Excerpt = styled.div`
+    padding: 10px 1em 10px;
+`
 
 const Items = styled.div`
     a, summary {

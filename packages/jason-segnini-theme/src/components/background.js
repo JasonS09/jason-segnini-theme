@@ -43,14 +43,12 @@ const Background = ({state, actions}) => {
         }
     })
 
-    return <Canvas ref={matrixCanv}></Canvas>
+    return <Canvas ref={matrixCanv}/>
 }
 
 export default connect(Background)
 
 const Canvas = styled.canvas`
   position: fixed;
-  top: 0;
-  left: 0;
   z-index: -1;
 `

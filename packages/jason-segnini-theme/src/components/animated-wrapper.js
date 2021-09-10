@@ -12,7 +12,7 @@ import {
 const AnimatedWrapper = ({
     width = 0,
     hideOffset = 0,
-    absolute,
+    type,
     right,
     isComponentHidden,
     ...rest
@@ -43,52 +43,54 @@ const AnimatedWrapper = ({
                 height: ref.current.clientHeight
             })
     })
-    
-    return (
-        <>
-            {absolute 
-             ? right
-                ? <AbsoluteAnimatedDiv
-                    right
-                    width={width}
-                    hideOffset={hideOffset}
-                    isComponentHidden={isComponentHidden}
-                    ref={ref}
-                    {...rest}
-                >
-                    <ShadowForRight hideOffset={hideOffset}/>
-                    <CuteCircle/>
-                    <StyledCorner hideOffset={hideOffset}/>
-                    <BottomBorderForRight hideOffset={hideOffset}/>
-                    <LightEffect 
-                        absolute
-                        right 
+
+    switch(type) {
+        case 'absolute':
+            if (right)
+                return (
+                    <AbsoluteAnimatedDiv
+                        right
+                        width={width}
                         hideOffset={hideOffset}
-                        width={dimensions.width}
-                        height={dimensions.height}
-                    />
-                    <LightEffect 
-                        absolute
-                        right 
-                        hideOffset={hideOffset}
-                        css={css`
-                            top: auto;
-                            bottom: 5%;
-                            right: 21%;
-                            border: none;
-                            box-shadow: none;
-                            animation: 
-                                ${makeAppear()} .10s ease-out .75s forwards,
-                                ${glow(0, 10, 0, 4)} .10s ease-out .75s forwards,
-                                ${moveDownForRightAlt(
-                                    dimensions.width, dimensions.height
-                                )} .25s ease-out .75s forwards,
-                                ${fade} .10s ease-out 1s forwards;
-                        `}                        
-                    />
-                    {rest.children}
-                </AbsoluteAnimatedDiv>
-                : <WrapperForLeft  
+                        isComponentHidden={isComponentHidden}
+                        ref={ref}
+                        {...rest}
+                    >
+                        <ShadowForRight hideOffset={hideOffset}/>
+                        <CuteCircle/>
+                        <StyledCorner hideOffset={hideOffset}/>
+                        <BottomBorderForRight hideOffset={hideOffset}/>
+                        <LightEffect 
+                            absolute
+                            right 
+                            hideOffset={hideOffset}
+                            width={dimensions.width}
+                            height={dimensions.height}
+                        />
+                        <LightEffect 
+                            absolute
+                            right 
+                            hideOffset={hideOffset}
+                            css={css`
+                                top: auto;
+                                bottom: 5%;
+                                right: 21%;
+                                border: none;
+                                box-shadow: none;
+                                animation: 
+                                    ${makeAppear()} .10s ease-out .75s forwards,
+                                    ${glow(0, 10, 0, 4)} .10s ease-out .75s forwards,
+                                    ${moveDownForRightAlt(
+                                        dimensions.width, dimensions.height
+                                    )} .25s ease-out .75s forwards,
+                                    ${fade} .10s ease-out 1s forwards;
+                            `}                        
+                        />
+                        {rest.children}
+                    </AbsoluteAnimatedDiv>
+                )
+            return (
+                <WrapperForLeft  
                     width={width}
                     ref={ref}
                 >
@@ -110,15 +112,46 @@ const AnimatedWrapper = ({
                         {rest.children}
                     </AbsoluteAnimatedDiv>
                 </WrapperForLeft>
-            : <AllbordersAnimatedDiv ref={ref} {...rest}>
-                <LightEffect 
-                    width={dimensions.width} 
-                    height={dimensions.height} 
-                />
-                {rest.children}
-            </AllbordersAnimatedDiv>}
-        </>
-    )
+            )
+
+        case 'polygonal':
+            return (
+                <PolygonalAnimatedDiv {...rest}>
+                    <ShadowForPolygon/>
+                    <AllbordersAnimatedDiv css={css`
+                            clip-path: polygon(
+                                0% 0%, 
+                                95.3% 0, 
+                                100% 48px, 
+                                100% 100%, 
+                                0 100%
+                            );
+
+                            ::before {transition: border-width 0s;}
+
+                            ::after {
+                                transition: 
+                                    border-width 0s ease-out .25s;
+                            }
+                    `}>
+                        <StyledBorder/>
+                        {rest.children}
+                    </AllbordersAnimatedDiv>
+                </PolygonalAnimatedDiv>
+            )
+
+        default:
+            return (
+                <AllbordersAnimatedDiv ref={ref} {...rest}>
+                    <LightEffect 
+                        width={dimensions.width} 
+                        height={dimensions.height} 
+                    />
+                    {rest.children}
+                </AllbordersAnimatedDiv>
+            )
+    }
+
 }
 
 export default AnimatedWrapper
@@ -236,6 +269,44 @@ const animateRight = (hideOffset, isComponentHidden) => css`
     }
 
     ::before, ::after {right: ${hideOffset};}
+`
+
+const StyledBorder = styled.div`
+    position: absolute;
+    width: 5%;
+    height: 50px;
+    right: 0;
+    top: 0;
+    background-color: #60d75a;
+    clip-path: polygon(0% 0%, 100% 0, 100% 100%);
+    filter: opacity(0);
+    animation: 
+        ${makeAppear()} .05s ease-out .20s forwards;
+`
+
+const ShadowForPolygon = styled.div`
+    top: 0;
+    animation: 
+        ${glowForPolygon(9, 3)} .25s ease-out 1,
+        ${glowForPolygon()} 3s ease-out .25s alternate infinite;
+
+    ::before {
+        content: '';
+        background-color: black;
+        clip-path: polygon(
+            0% 0%, 
+            95.3% 0, 
+            100% 48px, 
+            100% 100%, 
+            0 100%
+        );
+    }
+
+    &, ::before {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
 `
 
 const ShadowForLeft = styled.div`
@@ -451,7 +522,7 @@ const LightEffect = styled.div`
     border-radius: 50%;
     box-shadow: 0 0 5px 2px #60d75a,
         0 0 5px 2px #60d75a inset,
-        -5px 0px 23px 5px #60d75a;
+        0 0 23px 5px #60d75a;
     ${props => props.absolute && "top: 0;"}
     ${props => (props.absolute && props.right)
         ? css`right: ${props.hideOffset};`
@@ -552,5 +623,30 @@ const AllbordersAnimatedDiv = styled.div`
             ${afterBorderColor} 0s ease-out .5s forwards,
             ${expandWidth()} .25s ease-out .5s forwards,
             ${expandHeight()} .25s ease-out .75s forwards;
+    }
+`
+
+const PolygonalAnimatedDiv = styled.div`
+    position: relative;
+    transition: transform .25s ease-out;
+
+    :hover {
+        transform: scale(1.01, 1.01);
+
+        ${ShadowForPolygon} {
+            animation: 
+                ${glowForPolygon(5, 9)} .25s ease-out forwards;
+        }
+
+        ${AllbordersAnimatedDiv} {
+            ::before, ::after {border-width: 2px;}
+                                
+            ::before {
+                transition: 
+                    border-width .05s ease-out .05s;
+            }
+
+            ::after {transition: border-width 0s;}
+        }
     }
 `

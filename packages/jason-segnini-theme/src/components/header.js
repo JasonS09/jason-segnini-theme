@@ -21,7 +21,7 @@ const Header = ({state, actions}) => {
         contentWidth: 0
     })
     const headerContent = useRef(null)
-    const prevActive = useRef('')
+    const prevActive = useRef(active)
 
     const generateText = (size) => {
         let i = 0
@@ -97,7 +97,7 @@ const Header = ({state, actions}) => {
     return (
         <>
             <AnimatedWrapper 
-                absolute 
+                type='absolute' 
                 right 
                 width="297" 
                 hideOffset="47" 

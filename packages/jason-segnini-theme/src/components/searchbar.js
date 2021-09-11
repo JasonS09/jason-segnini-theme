@@ -23,7 +23,7 @@ const SearchBar = ({actions}) => {
                 margin: auto;
             `}>
                 <Button onClick={() => actions.router.set("/?s="+inputState.value)}>
-                    <AnimatedText text="Search" comp="p"/>
+                    <AnimatedText text="Search"/>
                 </Button>
             </AnimatedWrapper>
         </>

@@ -126,7 +126,10 @@ const hiddenBothMainConfig = css`
 `
 
 const Main = styled.main`
-    padding: 1em;
+    position: relative;
+    display: block;
+    height: 100vh;
+    padding: 1em 0;
     ${props => 
         props.isMenuHidden 
             ? props.isArchiveHidden

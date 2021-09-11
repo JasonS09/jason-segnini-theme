@@ -1,5 +1,6 @@
 import {connect, styled, css} from "frontity"
 import {useState} from "react"
+import {glow, glowForPolygon} from "../styles/keyframes"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 
@@ -12,11 +13,23 @@ const List = ({
     postsPage,
     categories
 }) => {
-    const data = postsPage 
+    let data = postsPage 
                 ? state.source.get(state.router.link)
                 : state.source.get(state.source.postsPage)
-    const items = data.items
     const Html2React = libraries.html2react.Component
+
+    const getAllItems = () => {
+        let items = data.items
+
+        while(data.next) {
+            data = state.source.get(data.next)
+            items.concat(data.items)
+        }
+
+        return items
+    }
+
+    const items = categories ? getAllItems() : data.items
 
     const getCategoriesIds = () => {
         let ids = []
@@ -74,108 +87,126 @@ const List = ({
     }
 
     return (
-        <Items>
-            {data.isReady
-            && (!categories 
-                ? filteredPosts(postsPage ? data.searchQuery : null).map(
-                    item => {
-                        const post = state.source[item.type][item.id]
-                        return (
-                            <>{postsPage
-                                ? <>
-                                        <AnimatedWrapper 
-                                            type='polygonal'
-                                            key={item.id}
-                                        >
-                                            <Title>
-                                                <AnimatedText
-                                                    comp="a"
-                                                    link={post.link}
-                                                    text={post.title.rendered}
-                                                    data-speed={animationSpeed}
-                                                    css={linkStyles}
-                                                />
-                                            </Title>
-                                            <Excerpt>
-                                                <Html2React html={post.excerpt.rendered}/>
-                                            </Excerpt>
-                                        </AnimatedWrapper>
-                                        <br/>
-                                    </>
-                                : <AnimatedText 
-                                    key={item.id} 
-                                    link={post.link}
-                                    text={post.title.rendered}
-                                    data-speed={animationSpeed}
-                                    comp="a"
-                                />}
-                            </>
-                        )
+        <>
+            {postsPage 
+                &&
+                <PrevNextTab>
+                    {data.previous
+                        && 
+                        <AnimatedWrapper
+                            type="polygonal" 
+                            css={wrapperStyles(true)}
+                        >
+                            <Button
+                                onClick={() => {
+                                    actions.router.set(data.previous)
+                                }}
+                            >
+                                <h1>&#187;</h1>
+                            </Button>
+                        </AnimatedWrapper>
                     }
-                )
-                : getCategories().map(
-                    item => (
-                        <details>
-                            <AnimatedText 
-                                key={item.id} 
-                                text={item.name}
-                                data-speed={animationSpeed}
-                                comp="summary"
-                                onClick={() => 
-                                    setReanimateListItem(reanimateListItem => ({
-                                        ...reanimateListItem, [item.id]: !reanimateListItem[item.id]
-                                    }))
-                                }
-                                css={css`cursor: pointer`}
-                            />
-                            <Ul>
-                                {filteredPosts(null, item.id).map(
-                                    jtem => {
-                                        const post = state.source[jtem.type][jtem.id]
-                                        return (
-                                            <>{!postsPage
-                                                && <Li>
-                                                    <AnimatedText 
-                                                        key={jtem.id} 
+                    {data.next
+                        && 
+                        <AnimatedWrapper 
+                            type="polygonal" 
+                            css={wrapperStyles(data.previous, true)}
+                        >
+                            <Button
+                                onClick={() => {
+                                    actions.router.set(data.next)
+                                }}
+                            >
+                                <h1>&#187;</h1>
+                            </Button>
+                        </AnimatedWrapper>
+                    }
+                </PrevNextTab>
+            }
+            <Items postsPage={postsPage}>
+                {data.isReady
+                    && (!categories 
+                        ? filteredPosts(postsPage ? data.searchQuery : null).map(
+                            item => {
+                                const post = state.source[item.type][item.id]
+                                return (
+                                    <>{postsPage
+                                        ? <>
+                                            <AnimatedWrapper 
+                                                type='polygonal'
+                                                key={item.id}
+                                            >
+                                                <Title>
+                                                    <AnimatedText
+                                                        comp="a"
                                                         link={post.link}
                                                         text={post.title.rendered}
                                                         data-speed={animationSpeed}
-                                                        comp="a"
-                                                        reanimate={reanimateListItem[item.id]}
-                                                        css={css`cursor: pointer`}
+                                                        css={linkStyles}
                                                     />
-                                                </Li>}
-                                            </>
-                                        )
-                                    }
-                                )}
-                            </Ul>
-                        </details>
+                                                </Title>
+                                                <Excerpt>
+                                                    <Html2React html={post.excerpt.rendered}/>
+                                                </Excerpt>
+                                            </AnimatedWrapper>
+                                            <br/>
+                                        </>
+                                        : <AnimatedText 
+                                            key={item.id} 
+                                            link={post.link}
+                                            text={post.title.rendered}
+                                            data-speed={animationSpeed}
+                                            comp="a"
+                                        />
+                                    }</>
+                                )
+                            }
+                        )
+                        : getCategories().map(
+                            item => (
+                                <details>
+                                    <AnimatedText 
+                                        key={item.id} 
+                                        text={item.name}
+                                        data-speed={animationSpeed}
+                                        comp="summary"
+                                        onClick={() => 
+                                            setReanimateListItem(reanimateListItem => ({
+                                                ...reanimateListItem, [item.id]: !reanimateListItem[item.id]
+                                            }))
+                                        }
+                                        css={css`cursor: pointer`}
+                                    />
+                                    <Ul>
+                                        {filteredPosts(null, item.id).map(
+                                            jtem => {
+                                                const post = state.source[jtem.type][jtem.id]
+                                                return (
+                                                    <>{!postsPage
+                                                        && <Li>
+                                                            <AnimatedText 
+                                                                key={jtem.id} 
+                                                                link={post.link}
+                                                                text={post.title.rendered}
+                                                                data-speed={animationSpeed}
+                                                                comp="a"
+                                                                reanimate={reanimateListItem[item.id]}
+                                                                css={css`cursor: pointer`}
+                                                            />
+                                                        </Li>
+                                                    }</>
+                                                )
+                                            }
+                                        )}
+                                    </Ul>
+                                </details>
+                            )
+                            
+                        )
                     )
-                    
-                ))
-            }
-            <PrevNextTab>
-                {data.previous && (
-                    <button
-                    onClick={() => {
-                        actions.router.set(data.previous)
-                    }}
-                    >
-                        &#171; Prev
-                    </button>
-                )}
-                {data.next && (
-                    <button
-                    onClick={() => {
-                        actions.router.set(data.next)
-                    }}
-                    >
-                        Next &#187;
-                    </button>
-                )}
-            </PrevNextTab>
-        </Items>
+                }
+            </Items>
+        </>
     )
 }
 
@@ -186,10 +217,40 @@ const linkStyles = css`
     font-size: 20px;
     letter-spacing: 3px;
     transition: text-shadow .25s ease-out;
+    :hover {text-shadow: 0 0 7px #60d75a;}
+`
 
-    :hover {
-        text-shadow: 0 0 7px #60d75a;
+const postsPageItems = css`
+    position: relative;
+    display: block;
+    width: 100%;
+    max-height: 93vh;
+    padding-left: 1em;
+    padding-right: 1em;
+    overflow-y: scroll;
+
+    ::-webkit-scrollbar {
+        width: 10px;
+        background: transparent;
     }
+
+    ::-webkit-scrollbar-thumb {
+        border: 1px solid #60d75a;
+        border-radius: 10px;
+        background-color: rgba(0,0,0,.85);
+        animation: 
+            ${glow(2, 5)} 3s ease-out alternate infinite;
+        :hover {background-color: #60d75a;}
+    }
+
+    ::-webkit-scrollbar-track-piece {display: none;}
+`
+
+const PrevNextTab = styled.div`
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 5%;
 `
 
 const Title = styled.div`
@@ -207,6 +268,9 @@ const Excerpt = styled.div`
 `
 
 const Items = styled.div`
+    ${props => props.postsPage 
+        && postsPageItems}
+
     a, summary {
         display: block;
         margin: 6px 0;
@@ -215,28 +279,80 @@ const Items = styled.div`
     }
 `
 
-const PrevNextTab = styled.div`
-    padding-top: 1.5em;
+const Button = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    font-family: 'Share Tech Mono';
+    text-align: center;
+    text-decoration: none;
+    background-color: transparent;
+    color: #60d75a;
+    margin-right: 2em;
+    border: 0;
+    z-index: 1;
+`
 
-    & > button {
-        background: #eee;
-        text-decoration: none;
-        padding: 0.5em 1em;
-        color: #888;
-        border: 1px solid #aaa;
-        font-size: 0.8em;
-        margin-right: 2em;
+const wrapperStyles = (prev, next) => css`
+    display: inline-block;
+    width: 50%;
+    height: 100%;
+    ${(prev && !next)
+        ? css`transform: scaleX(-1);`
+        : (!prev && next) 
+            && css`left: 50%`
+    }
+    transition: none;
+
+    :hover {
+        transform: ${(prev && !next) 
+            ? 'scaleX(-1)'
+            : 'none'
+        };
+
+        div {
+            :first-of-type {
+                animation: 
+                    ${glowForPolygon(
+                        3, 7, .85, 1
+                    )} .25s ease-out forwards;
+                ::before {background-color: #60d75a;}
+            }
+
+            :nth-of-type(2) {
+                ::before, ::after {
+                    border-width: 1px;
+                    transition: none;
+                }
+            }
+        }
+
+        ${Button} {
+            cursor: pointer;
+            color: black;
+        }        
     }
 
-    & > button:hover {
-        cursor: pointer;
+    div {
+        :first-of-type {
+            animation:
+                ${glowForPolygon(
+                        7, 3, 1, .85
+                )} .25s ease-out 1,
+                ${glowForPolygon()} 3s ease-out .25s alternate infinite;
+                ::before {transition: background-color .25s ease-out;}
+        }
+
+        :nth-of-type(2) {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            ::before, ::after {transition: none;}
+        }
     }
 `
 
-const Li = styled.li`
-    margin-left: 1em;
-`
+const Li = styled.li`margin-left: 1em;`
 
-const Ul = styled.ul`
-    list-style-type: none;
-`
+const Ul = styled.ul`list-style-type: none;`

@@ -130,7 +130,7 @@ const loboStyles = css`
     path {
         animation: 
             ${glowForPolygon(
-                3, 7, 1
+                3, 7, 1, 1
             )} 3s ease-out alternate infinite;
     }
 
@@ -141,7 +141,7 @@ const loboStyles = css`
             animation:
                 ${draw} 10s ease-out forwards,
                 ${glowForPolygon(
-                    3, 7, 1
+                    3, 7, 1, 1
                 )} 3s ease-out alternate infinite;
         }
 
@@ -151,7 +151,7 @@ const loboStyles = css`
             line, circle, text, tspan {
                 animation: 
                     ${glowForPolygon(
-                        3, 7, 1
+                        3, 7, 1, 1
                     )} 3s ease-out alternate infinite;
             }
         }
@@ -166,7 +166,7 @@ const common = (size = 0, delay = 0) => css`
     stroke-linecap: round;
     animation:
         ${glowForPolygon(
-            7, 14, 1,
+            7, 14, 1, 1
         )} 3s ease-out ${delay}s alternate infinite,
         ${draw} .25s ease-out ${delay}s forwards;
 `

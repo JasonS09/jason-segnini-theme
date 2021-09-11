@@ -182,6 +182,7 @@ const HideButton = styled.div`
 
     h1 {
         font-family: 'Share Tech Mono';
+        font-size: 20px;
         letter-spacing: normal;
         position: absolute;
         color: #60d75a;

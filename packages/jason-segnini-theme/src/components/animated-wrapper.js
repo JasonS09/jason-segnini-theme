@@ -126,7 +126,6 @@ const AnimatedWrapper = ({
                                 100% 100%, 
                                 0 100%
                             );
-
                             ::before {transition: border-width 0s;}
 
                             ::after {

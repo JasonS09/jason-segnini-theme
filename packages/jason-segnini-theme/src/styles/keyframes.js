@@ -1,4 +1,4 @@
-import {keyframes} from "frontity"
+import {keyframes, css} from "frontity"
 
 export const expandWidth = (
     width = 100
@@ -27,15 +27,16 @@ export const glow = (
 export const glowForPolygon = (
     from = 3, 
     to = 7, 
-    opacity = .85
+    fromOpacity = .85,
+    toOpacity = .85
 ) => keyframes`
     from {
         filter: drop-shadow(0 0 ${from}px #60d75a) 
-            opacity(${opacity})
+            opacity(${fromOpacity})
     }
     to {
         filter: drop-shadow(0 0 ${to}px #60d75a) 
-            opacity(${opacity})
+            opacity(${toOpacity})
     }
 `
 

@@ -17,7 +17,11 @@ const settings = {
         "source": {
           "url": "https://jasonsegnini.com/",
           "homepage": "/home",
-          "postsPage":"/blog"
+          "postsPage":"/blog",
+          "params": {
+            "per_page": 5,
+            "type": "post"
+          }
         }
       }
     },

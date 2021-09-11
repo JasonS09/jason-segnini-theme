@@ -29,5 +29,7 @@ const Path = styled.path`
     stroke-dasharray: ${props => props.length};
     stroke-dashoffset: ${props => props.length};
     animation: ${draw} 10s ease-out forwards,
-        ${glowForPolygon(3, 7, 1)} 3s ease-out alternate infinite;
+        ${glowForPolygon(
+            3, 7, 1, 1
+        )} 3s ease-out alternate infinite;
 `

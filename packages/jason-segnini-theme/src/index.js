@@ -17,8 +17,9 @@ const jasonSegniniTheme = {
   },
   actions: {
     theme: {
-      beforeSSR: async ({state, actions}) => 
-        await actions.source.fetch(state.source.postsPage),
+      beforeSSR: async ({state, actions, libraries}) => {
+        libraries.source.handlers.push()
+      },
 
       welcome: ({state}) =>
         state.theme.isWelcomeReceived = true,

@@ -1,6 +1,7 @@
 import Root from "./components"
 import link from "@frontity/html2react/processors/link"
 import animatedText from "./processors/animated-text"
+import categories from "./handlers/categories"
 
 const jasonSegniniTheme = {
   name: "jason-segnini-theme",
@@ -18,7 +19,9 @@ const jasonSegniniTheme = {
   actions: {
     theme: {
       beforeSSR: async ({state, actions, libraries}) => {
-        libraries.source.handlers.push()
+        libraries.source.handlers.push(categories)
+        await actions.source.fetch(state.source.postsPage)
+        await actions.source.fetch(state.source.url + 'categories')
       },
 
       welcome: ({state}) =>

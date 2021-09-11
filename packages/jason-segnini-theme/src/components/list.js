@@ -13,76 +13,40 @@ const List = ({
     postsPage,
     categories
 }) => {
-    let data = postsPage 
+    const data = postsPage 
                 ? state.source.get(state.router.link)
-                : state.source.get(state.source.postsPage)
-    const Html2React = libraries.html2react.Component
-
-    const getAllItems = () => {
-        let items = data.items
-
-        while(data.next) {
-            data = state.source.get(data.next)
-            items.concat(data.items)
-        }
-
-        return items
-    }
-
-    const items = categories ? getAllItems() : data.items
-
-    const getCategoriesIds = () => {
-        let ids = []
-        
-        items.forEach(
-            item => {
-                state.source[item.type][item.id].categories.forEach(
-                    category => {
-                        if (!ids.includes(category)) ids.push(category)
-                    }
+                : (categories
+                    ? state.source.get(
+                        state.source.url + 'categories'
+                    )
+                    : state.source.get(
+                        state.source.postsPage
+                    ) 
                 )
-            }
-        )
-
-        return ids
-    }
-
-    const catsIds = categories ? getCategoriesIds() : []
+    const Html2React = libraries.html2react.Component
+    const items = data.items
 
     const [reanimateListItem, setReanimateListItem] = useState(() => {
         let reanimates = {}
-        catsIds.forEach(id => reanimates = {...reanimates, [id]: false})
+        items.forEach(
+            category => reanimates = {
+                ...reanimates, 
+                [category.id]: false
+            }
+        )
         return reanimates
     })
 
-    const getCategories = () => {
-        let cats = []
-        catsIds.forEach(id => cats.push(state.source["category"][id]))
-        return cats
-    }
-
-    const filteredPosts = (query, category) => {
+    const filteredPosts = (query) => {
         if (maxnum && maxnum < items.length) items.length = maxnum
-        if (!query && !category) return items
+        if (!query) return items
         if (query) query = query.toLowerCase()
 
         return items.filter(item => {
             const post = state.source[item.type][item.id]
 
-            if (query && category) {
-                return (post.title.rendered.toLowerCase().includes(query)
-                || post.excerpt.rendered.toLowerCase().includes(query)) 
-                && post.categories.includes(category)
-            }
-
-            if (query) {
-                return post.title.rendered.toLowerCase().includes(query)
+            return post.title.rendered.toLowerCase().includes(query)
                 || post.excerpt.rendered.toLowerCase().includes(query)
-            }
-
-            if (category) {
-                return post.categories.includes(category)
-            }
         })
     }
 
@@ -162,35 +126,34 @@ const List = ({
                                 )
                             }
                         )
-                        : getCategories().map(
-                            item => (
+                        : items.map(
+                            category => (
                                 <details>
                                     <AnimatedText 
-                                        key={item.id} 
-                                        text={item.name}
+                                        key={category.id} 
+                                        text={category.name}
                                         data-speed={animationSpeed}
                                         comp="summary"
                                         onClick={() => 
                                             setReanimateListItem(reanimateListItem => ({
-                                                ...reanimateListItem, [item.id]: !reanimateListItem[item.id]
+                                                ...reanimateListItem, [category.id]: !reanimateListItem[category.id]
                                             }))
                                         }
                                         css={css`cursor: pointer`}
                                     />
                                     <Ul>
-                                        {filteredPosts(null, item.id).map(
-                                            jtem => {
-                                                const post = state.source[jtem.type][jtem.id]
+                                        {category.posts.map(
+                                            post => {
                                                 return (
                                                     <>{!postsPage
                                                         && <Li>
                                                             <AnimatedText 
-                                                                key={jtem.id} 
+                                                                key={post.id} 
                                                                 link={post.link}
-                                                                text={post.title.rendered}
+                                                                text={post.title}
                                                                 data-speed={animationSpeed}
                                                                 comp="a"
-                                                                reanimate={reanimateListItem[item.id]}
+                                                                reanimate={reanimateListItem[category.id]}
                                                                 css={css`cursor: pointer`}
                                                             />
                                                         </Li>

@@ -18,10 +18,14 @@ const jasonSegniniTheme = {
   },
   actions: {
     theme: {
-      beforeSSR: async ({state, actions, libraries}) => {
-        libraries.source.handlers.push(categories)
-        await actions.source.fetch(state.source.postsPage)
-        await actions.source.fetch(state.source.url + 'categories')
+      init: ({libraries}) =>
+        libraries.source.handlers.push(categories),
+
+      beforeSSR: async ({state, actions}) => {
+        await Promise.all([
+          actions.source.fetch(state.source.postsPage),
+          actions.source.fetch(state.source.catsPage)
+        ])
       },
 
       welcome: ({state}) =>

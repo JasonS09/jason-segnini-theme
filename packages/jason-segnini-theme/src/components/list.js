@@ -17,12 +17,13 @@ const List = ({
                 ? state.source.get(state.router.link)
                 : (categories
                     ? state.source.get(
-                        state.source.url + 'categories'
+                        state.source.catsPage
                     )
                     : state.source.get(
                         state.source.postsPage
                     ) 
                 )
+
     const Html2React = libraries.html2react.Component
     const items = data.items
 
@@ -148,9 +149,9 @@ const List = ({
                                                     <>{!postsPage
                                                         && <Li>
                                                             <AnimatedText 
-                                                                key={post.id} 
-                                                                link={post.link}
-                                                                text={post.title}
+                                                                key={post.ID} 
+                                                                link={post.post_name}
+                                                                text={post.post_title}
                                                                 data-speed={animationSpeed}
                                                                 comp="a"
                                                                 reanimate={reanimateListItem[category.id]}

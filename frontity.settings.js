@@ -18,6 +18,7 @@ const settings = {
           "url": "https://jasonsegnini.com/",
           "homepage": "/home",
           "postsPage":"/blog",
+          "catsPage":"/categories",
           "params": {
             "per_page": 5,
             "type": "post"

@@ -64,29 +64,22 @@ const Root = ({state, actions}) => {
                     body {
                         height: 100vh;
                         width: 100vw;
+                        overflow: hidden;
 
-                        h1 {
-                            font-size: 25px;
-                        }
-
-                        h2 {
-                            font-size: 20px;
-                        }
-
-                        h3 {
-                            font-size: 15px;
-                        }
-
-                        h1, h2, h3 {
+                        h1, h2, h3, h4, h5 {
                             font-family: 'Orbitron';
                             letter-spacing: 3px;
                         }
                     }
                 `}
             />
-            {isWelcomeReceived && <Background/>}
-            {isWelcomeReceived && <Header/>}
-            {isWelcomeReceived && <Archive/>}
+            {isWelcomeReceived && 
+                <>
+                    <Background/> 
+                    <Header/> 
+                    <Archive/>
+                </>
+            }
             <Main 
                 isMenuHidden={!state.theme.showMenu}
                 isArchiveHidden={!state.theme.showArchive}

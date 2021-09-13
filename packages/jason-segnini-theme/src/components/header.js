@@ -24,19 +24,10 @@ const Header = ({state, actions}) => {
     const prevActive = useRef(active)
 
     const generateText = (size) => {
-        let i = 0
-
-        const pushChar = (char) => {
-            if (i < size) {
-                i++ 
-                return char 
-                    + pushChar(String.fromCharCode(Math.random()*128))
-            }
-
-            return char
-        }
-
-        return pushChar(String.fromCharCode(Math.random()*128))
+        let text = ''
+        for (let i = 0; i < size; i++) 
+            text += String.fromCharCode(Math.random()*128)
+        return text
     }
 
     const randEffect = (item, iterator, text) => {
@@ -65,7 +56,7 @@ const Header = ({state, actions}) => {
     useEffect(() => {
         if (headerContent.current 
             && menuStates.contentWidth === 0) {
-            let padding = parseFloat(
+            const padding = parseFloat(
                             getComputedStyle(
                                 headerContent.current
                             ).paddingLeft)
@@ -73,7 +64,7 @@ const Header = ({state, actions}) => {
                             getComputedStyle(
                                 headerContent.current
                             ).paddingRight)
-            let width = headerContent.current.clientWidth
+            const width = headerContent.current.clientWidth
             setMenuStates(menuStates => ({
                 ...menuStates,
                 contentWidth: width-padding
@@ -191,15 +182,12 @@ const setMenuElementStyle = (
     prevActive, 
     contentWidth
 ) => css`
-
-    ${
-        active === link
-            ? activeConfig
-            : prevActive === link
-                ? changeActive(contentWidth)
-                : nonActiveConfig
+    ${active === link
+        ? activeConfig
+        : prevActive === link
+            ? changeActive(contentWidth)
+            : nonActiveConfig
     }
-
 `
 
 const activeConfig = css`
@@ -217,7 +205,8 @@ const nonActiveConfig = css`
     :hover {
         color: black;
         ::before {width: 100%;}
-    }   
+    } 
+
     ::before {width: 0;}
 `
 

@@ -1,6 +1,6 @@
 import {connect, styled, css} from "frontity"
 import {useState} from "react"
-import {glow, glowForPolygon} from "../styles/keyframes"
+import {glow} from "../styles/keyframes"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 
@@ -23,11 +23,11 @@ const List = ({
                         state.source.postsPage
                     ) 
                 )
-
-    const Html2React = libraries.html2react.Component
     const items = data.items
+    const Html2React = libraries.html2react.Component
 
     const [reanimateListItem, setReanimateListItem] = useState(() => {
+        if (!categories) return null
         let reanimates = {}
         items.forEach(
             category => reanimates = {
@@ -41,7 +41,7 @@ const List = ({
     const filteredPosts = (query) => {
         if (maxnum && maxnum < items.length) items.length = maxnum
         if (!query) return items
-        if (query) query = query.toLowerCase()
+        query = query.toLowerCase()
 
         return items.filter(item => {
             const post = state.source[item.type][item.id]
@@ -63,6 +63,7 @@ const List = ({
                             css={wrapperStyles(true)}
                         >
                             <Button
+                                prev
                                 onClick={() => {
                                     actions.router.set(data.previous)
                                 }}
@@ -164,8 +165,7 @@ const List = ({
                                         )}
                                     </Ul>
                                 </details>
-                            )
-                            
+                            ) 
                         )
                     )
                 }
@@ -255,6 +255,19 @@ const Button = styled.div`
     margin-right: 2em;
     border: 0;
     z-index: 1;
+    transition: color .25s ease-out;
+
+    ::before {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 100%;
+        left: 0;
+        border-radius: 3px;
+        background-color: #60d75a;
+        z-index: -1;
+        transition: width .25s ease-out;
+    }
 `
 
 const wrapperStyles = (prev, next) => css`
@@ -274,15 +287,7 @@ const wrapperStyles = (prev, next) => css`
             : 'none'
         };
 
-        div {
-            :first-of-type {
-                animation: 
-                    ${glowForPolygon(
-                        3, 7, .85, 1
-                    )} .25s ease-out forwards;
-                ::before {background-color: #60d75a;}
-            }
-
+        & > div {
             :nth-of-type(2) {
                 ::before, ::after {
                     border-width: 1px;
@@ -294,19 +299,11 @@ const wrapperStyles = (prev, next) => css`
         ${Button} {
             cursor: pointer;
             color: black;
+            ::before {width: 100%;}
         }        
     }
 
-    div {
-        :first-of-type {
-            animation:
-                ${glowForPolygon(
-                        7, 3, 1, .85
-                )} .25s ease-out 1,
-                ${glowForPolygon()} 3s ease-out .25s alternate infinite;
-                ::before {transition: background-color .25s ease-out;}
-        }
-
+    & > div {
         :nth-of-type(2) {
             position: absolute;
             width: 100%;

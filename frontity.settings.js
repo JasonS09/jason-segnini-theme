@@ -17,8 +17,8 @@ const settings = {
         "source": {
           "url": "https://jasonsegnini.com/",
           "homepage": "/home",
-          "postsPage":"/blog",
-          "catsPage":"/categories",
+          "postsPage": "/blog",
+          "catsPage": "/categories",
           "params": {
             "per_page": 5,
             "type": "post"

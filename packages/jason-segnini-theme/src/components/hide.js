@@ -1,10 +1,6 @@
 import {connect, styled, css} from "frontity"
 import {useState} from "react"
-import {
-    glow, 
-    glowForPolygon, 
-    makeAppear
-} from "../styles/keyframes"
+import {glow, glowForPolygon, makeAppear} from "../styles/keyframes"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 import Switch from "@frontity/components/switch"
@@ -12,30 +8,24 @@ import Switch from "@frontity/components/switch"
 const Hide = ({state, right, isComponentHidden, ...rest}) => {
     const [hideStyles, setHideStyles] = useState(null)
 
-    if (isComponentHidden && !hideStyles) {
+    if (isComponentHidden && !hideStyles) 
         setTimeout(() => {
             setHideStyles(right 
                 ? css`
                     position: fixed; 
                     left: auto; 
                     right: 1em;
-                    width: 47px;
-                    height: 43px;
+                    ${HideButton} {::before {right: 0;}}
                 `
                 : css`
                     position: fixed; 
                     left: 1em;
-                    width: 47px;
-                    height: 40px;
+                    ${HideButton} {::before {right: auto;}}
                 `
             )
         }, 725)
-    }
-    else if (!isComponentHidden) {
-        setTimeout(() => {
-            setHideStyles(null)
-        }, 300)
-    }
+    else if (!isComponentHidden)
+        setTimeout(() => {setHideStyles(null)}, 300)
 
     const setText = () => {
         if (right) {
@@ -73,9 +63,18 @@ const Hide = ({state, right, isComponentHidden, ...rest}) => {
 export default connect(Hide)
 
 const leftConfig = css`
-    width: 15.8%;
-    height: 5.3%;
+    width: 47px;
+    height: 40px;
+    top: 3%;
     right: 9%;
+`
+
+const rightConfig = css`
+    width: 47px;
+    height: 43px;
+    top: calc(2.4% + 4.5px);
+    left: 9%;
+    border-radius: 50%;
 `
 
 const center = css`
@@ -98,14 +97,8 @@ const wrapperStyles = css`
         0 100%
     );
     ${center}
-
-    ::before {
-        z-index: 1;
-    }
-
-    ::before, ::after {
-        border-width: 2px;
-    }
+    ::before {z-index: 1;}
+    ::before, ::after {border-width: 2px;}
 `
 
 const Shadow = styled.div`
@@ -156,9 +149,9 @@ const HideButton = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
+    overflow: hidden;
     ${props => props.right 
         && css`
-            border: 2px solid #60d75a;
             background-color: rgba(0,0,0,.85);
             filter: opacity(0);
             animation: 
@@ -166,18 +159,29 @@ const HideButton = styled.div`
                 ${glow(5, 10, 0, 2)} .375s ease-out .25s 2 alternate,
                 ${glow(5, 10)} 3s ease-out 1s alternate infinite;
 
-            ::before {
+            ::after {
                 content: '';
                 position: absolute;
-                width: 100%;
-                height: 100%;
-                transition: box-shadow .25s ease-out;
+                width: calc(100% - 4px);
+                height: calc(100% - 4px);
+                top: 0;
+                border: 2px solid #60d75a;
+                ${center}
             }
 
-            &, ::before {
-                border-radius: 50%;
-            }
+            &, ::after {border-radius: 50%;}
         `
+    }
+
+    ::before {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 100%;
+        ${props => !props.right && 'right: 0;'}
+        background-color: #60d75a;
+        z-index: -1;
+        transition: width .25s ease-out;
     }
 
     h1 {
@@ -187,7 +191,7 @@ const HideButton = styled.div`
         position: absolute;
         color: #60d75a;
         text-align: center;
-        transition: text-shadow .25s ease-out;
+        transition: color .25s ease-out;
         ${props => props.right 
             ? props.isComponentHidden
                 ? "padding-right: 2px;"
@@ -199,40 +203,20 @@ const HideButton = styled.div`
     }
 `
 
-const rightConfig = css`
-    width: 15.8%;
-    height: 5.7%;
-    left: 9%;
-    border-radius: 50%;
-    
+const OuterWrapper = styled.div`
+    position: absolute;
+    cursor: pointer;
+    ${props => props.right ? rightConfig : leftConfig}
+
     :hover {
         ${HideButton} {
-            ::before {
-                box-shadow: 0 0 10px 0 #60d75a;
-            }
+            ::before {width: 100%;}
+            h1 {color: black;}
+        }
+
+        ${Shadow} {
+            animation: 
+                ${glowForPolygon(5, 9)} .25s ease-out forwards;
         }
     }
-`
-
-const OuterWrapper = styled.div`
-        position: absolute;
-        top: 3%;
-        cursor: pointer;
-        ${props => props.right ? rightConfig : leftConfig}
-        transition: transform .25s ease-out;
-
-        :hover {
-            transform: scale(1.03, 1.03);
-
-            ${HideButton} {
-                h1 {
-                    text-shadow: 0 0 7px #60d75a;
-                }
-            }
-
-            ${Shadow} {
-                animation: 
-                    ${glowForPolygon(5, 9)} .25s ease-out forwards;
-            }
-        }
 `

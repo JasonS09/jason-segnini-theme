@@ -1,17 +1,13 @@
-import {keyframes, css} from "frontity"
+import {keyframes} from "frontity"
 
-export const expandWidth = (
-    width = 100
-) => keyframes`
+export const expandWidth = (width = 100) => keyframes`
     from {width: 0;}
     to {width: ${width}%;}
 `
 
-export const expandHeight = (
-    height = 100
-) => keyframes`
+export const expandHeight = (height = '100%') => keyframes`
     from {height: 0;}
-    to {height: ${height}%;}
+    to {height: ${height};}
 `
 
 export const glow = (
@@ -55,5 +51,5 @@ export const fade = keyframes`
 `
 
 export const draw = keyframes`
-to {stroke-dashoffset: 0;}
+    to {stroke-dashoffset: 0;}
 `

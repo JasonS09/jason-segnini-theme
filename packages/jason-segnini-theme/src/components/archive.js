@@ -23,15 +23,15 @@ const Archive = ({state, actions}) => {
             />
             <ArchiveContent>
                 <AnimatedText 
-                    comp="h2" 
+                    comp="h1" 
                     text="Archive" 
                     css={css`margin-bottom: 8px`}
                 />
                 <br/>
-                <AnimatedText comp="h3" text="Categories"/>
+                <AnimatedText comp="h4" text="Categories"/>
                 <List categories/>
                 <br/>
-                <AnimatedText comp="h3" text="Latest Posts"/>
+                <AnimatedText comp="h4" text="Latest Posts"/>
                 <List maxnum="5"/>
                 <br/>
                 <SearchBar/>
@@ -49,13 +49,9 @@ const ArchiveContent = styled.div`
     margin-left: 6em;
     margin-top: 1em;
     z-index: 2;
+    h1 {font-family: 'Hacked';}
 
-    h2 {
-        font-family: 'Hacked';
-        font-size: 30px;
-    }
-
-    h2, h3 {
+    h1, h4 {
         color: #60d75a;
         animation: 
             ${glowForText} 3s ease-out alternate infinite;

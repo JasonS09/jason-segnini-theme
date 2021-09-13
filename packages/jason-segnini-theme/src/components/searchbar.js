@@ -9,7 +9,7 @@ const SearchBar = ({actions}) => {
     return (
         <>
             <AnimatedWrapper css={css`
-                ${wrapperStyles}
+                width: fit-content;
                 padding-left: 1px;
             `}>
                 <Input 
@@ -19,7 +19,7 @@ const SearchBar = ({actions}) => {
                 />
             </AnimatedWrapper>
             <AnimatedWrapper shadows css={css`
-                ${wrapperStyles}
+                width: fit-content;
                 margin: auto;
             `}>
                 <Button onClick={() => actions.router.set("/?s="+inputState.value)}>
@@ -32,18 +32,13 @@ const SearchBar = ({actions}) => {
 
 export default connect(SearchBar);
 
-const wrapperStyles = css`
-    z-index: 1;
-    width: fit-content;
-`
-
 const common = css`
     position: relative;
     display: block;
     background-color: transparent;
     border: 0;
     color: #60d75a;
-    z-index: 2;
+    z-index: 1;
     font-family: 'Share Tech Mono';
 `
 
@@ -58,21 +53,40 @@ const Input = styled.input`
         box-shadow: 0 0 10px #60d75a;
     }
 
-    ::placeholder {
-        color: #628a6c;
-    }
+    ::placeholder {color: #628a6c;}
 `
 
 const Button = styled.button`
     ${common}
     cursor: pointer;
     padding: 4px;
-    transition: background-color .25s ease-out,
-        color .25s ease-out;
+    transition: color .25s ease-out;
 
     :hover {
-        background-color: #60d75a;
         color: black;
         border-radius: 3px;
+        ::before, ::after {width: 50%;}
+    }
+
+    ::before {
+        right: 50%;
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+    }
+    ::after {
+        left: 50%;
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+    }
+
+    ::before, ::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 100%;
+        top: 0;
+        background-color: #60d75a;
+        z-index: -1;
+        transition: width .25s ease-out;
     }
 `

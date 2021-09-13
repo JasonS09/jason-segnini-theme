@@ -215,21 +215,23 @@ const animateLeft = (hideOffset, isComponentHidden) => css`
     ::before {
         border-left: 1px solid #60d75a;
         animation: 
-            ${expandHeight(2.4)} .05s ease-out forwards;
+            ${expandHeight('2.4%')} .05s ease-out forwards;
     }
 
     ::after {
-        top: 9.4%;
+        top: calc(2.4% + 53px);
         border-left: 1px solid #60d75a;
         clip-path: polygon(
             0 0, 
             100% 0, 
             100% 100%, 
             4.4% 100%, 
-            0 96%
+            0 96.5%
         );
         animation: 
-            ${expandHeight(91)} .95s ease-out .05s forwards;
+            ${expandHeight(
+                'calc(100% - 2.4% - 53px)'
+            )} .95s ease-out .05s forwards;
     }
 
     ::before, ::after {left: ${hideOffset};}
@@ -249,22 +251,23 @@ const animateRight = (hideOffset, isComponentHidden) => css`
     ::before {
         border-right: 1px solid #60d75a;
         animation: 
-            ${expandHeight(2.5)} .05s ease-out forwards;
+            ${expandHeight('2.5%')} .05s ease-out forwards;
     }
 
     ::after {
-        top: 8.8%;
+        top: calc(2.5% + 40px + 1%);
         border-right: 2px solid #60d75a;
         clip-path: polygon(
             0% 0%, 
             100% 0, 
-            100% 
-            93.3%, 
+            100% 93.1%, 
             96% 100%, 
             0 100%
         );
         animation: 
-            ${expandHeight(91)} .55s ease-out .05s forwards;
+            ${expandHeight(
+                'calc(100% - 2.5% - 40px - 1%)'
+            )} .55s ease-out .05s forwards;
     }
 
     ::before, ::after {right: ${hideOffset};}
@@ -401,10 +404,10 @@ const BottomBorderForLeft = styled.div`
 
 const ButtonBackground = styled.div`
     position: absolute;
+    width: 62px;
+    height: 53px;
     top: 2.3%;
     left: 5.5%;
-    width: 21%;
-    height: 7%;
     border-radius: 50%;
     border: 2px solid #60d75a;
     clip-path: polygon(
@@ -417,12 +420,12 @@ const ButtonBackground = styled.div`
 
 const CuteCircle = styled.div`
     position: absolute;
+    width: 9px;
+    height: 9px;
     bottom: 9.7%;
     left: 21.8%;
     border: 1px solid #60d75a;
     border-radius: 50%;
-    width: 3%;
-    height: 1.2%;
     filter: opacity(0);
     animation: ${makeAppear()} .5s ease-out 1s forwards,
         ${glow(5, 10, 2, 1)} .25s ease-out 1.5s 2 alternate,
@@ -576,12 +579,13 @@ const AbsoluteAnimatedDiv = styled.div`
             props.isComponentHidden
         )
     }
+    z-index: 1;
     transition: margin 1s ease-in-out;
+    ::before {z-index: 1;}
 
     ::before, ::after {
         content: '';
         width: 100%;
-        z-index: 1;
     }
 
     &, ::before, ::after {position: absolute;}

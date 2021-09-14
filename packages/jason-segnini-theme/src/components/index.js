@@ -1,4 +1,5 @@
 import {connect, Global, css, styled, Head} from "frontity"
+import {glow} from "../styles/keyframes"
 import Switch from "@frontity/components/switch"
 import List from "./list"
 import Post from "./post"
@@ -34,7 +35,7 @@ const Root = ({state, actions}) => {
 
                     @font-face {
                         font-family: 'Orbitron';
-                        src: url("${Orbitron}") format("ttf supports variations");
+                        src: url("${Orbitron}") format("truetype-variations");
                         font-weight: 400 900;
                         font-stretch: 25% 150%;
                     }
@@ -48,6 +49,24 @@ const Root = ({state, actions}) => {
                         margin: 0;
                         padding: 0;
                         box-sizing: border-box;
+                        scrollbar-color: #60d75a rgba(0,0,0,.85);
+                        scrollbar-width: thin;
+
+                        ::-webkit-scrollbar {
+                            width: 10px;
+                            background: transparent;
+                        }
+
+                        ::-webkit-scrollbar-thumb {
+                            border: 1px solid #60d75a;
+                            border-radius: 10px;
+                            background-color: rgba(0,0,0,.85);
+                            animation: 
+                                ${glow(2, 5)} 3s ease-out alternate infinite;
+                            :hover {background-color: #60d75a;}
+                        }
+
+                        ::-webkit-scrollbar-track-piece {display: none;}
 
                         ::selection {
                             color: black;

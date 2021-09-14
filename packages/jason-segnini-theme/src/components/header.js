@@ -113,7 +113,6 @@ const Header = ({state, actions}) => {
                                     menuStates.contentWidth
                                 )}
                         />
-                        <br/>
                         <AnimatedText 
                             comp="a" 
                             link="/about-me" 
@@ -126,7 +125,6 @@ const Header = ({state, actions}) => {
                                     menuStates.contentWidth
                                 )}
                         />
-                        <br/>
                         <AnimatedText 
                             comp="a" 
                             link="/blog" 
@@ -139,7 +137,6 @@ const Header = ({state, actions}) => {
                                     menuStates.contentWidth
                                 )}
                         />
-                        <br/>
                         <AnimatedText 
                             comp="a" 
                             link="/contact" 
@@ -182,6 +179,7 @@ const setMenuElementStyle = (
     prevActive, 
     contentWidth
 ) => css`
+    margin-bottom: 1em;
     ${active === link
         ? activeConfig
         : prevActive === link

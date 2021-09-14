@@ -313,7 +313,7 @@ const ShadowForPolygon = styled.div`
 
 const ShadowForLeft = styled.div`
     left: ${props => props.hideOffset};
-    animation: ${glowForPolygon(9, 3)} .25s ease-out 1,
+    animation: ${glowForPolygon(9, 3)} .25s ease-out forwards,
         ${glowForPolygon()} 3s ease-out .25s alternate infinite;
 
     ::before {
@@ -337,7 +337,7 @@ const ShadowForLeft = styled.div`
 
 const ShadowForRight = styled.div`
     height: 100%;
-    animation: ${glowForPolygon(9, 3)} .25s ease-out 1,
+    animation: ${glowForPolygon(9, 3)} .25s ease-out forwards,
         ${glowForPolygon()} 3s ease-out .25s alternate infinite;
 
     ::before {
@@ -428,7 +428,7 @@ const CuteCircle = styled.div`
     border-radius: 50%;
     filter: opacity(0);
     animation: ${makeAppear()} .5s ease-out 1s forwards,
-        ${glow(5, 10, 2, 1)} .25s ease-out 1.5s 2 alternate,
+        ${glow(5, 10, 2, 1)} .25s ease-out 1.5s 2 alternate forwards,
         ${glow(5, 10, 1, 1)} 3s linear 1.75s infinite alternate;
 `
 
@@ -596,7 +596,7 @@ const AllbordersAnimatedDiv = styled.div`
     ${props => props.shadows 
         && css`
             animation: 
-                ${glow(5, 10)} .25s ease-out 1s 2 alternate,
+                ${glow(5, 10)} .25s ease-out 1s 2 alternate forwards,
                 ${glow(5, 10)} 3s linear 1.5s infinite alternate;
         `
     }

@@ -1,6 +1,5 @@
 import {connect, styled, css} from "frontity"
-import {useState} from "react"
-import {glow} from "../styles/keyframes"
+import {useState, useRef, useEffect} from "react"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 
@@ -11,7 +10,8 @@ const List = ({
     maxnum,
     animationSpeed,
     postsPage,
-    categories
+    categories,
+    ...rest
 }) => {
     const data = postsPage 
                 ? state.source.get(state.router.link)
@@ -25,31 +25,54 @@ const List = ({
                 )
     const items = data.items
     const Html2React = libraries.html2react.Component
+    const details = useRef({})
 
     const [reanimateListItem, setReanimateListItem] = useState(() => {
         if (!categories) return null
         let reanimates = {}
-        items.forEach(
-            category => reanimates = {
+
+        items.forEach(category => 
+            reanimates = {
                 ...reanimates, 
-                [category.id]: false
+                [category.id]: {}
             }
         )
+        
         return reanimates
     })
 
-    const filteredPosts = (query) => {
+    const calculateDetailsHeight = (details, category, content) => 
+        reanimateListItem[category].reanimate
+            ? details.clientHeight - content.clientHeight
+            : details.clientHeight + content.clientHeight
+
+    const filteredPosts = query => {
         if (maxnum && maxnum < items.length) items.length = maxnum
         if (!query) return items
         query = query.toLowerCase()
 
         return items.filter(item => {
             const post = state.source[item.type][item.id]
-
             return post.title.rendered.toLowerCase().includes(query)
                 || post.excerpt.rendered.toLowerCase().includes(query)
         })
     }
+
+    useEffect(() => {
+        if (details.current) {
+            let reanimateListItemWithHeights = {}
+
+            Object.keys(details.current).forEach(category => {
+                const det = details.current[category]
+                reanimateListItemWithHeights = {
+                    ...reanimateListItemWithHeights,
+                    [category]: {detailsHeight: det.clientHeight}
+                }
+            })
+
+            setReanimateListItem(reanimateListItemWithHeights)
+        }
+    }, [])
 
     return (
         <>
@@ -59,37 +82,37 @@ const List = ({
                     {data.previous
                         && 
                         <AnimatedWrapper
-                            type="polygonal" 
+                            type='polygonal'
                             css={wrapperStyles(true)}
                         >
                             <Button
                                 prev
-                                onClick={() => {
+                                onClick={() => 
                                     actions.router.set(data.previous)
-                                }}
+                                }
                             >
-                                <h1>&#187;</h1>
+                                <H1>&#187;</H1>
                             </Button>
                         </AnimatedWrapper>
                     }
                     {data.next
                         && 
                         <AnimatedWrapper 
-                            type="polygonal" 
+                            type='polygonal' 
                             css={wrapperStyles(data.previous, true)}
                         >
                             <Button
-                                onClick={() => {
+                                onClick={() => 
                                     actions.router.set(data.next)
-                                }}
+                                }
                             >
-                                <h1>&#187;</h1>
+                                <H1>&#187;</H1>
                             </Button>
                         </AnimatedWrapper>
                     }
                 </PrevNextTab>
             }
-            <Items postsPage={postsPage}>
+            <Items postsPage={postsPage} {...rest}>
                 {data.isReady
                     && (!categories 
                         ? filteredPosts(postsPage ? data.searchQuery : null).map(
@@ -101,10 +124,11 @@ const List = ({
                                             <AnimatedWrapper 
                                                 type='polygonal'
                                                 key={item.id}
+                                                css={css`margin-bottom: 1em;`}
                                             >
                                                 <Title>
                                                     <AnimatedText
-                                                        comp="a"
+                                                        comp='a'
                                                         link={post.link}
                                                         text={post.title.rendered}
                                                         data-speed={animationSpeed}
@@ -115,14 +139,13 @@ const List = ({
                                                     <Html2React html={post.excerpt.rendered}/>
                                                 </Excerpt>
                                             </AnimatedWrapper>
-                                            <br/>
                                         </>
                                         : <AnimatedText 
                                             key={item.id} 
                                             link={post.link}
                                             text={post.title.rendered}
                                             data-speed={animationSpeed}
-                                            comp="a"
+                                            comp='a'
                                         />
                                     }</>
                                 )
@@ -130,17 +153,34 @@ const List = ({
                         )
                         : items.map(
                             category => (
-                                <details>
+                                <Details 
+                                    height={reanimateListItem[category.id].detailsHeight}
+                                    ref={det => details.current = {
+                                        ...details.current,
+                                        [category.id]: det
+                                    }}
+                                >
                                     <AnimatedText 
                                         key={category.id} 
                                         text={category.name}
                                         data-speed={animationSpeed}
-                                        comp="summary"
-                                        onClick={() => 
+                                        comp='summary'
+                                        onClick={event => {
+                                            const det = details.current[category.id]
+                                            event.preventDefault()
+                                            det.open = true
                                             setReanimateListItem(reanimateListItem => ({
-                                                ...reanimateListItem, [category.id]: !reanimateListItem[category.id]
+                                                ...reanimateListItem, 
+                                                [category.id]: {
+                                                    reanimate: !reanimateListItem[category.id].reanimate,
+                                                    detailsHeight: calculateDetailsHeight(
+                                                        det, 
+                                                        category.id, 
+                                                        det.firstElementChild.nextElementSibling
+                                                    )
+                                                }
                                             }))
-                                        }
+                                        }}
                                         css={css`cursor: pointer`}
                                     />
                                     <Ul>
@@ -154,8 +194,8 @@ const List = ({
                                                                 link={post.post_name}
                                                                 text={post.post_title}
                                                                 data-speed={animationSpeed}
-                                                                comp="a"
-                                                                reanimate={reanimateListItem[category.id]}
+                                                                comp='a'
+                                                                reanimate={reanimateListItem[category.id].reanimate}
                                                                 css={css`cursor: pointer`}
                                                             />
                                                         </Li>
@@ -164,7 +204,7 @@ const List = ({
                                             }
                                         )}
                                     </Ul>
-                                </details>
+                                </Details>
                             ) 
                         )
                     )
@@ -192,22 +232,21 @@ const postsPageItems = css`
     padding-left: 1em;
     padding-right: 1em;
     overflow-y: scroll;
+`
 
-    ::-webkit-scrollbar {
-        width: 10px;
-        background: transparent;
-    }
+const H1 = styled.h1`
+    position: absolute;
+    padding-bottom: 1.5%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+`
 
-    ::-webkit-scrollbar-thumb {
-        border: 1px solid #60d75a;
-        border-radius: 10px;
-        background-color: rgba(0,0,0,.85);
-        animation: 
-            ${glow(2, 5)} 3s ease-out alternate infinite;
-        :hover {background-color: #60d75a;}
-    }
-
-    ::-webkit-scrollbar-track-piece {display: none;}
+const Details = styled.details`
+    ${props => props.height 
+        && css`height: ${props.height}px;`}
+    overflow: hidden;
+    transition: height .25s ease-out;
 `
 
 const PrevNextTab = styled.div`
@@ -244,16 +283,16 @@ const Items = styled.div`
 `
 
 const Button = styled.div`
-    position: absolute;
-    width: 100%;
-    height: 100%;
     font-family: 'Share Tech Mono';
     text-align: center;
     text-decoration: none;
-    background-color: transparent;
     color: #60d75a;
+    position: absolute;
+    width: 100%;
+    height: 100%;
     margin-right: 2em;
     border: 0;
+    background-color: transparent;
     z-index: 1;
     transition: color .25s ease-out;
 

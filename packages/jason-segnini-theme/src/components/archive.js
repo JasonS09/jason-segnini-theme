@@ -25,16 +25,15 @@ const Archive = ({state, actions}) => {
                 <AnimatedText 
                     comp="h1" 
                     text="Archive" 
-                    css={css`margin-bottom: 8px`}
+                    css={css`margin-bottom: 1em`}
                 />
-                <br/>
-                <AnimatedText comp="h4" text="Categories"/>
-                <List categories/>
-                <br/>
-                <AnimatedText comp="h4" text="Latest Posts"/>
-                <List maxnum="5"/>
-                <br/>
-                <SearchBar/>
+                <Scrollable>
+                    <AnimatedText comp="h4" text="Categories"/>
+                    <List categories css={css`margin-bottom: 1em`}/>
+                    <AnimatedText comp="h4" text="Latest Posts"/>
+                    <List maxnum="5" css={css`margin-bottom: 2em`}/>
+                    <SearchBar/>
+                </Scrollable>
             </ArchiveContent>
         </AnimatedWrapper>
     )
@@ -42,13 +41,19 @@ const Archive = ({state, actions}) => {
 
 export default connect(Archive)
 
+const Scrollable = styled.div`
+    max-height: calc(100vh - 8em);
+    overflow-y: scroll;
+    overflow-x: hidden;
+`
+
 const ArchiveContent = styled.div`
     position: relative;
     max-width: 175px;
-    padding: 2em 1em;
+    padding: 2em 10px 2em 1em;
     margin-left: 6em;
     margin-top: 1em;
-    z-index: 2;
+    z-index: 1;
     h1 {font-family: 'Hacked';}
 
     h1, h4 {

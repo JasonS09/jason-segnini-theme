@@ -69,32 +69,32 @@ const Logo = () => {
                         lengthAdjust="spacing"
                         css={textStyles}
                     />
-                        <Line 
-                            x1="45%" 
-                            y1="70%" 
-                            x2="98%" 
-                            y2="83%"
-                            ref={fig => figs.current[0] = fig}
-                            size={sizes[0]} 
-                        />
-                        <Line 
-                            x1="50%" 
-                            y1="0" 
-                            x2="5%" 
-                            y2="78%"
-                            delay=".50"
-                            ref={fig => figs.current[2] = fig}
-                            size={sizes[2]} 
-                        />
-                        <Circle 
-                            cx="5%" 
-                            cy="78%" 
-                            r="3%"  
-                            delay=".75" 
-                            ref={fig => figs.current[3] = fig}
-                            size={sizes[3]}
-                        />
-                        <Ellipse cx="50%" cy="95%" rx="50%" ry="3%"/>
+                    <Line 
+                        x1="45%" 
+                        y1="70%" 
+                        x2="98%" 
+                        y2="83%"
+                        ref={fig => figs.current[0] = fig}
+                        size={sizes[0]} 
+                    />
+                    <Line 
+                        x1="50%" 
+                        y1="0" 
+                        x2="5%" 
+                        y2="78%"
+                        delay=".50"
+                        ref={fig => figs.current[2] = fig}
+                        size={sizes[2]} 
+                    />
+                    <Circle 
+                        cx="5%" 
+                        cy="78%" 
+                        r="3%"  
+                        delay=".75" 
+                        ref={fig => figs.current[3] = fig}
+                        size={sizes[3]}
+                    />
+                    <Ellipse cx="50%" cy="95%" rx="50%" ry="3%"/>
                 </Svg>
             </Div>
         )

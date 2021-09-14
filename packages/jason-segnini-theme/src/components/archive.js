@@ -1,5 +1,6 @@
 import {connect, styled, css} from "frontity"
 import {glowForText} from "../styles/keyframes"
+import {useState} from "react"
 import SearchBar from "./searchbar"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
@@ -8,6 +9,11 @@ import Hide from "./hide"
 
 const Archive = ({state, actions}) => {
     const isArchiveHidden = !state.theme.showArchive
+    const [scrollbar, setScrollbar] = useState(null)
+
+    setTimeout(() => {
+        setScrollbar(css`overflow-y: scroll`)
+    }, 3000)
 
     return (
         <AnimatedWrapper 
@@ -27,7 +33,7 @@ const Archive = ({state, actions}) => {
                     text="Archive" 
                     css={css`margin-bottom: 1em`}
                 />
-                <Scrollable>
+                <Scrollable css={scrollbar}>
                     <AnimatedText comp="h4" text="Categories"/>
                     <List categories css={css`margin-bottom: 1em`}/>
                     <AnimatedText comp="h4" text="Latest Posts"/>
@@ -43,8 +49,7 @@ export default connect(Archive)
 
 const Scrollable = styled.div`
     max-height: calc(100vh - 8em);
-    overflow-y: scroll;
-    overflow-x: hidden;
+    overflow: hidden;
 `
 
 const ArchiveContent = styled.div`

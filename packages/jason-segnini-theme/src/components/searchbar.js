@@ -3,7 +3,8 @@ import {expandWidth} from "../styles/keyframes"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 
-const SearchBar = ({actions}) => {
+const SearchBar = ({state, actions}) => {
+    const color = state.theme.color
     let inputState = {value: ''}
     
     return (
@@ -13,17 +14,22 @@ const SearchBar = ({actions}) => {
                 padding-left: 1px;
             `}>
                 <Input 
-                    type="text" 
-                    onChange={event => inputState = {value: event.target.value}} 
-                    placeholder="Search blog posts."
+                    type='text'
+                    placeholder='Search blog posts.'
+                    color={color}
+                    placeholderColor='#628a6c'
+                    onChange={event => inputState = {value: event.target.value}}
                 />
             </AnimatedWrapper>
             <AnimatedWrapper shadows css={css`
                 width: fit-content;
                 margin: auto;
             `}>
-                <Button onClick={() => actions.router.set("/?s="+inputState.value)}>
-                    <AnimatedText text="Search"/>
+                <Button 
+                    color={color}
+                    onClick={() => actions.router.set('/?s='+inputState.value)}
+                >
+                    <AnimatedText text='Search'/>
                 </Button>
             </AnimatedWrapper>
         </>
@@ -32,32 +38,32 @@ const SearchBar = ({actions}) => {
 
 export default connect(SearchBar);
 
-const common = css`
+const common = (color) => css`
+    font-family: 'Share Tech Mono';
+    color: ${color};
     position: relative;
     display: block;
-    background-color: transparent;
     border: 0;
-    color: #60d75a;
+    background-color: transparent;
     z-index: 1;
-    font-family: 'Share Tech Mono';
 `
 
 const Input = styled.input`
-    ${common}
+    ${props => common(props.color)}
     margin-bottom: 1em;
     padding: 2px 1px;
     animation: ${expandWidth()} 1s ease-out forwards;
 
     :focus {
         outline: none;
-        box-shadow: 0 0 10px #60d75a;
+        box-shadow: 0 0 10px ${props => props.color};
     }
 
-    ::placeholder {color: #628a6c;}
+    ::placeholder {color: ${props => props.placeholderColor}}
 `
 
 const Button = styled.button`
-    ${common}
+    ${props => common(props.color)}
     cursor: pointer;
     padding: 4px;
     transition: color .25s ease-out;
@@ -85,7 +91,7 @@ const Button = styled.button`
         width: 0;
         height: 100%;
         top: 0;
-        background-color: #60d75a;
+        background-color: ${props => props.color};
         z-index: -1;
         transition: width .25s ease-out;
     }

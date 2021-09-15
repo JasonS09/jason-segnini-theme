@@ -1,4 +1,4 @@
-import {styled, keyframes, css} from "frontity"
+import {connect, styled, keyframes, css} from "frontity"
 import {useRef, useEffect, useState} from "react"
 import {
     expandWidth, 
@@ -10,6 +10,7 @@ import {
 } from "../styles/keyframes"
 
 const AnimatedWrapper = ({
+    state,
     width = 0,
     hideOffset = 0,
     type,
@@ -17,6 +18,7 @@ const AnimatedWrapper = ({
     isComponentHidden,
     ...rest
 }) => {
+    const color = state.theme.color
     const [dimensions, setDimensions] = useState({})
     const ref = useRef(null)
 
@@ -52,25 +54,37 @@ const AnimatedWrapper = ({
                         right
                         width={width}
                         hideOffset={hideOffset}
+                        color={color}
                         isComponentHidden={isComponentHidden}
                         ref={ref}
                         {...rest}
                     >
-                        <ShadowForRight hideOffset={hideOffset}/>
-                        <CuteCircle/>
-                        <StyledCorner hideOffset={hideOffset}/>
-                        <BottomBorderForRight hideOffset={hideOffset}/>
+                        <ShadowForRight 
+                            hideOffset={hideOffset}
+                            color={color}
+                        />
+                        <CuteCircle color={color}/>
+                        <StyledCorner 
+                            hideOffset={hideOffset}
+                            color={color} 
+                        />
+                        <BottomBorderForRight 
+                            hideOffset={hideOffset}
+                            color={color} 
+                        />
                         <LightEffect 
                             absolute
                             right 
-                            hideOffset={hideOffset}
                             width={dimensions.width}
                             height={dimensions.height}
+                            hideOffset={hideOffset}
+                            color={color}
                         />
                         <LightEffect 
                             absolute
                             right 
                             hideOffset={hideOffset}
+                            color={color}
                             css={css`
                                 top: auto;
                                 bottom: 5%;
@@ -79,7 +93,7 @@ const AnimatedWrapper = ({
                                 box-shadow: none;
                                 animation: 
                                     ${makeAppear()} .10s ease-out .75s forwards,
-                                    ${glow(0, 10, 0, 4)} .10s ease-out .75s forwards,
+                                    ${glow(color, 0, 10, 0, 4)} .10s ease-out .75s forwards,
                                     ${moveDownForRightAlt(
                                         dimensions.width, dimensions.height
                                     )} .25s ease-out .75s forwards,
@@ -97,17 +111,25 @@ const AnimatedWrapper = ({
                     <AbsoluteAnimatedDiv 
                         width={width}
                         hideOffset={hideOffset}
+                        color={color}
                         isComponentHidden={isComponentHidden}
                         {...rest}
                     >
-                        <ShadowForLeft hideOffset={hideOffset}/>
-                        <ButtonBackground/>
-                        <BottomBorderForLeft hideOffset={hideOffset}/>
+                        <ShadowForLeft 
+                            hideOffset={hideOffset} 
+                            color={color}   
+                        />
+                        <ButtonBackground color={color}/>
+                        <BottomBorderForLeft 
+                            hideOffset={hideOffset}
+                            color={color} 
+                        />
                         <LightEffect 
                             absolute
-                            hideOffset={hideOffset}
                             width={dimensions.width}
                             height={dimensions.height}
+                            hideOffset={hideOffset}
+                            color={color}
                         />
                         {rest.children}
                     </AbsoluteAnimatedDiv>
@@ -116,9 +138,11 @@ const AnimatedWrapper = ({
 
         case 'polygonal':
             return (
-                <PolygonalAnimatedDiv {...rest}>
-                    <ShadowForPolygon/>
-                    <AllbordersAnimatedDiv css={css`
+                <PolygonalAnimatedDiv color={color} ref={ref} {...rest}>
+                    <ShadowForPolygon color={color}/>
+                    <AllbordersAnimatedDiv 
+                        color={color} 
+                        css={css`
                             clip-path: polygon(
                                 0% 0%, 
                                 95.3% 0, 
@@ -132,8 +156,14 @@ const AnimatedWrapper = ({
                                 transition: 
                                     border-width 0s ease-out .25s;
                             }
-                    `}>
-                        <StyledBorder/>
+                        `}
+                    >
+                        <StyledBorder color={color}/>
+                        <LightEffect 
+                            width={dimensions.width} 
+                            height={dimensions.height} 
+                            color={color} 
+                        />
                         {rest.children}
                     </AllbordersAnimatedDiv>
                 </PolygonalAnimatedDiv>
@@ -141,24 +171,28 @@ const AnimatedWrapper = ({
 
         default:
             return (
-                <AllbordersAnimatedDiv ref={ref} {...rest}>
+                <AllbordersAnimatedDiv 
+                    color={color} 
+                    ref={ref} 
+                    {...rest}
+                >
                     <LightEffect 
                         width={dimensions.width} 
                         height={dimensions.height} 
+                        color={color} 
                     />
                     {rest.children}
                 </AllbordersAnimatedDiv>
             )
     }
-
 }
 
-export default AnimatedWrapper
+export default connect(AnimatedWrapper)
 
-const afterBorderColor = keyframes`
+const afterBorderColor = (color) => keyframes`
     to {
-        border-bottom-color: #60d75a;
-        border-left-color: #60d75a;
+        border-bottom-color: ${color};
+        border-left-color: ${color};
     }
 `
 
@@ -200,7 +234,11 @@ const moveDownForRightAlt = (width, height) => keyframes`
         );}
 `
 
-const animateLeft = (hideOffset, isComponentHidden) => css`
+const animateLeft = (
+    hideOffset, 
+    isComponentHidden, 
+    color
+) => css`
     ${isComponentHidden 
         && css`margin-right: -250px`}
     right: 0;
@@ -208,19 +246,21 @@ const animateLeft = (hideOffset, isComponentHidden) => css`
     :hover {
         ${ShadowForLeft} {
             animation: 
-                ${glowForPolygon(5, 9)} .25s ease-out forwards;
+                ${glowForPolygon(
+                    color, 5, 9
+                )} .25s ease-out forwards;
         }
     }
 
     ::before {
-        border-left: 1px solid #60d75a;
+        border-left: 1px solid ${color};
         animation: 
             ${expandHeight('2.4%')} .05s ease-out forwards;
     }
 
     ::after {
         top: calc(2.4% + 53px);
-        border-left: 1px solid #60d75a;
+        border-left: 1px solid ${color};
         clip-path: polygon(
             0 0, 
             100% 0, 
@@ -237,26 +277,32 @@ const animateLeft = (hideOffset, isComponentHidden) => css`
     ::before, ::after {left: ${hideOffset};}
 `
 
-const animateRight = (hideOffset, isComponentHidden) => css`
+const animateRight = (
+    hideOffset, 
+    isComponentHidden, 
+    color
+) => css`
     ${isComponentHidden 
         && css`margin-left: -250px`}
 
     :hover {
         ${ShadowForRight} {
             animation: 
-                ${glowForPolygon(5, 9)} .25s ease-out forwards;
+                ${glowForPolygon(
+                    color, 5, 9
+                )} .25s ease-out forwards;
         }
     }
 
     ::before {
-        border-right: 1px solid #60d75a;
+        border-right: 1px solid ${color};
         animation: 
             ${expandHeight('2.5%')} .05s ease-out forwards;
     }
 
     ::after {
         top: calc(2.5% + 40px + 1%);
-        border-right: 2px solid #60d75a;
+        border-right: 2px solid ${color};
         clip-path: polygon(
             0% 0%, 
             100% 0, 
@@ -279,7 +325,7 @@ const StyledBorder = styled.div`
     height: 50px;
     right: 0;
     top: 0;
-    background-color: #60d75a;
+    background-color: ${props => props.color};
     clip-path: polygon(0% 0%, 100% 0, 100% 100%);
     filter: opacity(0);
     animation: 
@@ -289,8 +335,14 @@ const StyledBorder = styled.div`
 const ShadowForPolygon = styled.div`
     top: 0;
     animation: 
-        ${glowForPolygon(9, 3)} .25s ease-out 1,
-        ${glowForPolygon()} 3s ease-out .25s alternate infinite;
+        ${props => css`
+            ${glowForPolygon(
+                props.color, 9, 3
+            )} .25s ease-out 1,
+            ${glowForPolygon(
+                props.color
+            )} 3s ease-out .25s alternate infinite;
+        `};
 
     ::before {
         content: '';
@@ -312,9 +364,15 @@ const ShadowForPolygon = styled.div`
 `
 
 const ShadowForLeft = styled.div`
-    left: ${props => props.hideOffset};
-    animation: ${glowForPolygon(9, 3)} .25s ease-out forwards,
-        ${glowForPolygon()} 3s ease-out .25s alternate infinite;
+    ${props => css`
+        left: ${props.hideOffset};
+        animation: ${glowForPolygon(
+                props.color, 9, 3
+            )} .25s ease-out forwards,
+            ${glowForPolygon(
+                props.color
+            )} 3s ease-out .25s alternate infinite;
+    `}
 
     ::before {
         content: '';
@@ -337,8 +395,14 @@ const ShadowForLeft = styled.div`
 
 const ShadowForRight = styled.div`
     height: 100%;
-    animation: ${glowForPolygon(9, 3)} .25s ease-out forwards,
-        ${glowForPolygon()} 3s ease-out .25s alternate infinite;
+    animation: ${props => css`
+        ${glowForPolygon(
+            props.color, 9, 3
+        )} .25s ease-out forwards,
+        ${glowForPolygon(
+            props.color
+        )} 3s ease-out .25s alternate infinite;
+    `};
 
     ::before {
         height: 95%;
@@ -395,7 +459,7 @@ const BottomBorderForLeft = styled.div`
         position: absolute;
         width: 100%;
         height: 100%;
-        background-color: #60d75a;
+        background-color: ${props => props.color};
         clip-path: polygon(0 100%, 50% 100%, 0 0);
         filter: opacity(0);
         animation: ${makeAppear()} .4s ease-out .96s forwards;
@@ -409,7 +473,7 @@ const ButtonBackground = styled.div`
     top: 2.3%;
     left: 5.5%;
     border-radius: 50%;
-    border: 2px solid #60d75a;
+    border: 2px solid ${props => props.color};
     clip-path: polygon(
         50% 0, 
         50% 100%, 
@@ -424,12 +488,18 @@ const CuteCircle = styled.div`
     height: 9px;
     bottom: 9.7%;
     left: 21.8%;
-    border: 1px solid #60d75a;
+    border: 1px solid ${props => props.color};
     border-radius: 50%;
     filter: opacity(0);
-    animation: ${makeAppear()} .5s ease-out 1s forwards,
-        ${glow(5, 10, 2, 1)} .25s ease-out 1.5s 2 alternate forwards,
-        ${glow(5, 10, 1, 1)} 3s linear 1.75s infinite alternate;
+    animation: ${props => css`
+        ${makeAppear()} .5s ease-out 1s forwards,
+        ${glow(
+            props.color, 5, 10, 2, 1
+        )} .25s ease-out 1.5s 2 alternate forwards,
+        ${glow(
+            props.color, 5, 10, 1, 1
+        )} 3s linear 1.75s infinite alternate;
+    `}
 `
 
 const BottomBorderForRight = styled.div`
@@ -454,7 +524,7 @@ const BottomBorderForRight = styled.div`
         top: 0;
         right: 0;
         clip-path: polygon(0% 0%, 100% 0, 100% 100%);
-        background-color: #60d75a;
+        background-color: ${props => props.color};
         z-index: 1;
         filter: opacity(0);
         animation: 
@@ -466,7 +536,7 @@ const BottomBorderForRight = styled.div`
         position: absolute;
         top: 0;
         width: 99.4%;
-        border-right: 2px solid #60d75a;
+        border-right: 2px solid ${props => props.color};
         animation: 
             ${expandHeight()} .40s ease-out .75s forwards;
     }
@@ -477,7 +547,7 @@ const StyledCorner = styled.div`
     height: 5%;
     bottom: 5%;
     right: ${props => props.hideOffset};
-    border-bottom: 1px solid #60d75a;
+    border-bottom: 1px solid ${props => props.color};
     clip-path: polygon(
         0% 0%, 
         100% 0%, 
@@ -492,7 +562,7 @@ const StyledCorner = styled.div`
     ::before {
         right: 0;
         width: 5%;
-        background-color: #60d75a;
+        background-color: ${props => props.color};
         clip-path: polygon(100% 80%, 0 100%, 100% 100%);
         filter: opacity(0);
         animation: 
@@ -502,7 +572,7 @@ const StyledCorner = styled.div`
     ::after {
         left: 0;
         width: 20%;
-        background-color: #60d75a;
+        background-color: ${props => props.color};
         clip-path: polygon(0% 0%, 100% 100%, 0% 100%);
         filter: opacity(0);
         animation: 
@@ -520,11 +590,13 @@ const LightEffect = styled.div`
     position: absolute;
     height: 2px;
     width: 2px;
-    border: 1px solid #60d75a;
+    border: 1px solid ${props => props.color};
     border-radius: 50%;
-    box-shadow: 0 0 5px 2px #60d75a,
-        0 0 5px 2px #60d75a inset,
-        0 0 23px 5px #60d75a;
+    ${props => css`
+        box-shadow: 0 0 5px 2px ${props.color},
+            0 0 5px 2px ${props.color} inset,
+            0 0 23px 5px ${props.color};
+    `}
     ${props => props.absolute && "top: 0;"}
     ${props => (props.absolute && props.right)
         ? css`right: ${props.hideOffset};`
@@ -572,11 +644,13 @@ const AbsoluteAnimatedDiv = styled.div`
     ${props => props.right 
         ? animateRight(
             props.hideOffset, 
-            props.isComponentHidden
+            props.isComponentHidden,
+            props.color
         )
         : animateLeft(
             props.hideOffset, 
-            props.isComponentHidden
+            props.isComponentHidden,
+            props.color
         )
     }
     z-index: 1;
@@ -596,8 +670,12 @@ const AllbordersAnimatedDiv = styled.div`
     ${props => props.shadows 
         && css`
             animation: 
-                ${glow(5, 10)} .25s ease-out 1s 2 alternate forwards,
-                ${glow(5, 10)} 3s linear 1.5s infinite alternate;
+                ${glow(
+                    props.color, 5, 10
+                )} .25s ease-out 1s 2 alternate forwards,
+                ${glow(
+                    props.color, 5, 10
+                )} 3s linear 1.5s infinite alternate;
         `
     }
 
@@ -612,8 +690,10 @@ const AllbordersAnimatedDiv = styled.div`
     ::before {
         top: 0;
         left: 0;
-        border-top-color: #60d75a;
-        border-right-color: #60d75a;
+        ${props => css`
+            border-top-color: ${props.color};
+            border-right-color: ${props.color};
+        `}
         animation: 
             ${expandWidth()} .25s ease-out forwards,
             ${expandHeight()} .25s ease-out .25s forwards;
@@ -623,7 +703,9 @@ const AllbordersAnimatedDiv = styled.div`
         right: 0;
         bottom: 0;
         animation: 
-            ${afterBorderColor} 0s ease-out .5s forwards,
+            ${props => 
+                afterBorderColor(props.color)
+            } 0s ease-out .5s forwards,
             ${expandWidth()} .25s ease-out .5s forwards,
             ${expandHeight()} .25s ease-out .75s forwards;
     }
@@ -638,7 +720,9 @@ const PolygonalAnimatedDiv = styled.div`
 
         ${ShadowForPolygon} {
             animation: 
-                ${glowForPolygon(5, 9)} .25s ease-out forwards;
+                ${props => glowForPolygon(
+                    props.color, 5, 9
+                )} .25s ease-out forwards;
         }
 
         ${AllbordersAnimatedDiv} {

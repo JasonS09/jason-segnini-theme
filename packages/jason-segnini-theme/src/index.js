@@ -4,48 +4,52 @@ import animatedText from "./processors/animated-text"
 import categories from "./handlers/categories"
 
 const jasonSegniniTheme = {
-  name: "jason-segnini-theme",
-  roots: {
-    theme: Root
-  },
-  state: {
-    theme: {
-      isWelcomeReceived: false,
-      isBackgroundLoaded: false,
-      showMenu: true,
-      showArchive: true
-    }
-  },
-  actions: {
-    theme: {
-      init: ({libraries}) =>
-        libraries.source.handlers.push(categories),
+    name: "jason-segnini-theme",
+    roots: {
+        theme: Root
+    },
+    state: {
+        theme: {
+            isWelcomeReceived: false,
+            isBackgroundLoaded: false,
+            showMenu: true,
+            showArchive: true,
+            color: "#60d75a"
+        }
+    },
+    actions: {
+        theme: {
+            init: ({libraries}) =>
+                libraries.source.handlers.push(categories),
 
-      beforeSSR: async ({state, actions}) => {
-        await Promise.all([
-          actions.source.fetch(state.source.postsPage),
-          actions.source.fetch(state.source.catsPage)
-        ])
-      },
+            beforeSSR: async ({state, actions}) => {
+                await Promise.all([
+                    actions.source.fetch(state.source.postsPage),
+                    actions.source.fetch(state.source.catsPage)
+                ])
+            },
 
-      welcome: ({state}) =>
-        state.theme.isWelcomeReceived = true,
+            welcome: ({state}) =>
+                state.theme.isWelcomeReceived = true,
       
-      loadBackground: ({state}) => 
-        state.theme.isBackgroundLoaded = true,
+            loadBackground: ({state}) => 
+                state.theme.isBackgroundLoaded = true,
       
-      toggleMenu: ({state}) =>
-        state.theme.showMenu = !state.theme.showMenu,
+            toggleMenu: ({state}) =>
+                state.theme.showMenu = !state.theme.showMenu,
 
-      toggleArchive: ({state}) =>
-        state.theme.showArchive = !state.theme.showArchive
+            toggleArchive: ({state}) =>
+                state.theme.showArchive = !state.theme.showArchive,
+
+            setThemeColor: ({state}) => color =>
+                state.theme.color = color
+        }
+    },
+    libraries: {
+        html2react: {
+            processors: [animatedText, link]
+        }
     }
-  },
-  libraries: {
-    html2react: {
-      processors: [animatedText, link]
-    }
-  }
 }
 
 export default jasonSegniniTheme

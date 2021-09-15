@@ -4,13 +4,13 @@ import Link from "@frontity/components/link"
 import Switch from "@frontity/components/switch"
 
 const AnimatedText = ({
+    state,
+    actions,
     'data-speed': speed = 30,
     'data-cover-text': isCoverText,
     comp,
     text,
     reanimate,
-    state,
-    actions,
     ...rest
 }) => {
     const data = state.source.get(state.router.link)

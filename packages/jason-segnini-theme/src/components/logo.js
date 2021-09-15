@@ -1,10 +1,11 @@
-import {styled, css} from "frontity"
+import {connect, styled, css} from "frontity"
 import {glowForText, glowForPolygon, draw} from "../styles/keyframes"
 import {useRef, useState, useEffect} from "react"
 import AnimatedText from "./animated-text"
 import Lobo from "./lobo"
 
-const Logo = () => {
+const Logo = ({state}) => {
+    const color = state.theme.color
     const [sizes, setSizes] = useState([])
     const figs = useRef([])
 
@@ -32,7 +33,7 @@ const Logo = () => {
 
     return (
             <Div>
-                <Lobo css={loboStyles}/>
+                <Lobo css={loboStyles(color)}/>
                 <Svg width="143" height="173">
                     <Line 
                         x1="98%" 
@@ -40,8 +41,9 @@ const Logo = () => {
                         x2="50%" 
                         y2="0"
                         delay=".25"
-                        ref={fig => figs.current[1] = fig}
-                        size={sizes[1]} 
+                        size={sizes[1]}
+                        color={color}
+                        ref={fig => figs.current[1] = fig} 
                     />
                     <AnimatedText 
                         comp="text" 
@@ -50,7 +52,7 @@ const Logo = () => {
                         y="30%"
                         textLength="143"
                         lengthAdjust="spacing"
-                        css={textStyles}/>
+                        css={textStyles(color)}/>
                     <AnimatedText 
                         comp="text" 
                         text="Segnini" 
@@ -58,7 +60,7 @@ const Logo = () => {
                         y="50%"
                         textLength="143"
                         lengthAdjust="spacing"
-                        css={textStyles}
+                        css={textStyles(color)}
                     />
                     <AnimatedText 
                         comp="text" 
@@ -67,15 +69,16 @@ const Logo = () => {
                         y="70%"
                         textLength="143"
                         lengthAdjust="spacing"
-                        css={textStyles}
+                        css={textStyles(color)}
                     />
                     <Line 
                         x1="45%" 
                         y1="70%" 
                         x2="98%" 
                         y2="83%"
+                        size={sizes[0]}
+                        color={color}
                         ref={fig => figs.current[0] = fig}
-                        size={sizes[0]} 
                     />
                     <Line 
                         x1="50%" 
@@ -83,32 +86,42 @@ const Logo = () => {
                         x2="5%" 
                         y2="78%"
                         delay=".50"
-                        ref={fig => figs.current[2] = fig}
-                        size={sizes[2]} 
+                        size={sizes[2]}
+                        color={color}
+                        ref={fig => figs.current[2] = fig} 
                     />
                     <Circle 
                         cx="5%" 
                         cy="78%" 
                         r="3%"  
                         delay=".75" 
-                        ref={fig => figs.current[3] = fig}
                         size={sizes[3]}
+                        color={color}
+                        ref={fig => figs.current[3] = fig}
                     />
-                    <Ellipse cx="50%" cy="95%" rx="50%" ry="3%"/>
+                    <Ellipse 
+                        cx="50%" 
+                        cy="95%" 
+                        rx="50%" 
+                        ry="3%"
+                        color={color}
+                    />
                 </Svg>
             </Div>
         )
     }
 
-export default Logo
+export default connect(Logo)
 
-const textStyles = css`
-    fill: #60d75a;
+const textStyles = (color) => css`
+    fill: ${color};
     font-family: 'Hacked';
     font-size: 25px;
     user-select: none;
     animation: 
-        ${glowForText} 3s ease-out alternate infinite;
+        ${glowForText(
+            color
+        )} 3s ease-out alternate infinite;
 `
 
 const Svg = styled.svg`
@@ -116,7 +129,7 @@ const Svg = styled.svg`
     transition: filter 1s ease-out;
 `
 
-const loboStyles = css`
+const loboStyles = (color) => css`
     position: absolute;
     width: 100%;
     height: 100%;
@@ -128,7 +141,7 @@ const loboStyles = css`
     path {
         animation: 
             ${glowForPolygon(
-                3, 7, 1, 1
+                color, 3, 7, 1, 1
             )} 3s ease-out alternate infinite;
     }
 
@@ -139,32 +152,36 @@ const loboStyles = css`
             animation:
                 ${draw} 10s ease-out forwards,
                 ${glowForPolygon(
-                    3, 7, 1, 1
+                    color, 3, 7, 1, 1
                 )} 3s ease-out alternate infinite;
         }
 
         + ${Svg} {
             filter: opacity(0);
 
-            line, circle, text, tspan {
+            line, circle, text {
                 animation: 
                     ${glowForPolygon(
-                        3, 7, 1, 1
+                        color, 3, 7, 1, 1
                     )} 3s ease-out alternate infinite;
             }
         }
     }
 `
 
-const common = (size = 0, delay = 0) => css`
+const common = (
+    size = 0, 
+    delay = 0,
+    color
+) => css`
     stroke-width: 2;
-    stroke: #69ff85;
+    stroke: ${color};
     stroke-dasharray: ${size}px;
     stroke-dashoffset: ${size}px;
     stroke-linecap: round;
     animation:
         ${glowForPolygon(
-            7, 14, 1, 1
+            color, 7, 14, 1, 1
         )} 3s ease-out ${delay}s alternate infinite,
         ${draw} .25s ease-out ${delay}s forwards;
 `
@@ -174,14 +191,22 @@ const Div = styled.div`
 `
 
 const Line = styled.line`
-    ${props => common(props.size, props.delay)}
+    ${props => common(
+        props.size, 
+        props.delay, 
+        props.color
+    )}
 `
 
 const Circle = styled.circle`
-    ${props => common(props.size, props.delay)}
+    ${props => common(
+        props.size, 
+        props.delay, 
+        props.color
+    )}
 `
 
 const Ellipse = styled.ellipse`
-    fill: #60d75a;
+    fill: ${props => props.color};
     filter: blur(5px) opacity(.5);
 `

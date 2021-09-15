@@ -13,6 +13,7 @@ import Orbitron from "../fonts/Orbitron-VariableFont_wght.ttf"
 import Hacked from "../fonts/Hacked-KerX.ttf"
 
 const Root = ({state, actions}) => {
+    const color = state.theme.color
     const data = state.source.get(state.router.link)
     if (!data.isHome) actions.theme.welcome()
     const isWelcomeReceived = state.theme.isWelcomeReceived
@@ -49,7 +50,7 @@ const Root = ({state, actions}) => {
                         margin: 0;
                         padding: 0;
                         box-sizing: border-box;
-                        scrollbar-color: #60d75a rgba(0,0,0,.85);
+                        scrollbar-color: ${color} rgba(0,0,0,.85);
                         scrollbar-width: thin;
 
                         ::-webkit-scrollbar {
@@ -58,19 +59,21 @@ const Root = ({state, actions}) => {
                         }
 
                         ::-webkit-scrollbar-thumb {
-                            border: 1px solid #60d75a;
+                            border: 1px solid ${color};
                             border-radius: 10px;
                             background-color: rgba(0,0,0,.85);
                             animation: 
-                                ${glow(2, 5)} 3s ease-out alternate infinite;
-                            :hover {background-color: #60d75a;}
+                                ${glow(
+                                    color, 2, 5
+                                )} 3s ease-out alternate infinite;
+                            :hover {background-color: ${color}}
                         }
 
                         ::-webkit-scrollbar-track-piece {display: none;}
 
                         ::selection {
                             color: black;
-                            background-color: #60d75a;
+                            background-color: ${color};
                         }
                     }
 
@@ -88,6 +91,7 @@ const Root = ({state, actions}) => {
                         h1, h2, h3, h4, h5 {
                             font-family: 'Orbitron';
                             letter-spacing: 3px;
+                            color: ${color};
                         }
                     }
                 `}

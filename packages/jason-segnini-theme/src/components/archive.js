@@ -27,7 +27,7 @@ const Archive = ({state, actions}) => {
                 isComponentHidden={isArchiveHidden} 
                 onClick={() => actions.theme.toggleArchive()}
             />
-            <ArchiveContent>
+            <ArchiveContent color={state.theme.color}>
                 <AnimatedText 
                     comp="h1" 
                     text="Archive" 
@@ -62,8 +62,12 @@ const ArchiveContent = styled.div`
     h1 {font-family: 'Hacked';}
 
     h1, h4 {
-        color: #60d75a;
-        animation: 
-            ${glowForText} 3s ease-out alternate infinite;
+        ${props => css`
+            color: ${props.color};
+            animation: 
+                ${glowForText(
+                    props.color
+                )} 3s ease-out alternate infinite;
+        `}
     }
 `

@@ -1,20 +1,30 @@
-import React from "react"
-import { styled, keyframes } from "frontity"
+import {connect, styled, css} from "frontity"
+import {glowForText} from "../styles/keyframes"
+import AnimatedText from "./animated-text"
+import Lobo from "./lobo"
 
-const Loading = () => <Spinner />
+const Loading = ({state}) =>
+    <Container>
+        <Lobo css={css`margin: auto`}/>
+        <AnimatedText 
+            comp="h1" 
+            text="Loading..." 
+            css={textStyles(state.theme.color)}    
+        />
+    </Container>
 
-export default Loading
+export default connect(Loading)
 
-const spin = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+const textStyles = (color) => css`
+    font-family: 'Hacked';
+    animation: 
+        ${glowForText(
+            color
+        )} 3s ease-out infinite alternate;
 `
 
-const Spinner = styled.div`
-  border: 12px solid #eee;
-  border-top: 12px solid steelblue;
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
-  animation: ${spin} 2s linear infinite;
-  `
+const Container = styled.div`
+    width: 50%;
+    margin: auto;
+    text-align: center;
+`

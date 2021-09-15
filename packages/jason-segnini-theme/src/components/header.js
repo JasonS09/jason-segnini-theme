@@ -9,6 +9,7 @@ import Logo from "./logo"
 const Header = ({state, actions}) => {
     const isMenuHidden = !state.theme.showMenu
     const active = state.router.link
+    const color = state.theme.color
     const [menuStates, setMenuStates] = useState({
         homeText: 'Home',
         aboutMeText: 'About Me',
@@ -100,7 +101,7 @@ const Header = ({state, actions}) => {
                 />
                 <HeaderContent ref={headerContent}>
                     <Logo/>
-                    <Menu>
+                    <Menu color={color}>
                         <AnimatedText 
                             comp="a" 
                             link="/" 
@@ -110,7 +111,8 @@ const Header = ({state, actions}) => {
                                     '/', 
                                     active, 
                                     prevActive.current, 
-                                    menuStates.contentWidth
+                                    menuStates.contentWidth,
+                                    color
                                 )}
                         />
                         <AnimatedText 
@@ -122,7 +124,8 @@ const Header = ({state, actions}) => {
                                     '/about-me/', 
                                     active, 
                                     prevActive.current, 
-                                    menuStates.contentWidth
+                                    menuStates.contentWidth,
+                                    color
                                 )}
                         />
                         <AnimatedText 
@@ -134,7 +137,8 @@ const Header = ({state, actions}) => {
                                     '/blog/', 
                                     active, 
                                     prevActive.current, 
-                                    menuStates.contentWidth
+                                    menuStates.contentWidth,
+                                    color
                                 )}
                         />
                         <AnimatedText 
@@ -146,7 +150,8 @@ const Header = ({state, actions}) => {
                                     '/contact/', 
                                     active, 
                                     prevActive.current, 
-                                    menuStates.contentWidth
+                                    menuStates.contentWidth,
+                                    color
                                 )}
                         />
                     </Menu>
@@ -168,34 +173,36 @@ const expandAndContract = keyframes`
     100% {width: 0}
 `
 
-const changeColor = keyframes`
+const changeColor = (color) => keyframes`
     from {color: black}
-    to {color: #60d75a}
+    to {color: ${color}}
 `
 
 const setMenuElementStyle = (
     link,
     active, 
     prevActive, 
-    contentWidth
+    contentWidth,
+    color
 ) => css`
     margin-bottom: 1em;
     ${active === link
-        ? activeConfig
+        ? activeConfig(color)
         : prevActive === link
-            ? changeActive(contentWidth)
+            ? changeActive(contentWidth, color)
             : nonActiveConfig
     }
 `
 
-const activeConfig = css`
-    text-shadow: 0 0 7px #60d75a;
+const activeConfig = (color) => css`
+    text-shadow: 0 0 7px ${color};
     transition: text-shadow .5s ease-out;
 
     ::before {
         width: 5%;
         right: 0;
-        animation: ${glow()} 3s ease-out alternate infinite;
+        animation: 
+            ${glow(color)} 3s ease-out alternate infinite;
     }
 `
 
@@ -208,8 +215,8 @@ const nonActiveConfig = css`
     ::before {width: 0;}
 `
 
-const changeActive = (contentWidth) => css`
-    animation: ${changeColor} .5s ease-out 1;
+const changeActive = (contentWidth, color) => css`
+    animation: ${changeColor(color)} .5s ease-out 1;
 
     :hover {
         color: black;
@@ -245,7 +252,7 @@ const Menu = styled.nav`
 
     a {
         position: relative;
-        color: #60d75a;
+        color: ${props => props.color};
         text-decoration: none;
         max-height: 18.4px;
         transition: color .5s ease-out;
@@ -256,7 +263,7 @@ const Menu = styled.nav`
             content: '';
             position: absolute;
             height: 100%;
-            background-color: #60d75a;
+            background-color: ${props => props.color};
             z-index: -1;
         }
 

@@ -20,15 +20,16 @@ const Post = ({state, libraries}) => {
             {data.isPost 
                 && 
                 <PostInfo>
-                <p>
-                    <strong>Posted: </strong>
-                    {formattedDate}
-                </p>
-                <p>
-                    <strong>Author: </strong>
-                    {author.name}
-                </p>
-                </PostInfo>}
+                    <p>
+                        <strong>Posted: </strong>
+                        {formattedDate}
+                    </p>
+                    <p>
+                        <strong>Author: </strong>
+                        {author.name}
+                    </p>
+                </PostInfo>
+            }
             <PostContent>
                 <Html2React html={post.content.rendered}/>
             </PostContent>

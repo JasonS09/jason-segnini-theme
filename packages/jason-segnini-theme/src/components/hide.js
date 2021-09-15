@@ -5,7 +5,13 @@ import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 import Switch from "@frontity/components/switch"
 
-const Hide = ({state, right, isComponentHidden, ...rest}) => {
+const Hide = ({
+    state, 
+    right, 
+    isComponentHidden, 
+    ...rest
+}) => {
+    const color = state.theme.color
     const [hideStyles, setHideStyles] = useState(null)
 
     if (isComponentHidden && !hideStyles) 
@@ -42,16 +48,20 @@ const Hide = ({state, right, isComponentHidden, ...rest}) => {
             <OuterWrapper when={right} right css={hideStyles} {...rest}>
                 <HideButton 
                     right 
+                    color={color}
                     isComponentHidden={isComponentHidden}
                 >
                     <AnimatedText comp="h1" text={setText()}/>
                 </HideButton>
             </OuterWrapper>
-            <OuterWrapper css={hideStyles} {...rest}>
-                <Shadow/>
+            <OuterWrapper color={color} css={hideStyles} {...rest}>
+                <Shadow color={color}/>
                 <AnimatedWrapper css={wrapperStyles}>
-                    <StyledBorder/>
-                    <HideButton isComponentHidden={isComponentHidden}>
+                    <StyledBorder color={color}/>
+                    <HideButton 
+                        color={color}
+                        isComponentHidden={isComponentHidden}
+                    >
                         <AnimatedText comp="h1" text={setText()}/>
                     </HideButton>
                     </AnimatedWrapper>
@@ -102,8 +112,14 @@ const wrapperStyles = css`
 `
 
 const Shadow = styled.div`
-    animation:  ${glowForPolygon(9, 3)} .25s ease-out 1,
-        ${glowForPolygon()} 3s ease-out .25s alternate infinite;
+    animation:  ${props => css`
+        ${glowForPolygon(
+            props.color, 9, 3
+        )} .25s ease-out 1,
+        ${glowForPolygon(
+            props.color
+        )} 3s ease-out .25s alternate infinite;
+    `};
 
     ::before {
         content: '';
@@ -130,7 +146,7 @@ const StyledBorder = styled.div`
     width: 40%;
     height: 100%;
     right: 0;
-    background-color: #60d75a;
+    background-color: ${props => props.color};
     clip-path: polygon(
         0% 0%, 
         100% 0%, 
@@ -156,8 +172,12 @@ const HideButton = styled.div`
             filter: opacity(0);
             animation: 
                 ${makeAppear()} .25s ease-out forwards,
-                ${glow(5, 10, 0, 2)} .375s ease-out .25s 2 alternate,
-                ${glow(5, 10)} 3s ease-out 1s alternate infinite;
+                ${glow(
+                    props.color, 5, 10, 0, 2
+                )} .375s ease-out .25s 2 alternate,
+                ${glow(
+                    props.color, 5, 10
+                )} 3s ease-out 1s alternate infinite;
 
             ::after {
                 content: '';
@@ -165,7 +185,7 @@ const HideButton = styled.div`
                 width: calc(100% - 4px);
                 height: calc(100% - 4px);
                 top: 0;
-                border: 2px solid #60d75a;
+                border: 2px solid ${props.color};
                 ${center}
             }
 
@@ -179,7 +199,7 @@ const HideButton = styled.div`
         width: 0;
         height: 100%;
         ${props => !props.right && 'right: 0;'}
-        background-color: #60d75a;
+        background-color: ${props => props.color};
         z-index: -1;
         transition: width .25s ease-out;
     }
@@ -189,7 +209,7 @@ const HideButton = styled.div`
         font-size: 20px;
         letter-spacing: normal;
         position: absolute;
-        color: #60d75a;
+        color: ${props => props.color};
         text-align: center;
         transition: color .25s ease-out;
         ${props => props.right 
@@ -216,7 +236,9 @@ const OuterWrapper = styled.div`
 
         ${Shadow} {
             animation: 
-                ${glowForPolygon(5, 9)} .25s ease-out forwards;
+                ${props => glowForPolygon(
+                    props.color, 5, 9
+                )} .25s ease-out forwards;
         }
     }
 `

@@ -13,6 +13,7 @@ const List = ({
     categories,
     ...rest
 }) => {
+    const color = state.theme.color
     const data = postsPage 
                 ? state.source.get(state.router.link)
                 : (categories
@@ -87,6 +88,7 @@ const List = ({
                         >
                             <Button
                                 prev
+                                color={color}
                                 onClick={() => 
                                     actions.router.set(data.previous)
                                 }
@@ -102,6 +104,7 @@ const List = ({
                             css={wrapperStyles(data.previous, true)}
                         >
                             <Button
+                                color={color}
                                 onClick={() => 
                                     actions.router.set(data.next)
                                 }
@@ -112,7 +115,7 @@ const List = ({
                     }
                 </PrevNextTab>
             }
-            <Items postsPage={postsPage} {...rest}>
+            <Items color={color} postsPage={postsPage} {...rest}>
                 {data.isReady
                     && (!categories 
                         ? filteredPosts(postsPage ? data.searchQuery : null).map(
@@ -132,7 +135,7 @@ const List = ({
                                                         link={post.link}
                                                         text={post.title.rendered}
                                                         data-speed={animationSpeed}
-                                                        css={linkStyles}
+                                                        css={linkStyles(color)}
                                                     />
                                                 </Title>
                                                 <Excerpt>
@@ -216,12 +219,12 @@ const List = ({
 
 export default connect(List)
 
-const linkStyles = css`
+const linkStyles = (color) => css`
     font-family: 'Orbitron';
     font-size: 20px;
     letter-spacing: 3px;
     transition: text-shadow .25s ease-out;
-    :hover {text-shadow: 0 0 7px #60d75a;}
+    :hover {text-shadow: 0 0 7px ${color}}
 `
 
 const postsPageItems = css`
@@ -240,6 +243,7 @@ const H1 = styled.h1`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    transition: color .25s ease-out;
 `
 
 const Details = styled.details`
@@ -277,7 +281,7 @@ const Items = styled.div`
     a, summary {
         display: block;
         margin: 6px 0;
-        color: #60d75a;
+        color: ${props => props.color};
         text-decoration: none;
     }
 `
@@ -286,7 +290,6 @@ const Button = styled.div`
     font-family: 'Share Tech Mono';
     text-align: center;
     text-decoration: none;
-    color: #60d75a;
     position: absolute;
     width: 100%;
     height: 100%;
@@ -294,7 +297,6 @@ const Button = styled.div`
     border: 0;
     background-color: transparent;
     z-index: 1;
-    transition: color .25s ease-out;
 
     ::before {
         content: '';
@@ -303,7 +305,7 @@ const Button = styled.div`
         height: 100%;
         left: 0;
         border-radius: 3px;
-        background-color: #60d75a;
+        background-color: ${props => props.color};
         z-index: -1;
         transition: width .25s ease-out;
     }
@@ -339,7 +341,9 @@ const wrapperStyles = (prev, next) => css`
             cursor: pointer;
             color: black;
             ::before {width: 100%;}
-        }        
+        }
+
+        ${H1} {color: black;}        
     }
 
     & > div {

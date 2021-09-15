@@ -4,17 +4,17 @@ import animatedText from "./processors/animated-text"
 import categories from "./handlers/categories"
 
 const jasonSegniniTheme = {
-    name: "jason-segnini-theme",
+    name: 'jason-segnini-theme',
     roots: {
         theme: Root
     },
     state: {
         theme: {
             isWelcomeReceived: false,
-            isBackgroundLoaded: false,
             showMenu: true,
             showArchive: true,
-            color: "#60d75a"
+            color: '#60d75a',
+            screenSize: [0, 0]
         }
     },
     actions: {
@@ -32,9 +32,6 @@ const jasonSegniniTheme = {
             welcome: ({state}) =>
                 state.theme.isWelcomeReceived = true,
       
-            loadBackground: ({state}) => 
-                state.theme.isBackgroundLoaded = true,
-      
             toggleMenu: ({state}) =>
                 state.theme.showMenu = !state.theme.showMenu,
 
@@ -42,7 +39,12 @@ const jasonSegniniTheme = {
                 state.theme.showArchive = !state.theme.showArchive,
 
             setThemeColor: ({state}) => color =>
-                state.theme.color = color
+                state.theme.color = color,
+
+            setScreenSize: ({state}) => (width, height) => {
+                state.theme.screenSize[0] = width
+                state.theme.screenSize[1] = height
+            }    
         }
     },
     libraries: {

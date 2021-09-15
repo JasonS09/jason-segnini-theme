@@ -1,5 +1,6 @@
 import {connect, Global, css, styled, Head} from "frontity"
 import {glow} from "../styles/keyframes"
+import {useEffect} from "react"
 import Switch from "@frontity/components/switch"
 import List from "./list"
 import Post from "./post"
@@ -13,37 +14,57 @@ import Orbitron from "../fonts/Orbitron-VariableFont_wght.ttf"
 import Hacked from "../fonts/Hacked-KerX.ttf"
 
 const Root = ({state, actions}) => {
-    const color = state.theme.color
     const data = state.source.get(state.router.link)
-    if (!data.isHome) actions.theme.welcome()
+
+    if (!data.isHome && !state.theme.isWelcomeReceived) 
+        actions.theme.welcome()
+
     const isWelcomeReceived = state.theme.isWelcomeReceived
+    const color = state.theme.color
+
+    useEffect(() => {    
+        window.addEventListener(
+            'resize', 
+            () => actions.theme.setScreenSize(
+                window.innerWidth, window.innerHeight
+            )
+        )
+
+        if (data.isError 
+            && state.theme.color === '#60d75a')
+                actions.theme.setThemeColor('#d75a5a')
+
+        if (!data.isError 
+            && state.theme.color === '#d75a5a')
+                actions.theme.setThemeColor('#60d75a')
+    }, [data.isError])
 
     return (
         <>
             <Head>
                 <title>Jason Segnini Theme</title>
                 <meta
-                    name="Description"
-                    content="Jason Segnini theme, developed with Frontity."
+                    name='Description'
+                    content='Jason Segnini theme, developed with Frontity.'
                 />
             </Head>
             <Global
                 styles={css`
                     @font-face {
                         font-family: 'Share Tech Mono';
-                        src: url("${ShareTechMono}");
+                        src: url('${ShareTechMono}');
                     }
 
                     @font-face {
                         font-family: 'Orbitron';
-                        src: url("${Orbitron}") format("truetype-variations");
+                        src: url('${Orbitron}') format('truetype-variations');
                         font-weight: 400 900;
                         font-stretch: 25% 150%;
                     }
 
                     @font-face {
                         font-family: 'Hacked';
-                        src: url("${Hacked}");
+                        src: url('${Hacked}');
                     }
 
                     *{

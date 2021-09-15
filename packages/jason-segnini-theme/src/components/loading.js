@@ -3,15 +3,16 @@ import {glowForText} from "../styles/keyframes"
 import AnimatedText from "./animated-text"
 import Lobo from "./lobo"
 
-const Loading = ({state}) =>
+const Loading = ({state}) => (
     <Container>
-        <Lobo css={css`margin: auto`}/>
+        <Lobo/>
         <AnimatedText 
             comp="h1" 
             text="Loading..." 
             css={textStyles(state.theme.color)}    
         />
     </Container>
+)
 
 export default connect(Loading)
 
@@ -24,7 +25,5 @@ const textStyles = (color) => css`
 `
 
 const Container = styled.div`
-    width: 50%;
-    margin: auto;
     text-align: center;
 `

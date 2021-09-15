@@ -236,9 +236,9 @@ const OuterWrapper = styled.div`
 
         ${Shadow} {
             animation: 
-                ${props => glowForPolygon(
-                    props.color, 5, 9
-                )} .25s ease-out forwards;
+                ${props => 
+                    glowForPolygon(props.color, 5, 9)
+                } .25s ease-out forwards;
         }
     }
 `

@@ -23,6 +23,7 @@ const Header = ({state, actions}) => {
     })
     const headerContent = useRef(null)
     const prevActive = useRef(active)
+    let timeout = []
 
     const generateText = (size) => {
         let text = ''
@@ -55,8 +56,7 @@ const Header = ({state, actions}) => {
     }
 
     useEffect(() => {
-        if (headerContent.current 
-            && menuStates.contentWidth === 0) {
+        if (menuStates.contentWidth === 0) {
             const padding = parseFloat(
                             getComputedStyle(
                                 headerContent.current
@@ -66,25 +66,38 @@ const Header = ({state, actions}) => {
                                 headerContent.current
                             ).paddingRight)
             const width = headerContent.current.clientWidth
+
             setMenuStates(menuStates => ({
                 ...menuStates,
                 contentWidth: width-padding
             }))
         }
+
         prevActive.current = active
+        return () => timeout.forEach(timeout => 
+            clearTimeout(timeout)
+        )
     }, [state.router.link])
 
     if (menuStates.iHome > 0)
-        setTimeout(randEffect, 30, 'homeText', 'iHome', 'Home')
+        timeout.push(
+            setTimeout(randEffect, 30, 'homeText', 'iHome', 'Home')
+        )
 
     if (menuStates.iAboutMe > 0)
-        setTimeout(randEffect, 30, 'aboutMeText', 'iAboutMe', 'About Me')
+        timeout.push(
+            setTimeout(randEffect, 30, 'aboutMeText', 'iAboutMe', 'About Me')
+        )
         
     if (menuStates.iBlog > 0)
-        setTimeout(randEffect, 30, 'blogText', 'iBlog', 'Blog')
+        timeout.push(
+            setTimeout(randEffect, 30, 'blogText', 'iBlog', 'Blog')
+        )
 
     if (menuStates.iContact > 0)
-        setTimeout(randEffect, 30, 'contactText', 'iContact', 'Contact')
+        timeout.push(
+            setTimeout(randEffect, 30, 'contactText', 'iContact', 'Contact')
+        )
     
     return (
         <>

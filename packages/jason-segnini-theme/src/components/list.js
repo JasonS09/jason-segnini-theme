@@ -60,19 +60,17 @@ const List = ({
     }
 
     useEffect(() => {
-        if (details.current) {
-            let reanimateListItemWithHeights = {}
+        let reanimateListItemWithHeights = {}
 
-            Object.keys(details.current).forEach(category => {
-                const det = details.current[category]
-                reanimateListItemWithHeights = {
-                    ...reanimateListItemWithHeights,
-                    [category]: {detailsHeight: det.clientHeight}
-                }
-            })
+        Object.keys(details.current).forEach(category => {
+            const det = details.current[category]
+            reanimateListItemWithHeights = {
+                ...reanimateListItemWithHeights,
+                [category]: {detailsHeight: det.clientHeight}
+            }
+        })
 
-            setReanimateListItem(reanimateListItemWithHeights)
-        }
+        setReanimateListItem(reanimateListItemWithHeights)
     }, [])
 
     return (

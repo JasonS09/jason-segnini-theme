@@ -4,20 +4,18 @@ import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 
 const SearchBar = ({state, actions}) => {
+    const data = state.source.get(state.router.link)
     const color = state.theme.color
     let inputState = {value: ''}
     
     return (
         <>
-            <AnimatedWrapper css={css`
-                width: fit-content;
-                padding-left: 1px;
-            `}>
+            <AnimatedWrapper css={css`padding-left: 1px;`}>
                 <Input 
                     type='text'
                     placeholder='Search blog posts.'
                     color={color}
-                    placeholderColor='#628a6c'
+                    placeholderColor={data.isError ? '#8a6262' : '#628a6c'}
                     onChange={event => inputState = {value: event.target.value}}
                 />
             </AnimatedWrapper>
@@ -64,6 +62,8 @@ const Input = styled.input`
 
 const Button = styled.button`
     ${props => common(props.color)}
+    width: 51px;
+    height: 23px;
     cursor: pointer;
     padding: 4px;
     transition: color .25s ease-out;

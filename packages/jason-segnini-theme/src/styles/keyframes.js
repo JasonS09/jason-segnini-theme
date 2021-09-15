@@ -48,10 +48,6 @@ export const makeAppear = (opacity = 1) => keyframes`
     to {filter: opacity(${opacity})}
 `
 
-export const fade = keyframes`
-    to {filter: opacity(0);}
-`
-
 export const draw = keyframes`
     to {stroke-dashoffset: 0;}
 `

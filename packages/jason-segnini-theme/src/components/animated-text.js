@@ -22,6 +22,7 @@ const AnimatedText = ({
         randTimer: 0,
         animationFinished: false
     });
+    let timeout = 0
 
     const writeText = () => {
         let char = text.charAt(textContent.i)
@@ -45,6 +46,8 @@ const AnimatedText = ({
                 ...textContent,
                 animationFinished: true
             }))
+
+        return () => clearTimeout(timeout)
     }, [textContent.i])
 
     useLayoutEffect(() => {
@@ -68,7 +71,7 @@ const AnimatedText = ({
     else if (isWelcomeReceived || data.isHome) {
         if (!textContent.animationFinished) {
             if (textContent.randTimer > 0) {
-                setTimeout(
+                timeout = setTimeout(
                     setTextContent,
                     10,
                     textContent => ({

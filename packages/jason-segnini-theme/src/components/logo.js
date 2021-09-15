@@ -5,7 +5,9 @@ import AnimatedText from "./animated-text"
 import Lobo from "./lobo"
 
 const Logo = ({state}) => {
-    const color = state.theme.color
+    const data = state.source.get(state.router.link)
+    const glowColor = state.theme.color
+    const strokeColor = data.isError ? '#ff7878' : '#7eff78'
     const [sizes, setSizes] = useState([])
     const figs = useRef([])
 
@@ -15,25 +17,28 @@ const Logo = ({state}) => {
     const getTotalLenghtForCircle = r => 2*Math.PI*r
 
     useEffect(() => {
-        if (sizes.length === 0)
-            figs.current.forEach(fig => {
-                if (fig.tagName.toLowerCase() === 'circle')
-                    setSizes(sizes => [...sizes, getTotalLenghtForCircle(
-                        fig.r.baseVal.value
-                    )])
-                else
-                    setSizes(sizes => [...sizes, getTotalLenghtForLine(
-                        fig.x1.baseVal.value,
-                        fig.y1.baseVal.value,
-                        fig.x2.baseVal.value,
-                        fig.y2.baseVal.value
-                    )])
-            })
-    })
+        const sizes = []
+
+        figs.current.forEach(fig => {
+            if (fig.tagName.toLowerCase() === 'circle')
+                sizes.push(
+                    getTotalLenghtForCircle(fig.r.baseVal.value)
+                )
+            else
+                sizes.push(getTotalLenghtForLine(
+                    fig.x1.baseVal.value,
+                    fig.y1.baseVal.value,
+                    fig.x2.baseVal.value,
+                    fig.y2.baseVal.value
+                ))
+        })
+
+        setSizes(sizes)
+    }, [])
 
     return (
             <Div>
-                <Lobo css={loboStyles(color)}/>
+                <Lobo css={loboStyles(glowColor)}/>
                 <Svg width="143" height="173">
                     <Line 
                         x1="98%" 
@@ -42,7 +47,8 @@ const Logo = ({state}) => {
                         y2="0"
                         delay=".25"
                         size={sizes[1]}
-                        color={color}
+                        strokeColor={strokeColor}
+                        glowColor={glowColor}
                         ref={fig => figs.current[1] = fig} 
                     />
                     <AnimatedText 
@@ -52,7 +58,7 @@ const Logo = ({state}) => {
                         y="30%"
                         textLength="143"
                         lengthAdjust="spacing"
-                        css={textStyles(color)}/>
+                        css={textStyles(glowColor)}/>
                     <AnimatedText 
                         comp="text" 
                         text="Segnini" 
@@ -60,7 +66,7 @@ const Logo = ({state}) => {
                         y="50%"
                         textLength="143"
                         lengthAdjust="spacing"
-                        css={textStyles(color)}
+                        css={textStyles(glowColor)}
                     />
                     <AnimatedText 
                         comp="text" 
@@ -69,7 +75,7 @@ const Logo = ({state}) => {
                         y="70%"
                         textLength="143"
                         lengthAdjust="spacing"
-                        css={textStyles(color)}
+                        css={textStyles(glowColor)}
                     />
                     <Line 
                         x1="45%" 
@@ -77,7 +83,8 @@ const Logo = ({state}) => {
                         x2="98%" 
                         y2="83%"
                         size={sizes[0]}
-                        color={color}
+                        strokeColor={strokeColor}
+                        glowColor={glowColor}
                         ref={fig => figs.current[0] = fig}
                     />
                     <Line 
@@ -87,7 +94,8 @@ const Logo = ({state}) => {
                         y2="78%"
                         delay=".50"
                         size={sizes[2]}
-                        color={color}
+                        strokeColor={strokeColor}
+                        glowColor={glowColor}
                         ref={fig => figs.current[2] = fig} 
                     />
                     <Circle 
@@ -96,7 +104,8 @@ const Logo = ({state}) => {
                         r="3%"  
                         delay=".75" 
                         size={sizes[3]}
-                        color={color}
+                        strokeColor={strokeColor}
+                        glowColor={glowColor}
                         ref={fig => figs.current[3] = fig}
                     />
                     <Ellipse 
@@ -104,7 +113,7 @@ const Logo = ({state}) => {
                         cy="95%" 
                         rx="50%" 
                         ry="3%"
-                        color={color}
+                        color={glowColor}
                     />
                 </Svg>
             </Div>
@@ -172,16 +181,17 @@ const loboStyles = (color) => css`
 const common = (
     size = 0, 
     delay = 0,
-    color
+    strokeColor,
+    glowColor
 ) => css`
     stroke-width: 2;
-    stroke: ${color};
+    stroke: ${strokeColor};
     stroke-dasharray: ${size}px;
     stroke-dashoffset: ${size}px;
     stroke-linecap: round;
     animation:
         ${glowForPolygon(
-            color, 7, 14, 1, 1
+            glowColor, 7, 14, 1, 1
         )} 3s ease-out ${delay}s alternate infinite,
         ${draw} .25s ease-out ${delay}s forwards;
 `
@@ -194,7 +204,8 @@ const Line = styled.line`
     ${props => common(
         props.size, 
         props.delay, 
-        props.color
+        props.strokeColor,
+        props.glowColor
     )}
 `
 
@@ -202,7 +213,8 @@ const Circle = styled.circle`
     ${props => common(
         props.size, 
         props.delay, 
-        props.color
+        props.strokeColor,
+        props.glowColor
     )}
 `
 

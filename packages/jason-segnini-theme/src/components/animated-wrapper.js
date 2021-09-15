@@ -5,8 +5,7 @@ import {
     expandHeight, 
     glow, 
     makeAppear,
-    glowForPolygon,
-    fade
+    glowForPolygon
 } from "../styles/keyframes"
 
 const AnimatedWrapper = ({
@@ -18,9 +17,12 @@ const AnimatedWrapper = ({
     isComponentHidden,
     ...rest
 }) => {
+    const data = state.source.get(state.router.link)
     const color = state.theme.color
     const [dimensions, setDimensions] = useState({})
+    const [reanimate, setReanimate] = useState(false)
     const ref = useRef(null)
+    let timeout = 0
 
     const formatSizeProp = (prop) => {
         if (typeof(prop) != "string") return prop.toString()+'px'
@@ -38,13 +40,20 @@ const AnimatedWrapper = ({
     hideOffset = formatSizeProp(hideOffset)
     width = formatSizeProp(width)
 
-    useEffect(() => {
-        if (ref.current && Object.keys(dimensions).length === 0) 
-            setDimensions({
-                width: ref.current.clientWidth,
-                height: ref.current.clientHeight
-            })
-    })
+    useEffect(() =>  {
+        setDimensions({
+            width: ref.current.clientWidth,
+            height: ref.current.clientHeight
+        })
+        setReanimate(true)
+        return () => clearTimeout(timeout)
+    }, [data.isError])
+
+    if (reanimate)
+        timeout = setTimeout(() => 
+            setReanimate(false), 
+            1000
+        )
 
     switch(type) {
         case 'absolute':
@@ -74,7 +83,8 @@ const AnimatedWrapper = ({
                         />
                         <LightEffect 
                             absolute
-                            right 
+                            right
+                            reanimate={reanimate} 
                             width={dimensions.width}
                             height={dimensions.height}
                             hideOffset={hideOffset}
@@ -91,13 +101,19 @@ const AnimatedWrapper = ({
                                 right: 21%;
                                 border: none;
                                 box-shadow: none;
-                                animation: 
-                                    ${makeAppear()} .10s ease-out .75s forwards,
-                                    ${glow(color, 0, 10, 0, 4)} .10s ease-out .75s forwards,
-                                    ${moveDownForRightAlt(
-                                        dimensions.width, dimensions.height
-                                    )} .25s ease-out .75s forwards,
-                                    ${fade} .10s ease-out 1s forwards;
+                                ${reanimate 
+                                    && css`
+                                        filter: opacity(1);
+                                        animation: 
+                                            ${makeAppear()} .10s ease-out .75s forwards,
+                                            ${glow(
+                                                color, 0, 10, 0, 4
+                                            )} .10s ease-out .75s forwards,
+                                            ${moveDownForRightAlt(
+                                                dimensions.width, dimensions.height
+                                            )} .25s ease-out .75s forwards;
+                                    `
+                                }
                             `}                        
                         />
                         {rest.children}
@@ -126,6 +142,7 @@ const AnimatedWrapper = ({
                         />
                         <LightEffect 
                             absolute
+                            reanimate={reanimate}
                             width={dimensions.width}
                             height={dimensions.height}
                             hideOffset={hideOffset}
@@ -160,6 +177,7 @@ const AnimatedWrapper = ({
                     >
                         <StyledBorder color={color}/>
                         <LightEffect 
+                            reanimate={reanimate}
                             width={dimensions.width} 
                             height={dimensions.height} 
                             color={color} 
@@ -177,6 +195,7 @@ const AnimatedWrapper = ({
                     {...rest}
                 >
                     <LightEffect 
+                        reanimate={reanimate} 
                         width={dimensions.width} 
                         height={dimensions.height} 
                         color={color} 
@@ -188,13 +207,6 @@ const AnimatedWrapper = ({
 }
 
 export default connect(AnimatedWrapper)
-
-const afterBorderColor = (color) => keyframes`
-    to {
-        border-bottom-color: ${color};
-        border-left-color: ${color};
-    }
-`
 
 const moveAround = (width, height) => keyframes`
     25% {transform: translateX(${width}px);}
@@ -602,32 +614,41 @@ const LightEffect = styled.div`
         ? css`right: ${props.hideOffset};`
         : css`left: ${props.hideOffset}`
     }
-    animation: ${props=> props.absolute 
+    transition: filter .10s ease-out;
+    ${props => props.reanimate
         ? (
-            props.right
-            ? css`
-                ${moveDownForRight(
-                    props.width,
-                    props.height
-                )} 1s ease-out forwards,
-                ${fade} .25s ease-out 1s forwards;
-            `
-            : css`
-                ${moveDownForLeft(
-                    props.width,
-                    props.height
-                )} 1s ease-out forwards,
-                ${fade} .25s ease-out 1s forwards;
-            `
+            props.absolute
+                ? (
+                    props.right
+                        ? css`
+                            filter: opacity(1);
+                            animation: 
+                                ${moveDownForRight(
+                                    props.width,
+                                    props.height
+                                )} 1s ease-out forwards;
+                            `
+                        : css`
+                            filter: opacity(1);
+                            animation: 
+                                ${moveDownForLeft(
+                                    props.width,
+                                    props.height
+                                )} 1s ease-out forwards;
+                        `
+                ) 
+                : css`
+                    filter: opacity(1);
+                    animation: 
+                        ${moveAround(
+                            props.width, 
+                            props.height
+                        )} 1s ease-out forwards;
+                `
         )
-        : css`
-            ${moveAround(
-                props.width, 
-                props.height
-            )} 1s ease-out forwards,
-            ${fade} .25s ease-out 1s forwards;
-        `
+        : css`filter: opacity(0)`
     }
+
 `
 
 const WrapperForLeft = styled.div`
@@ -702,10 +723,13 @@ const AllbordersAnimatedDiv = styled.div`
     ::after {
         right: 0;
         bottom: 0;
+        ${props => css`
+            border-left-color: ${props.color};
+            border-bottom-color: ${props.color};
+        `}
+        filter: opacity(0);
         animation: 
-            ${props => 
-                afterBorderColor(props.color)
-            } 0s ease-out .5s forwards,
+            ${makeAppear()} 0s ease-out .5s forwards,
             ${expandWidth()} .25s ease-out .5s forwards,
             ${expandHeight()} .25s ease-out .75s forwards;
     }
@@ -720,9 +744,9 @@ const PolygonalAnimatedDiv = styled.div`
 
         ${ShadowForPolygon} {
             animation: 
-                ${props => glowForPolygon(
-                    props.color, 5, 9
-                )} .25s ease-out forwards;
+                ${props => 
+                    glowForPolygon(props.color, 5, 9)
+                } .25s ease-out forwards;
         }
 
         ${AllbordersAnimatedDiv} {

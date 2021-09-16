@@ -1,4 +1,5 @@
 import {connect, styled, css} from "frontity"
+import {useRef, useEffect, useState} from "react"
 import {glowForText} from "../styles/keyframes"
 import SearchBar from "./searchbar"
 import AnimatedText from "./animated-text"
@@ -8,11 +9,19 @@ import Hide from "./hide"
 
 const Archive = ({state, actions}) => {
     const isArchiveHidden = !state.theme.showArchive
-    const overflow = 
-        (state.theme.screenSize[1] < 476
-            && state.theme.screenSize[1] !== 0) 
-        ? 'scroll' 
-        : 'hidden'
+    const [overflow, setOverflow] = useState('hidden')
+    const scrollable = useRef(null)
+
+    useEffect(() => {
+        if (scrollable.current.clientHeight 
+            < scrollable.current.scrollHeight
+            && overflow === 'hidden')
+            setOverflow('scroll')
+        else if (scrollable.current.clientHeight 
+            > scrollable.current.scrollHeight 
+            && overflow === 'scroll')
+            setOverflow('hidden')
+    }, [state.theme.screenSize[1]])
 
     return (
         <AnimatedWrapper 
@@ -32,7 +41,7 @@ const Archive = ({state, actions}) => {
                     text="Archive" 
                     css={css`margin-bottom: 1em`}
                 />
-                <Scrollable overflow={overflow}>
+                <Scrollable overflow={overflow} ref={scrollable}>
                     <AnimatedText comp="h4" text="Categories"/>
                     <List categories css={css`margin-bottom: 1em`}/>
                     <AnimatedText comp="h4" text="Latest Posts"/>

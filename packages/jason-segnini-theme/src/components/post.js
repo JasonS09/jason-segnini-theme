@@ -1,4 +1,5 @@
-import {connect, Head, styled} from "frontity"
+import {connect, Head, styled, css} from "frontity"
+import {expandWidth} from "../styles/keyframes"
 import dayjs from "dayjs"
 import AnimatedWrapper from "./animated-wrapper"
 
@@ -6,6 +7,7 @@ const Post = ({state, libraries}) => {
     const data = state.source.get(state.router.link)
     const post = state.source[data.type][data.id]
     const author = state.source.author[post.author]
+    const color = state.theme.color
 
     const formattedDate = dayjs(post.date).format("DD MMMM YYYY")
     const Html2React = libraries.html2react.Component
@@ -16,10 +18,10 @@ const Post = ({state, libraries}) => {
                 <title>{post.title.rendered}</title>
                 <meta name="Description" content={post.excerpt.rendered}/>
             </Head>
-            {!data.isHome && <h2>{post.title.rendered}</h2>}
+            {!data.isHome && <H2>{post.title.rendered}</H2>}
             {data.isPost 
                 && 
-                <PostInfo>
+                <PostInfo color={color}>
                     <p>
                         <strong>Posted: </strong>
                         {formattedDate}
@@ -39,14 +41,31 @@ const Post = ({state, libraries}) => {
 
 export default connect(Post)
 
+const H2 = styled.h2`
+    text-align: center;
+    padding-top: 10px;
+`
+
 const PostInfo = styled.div`
-    background-image: linear-gradient(to right, #f4f4f4, #fff);
+    position: relative;
     margin-bottom: 1em;
     padding: 0.5em;
-    border-left: 4px solid lightseagreen;
     font-size: 0.8em;
-    & > p {
+    
+    p {
         margin: 0;
+        :first-of-type {margin-top: 1em;}
+    }
+
+    ::before {
+        content: '';
+        position: absolute;
+        height: 100%;
+        border-width: 1px 0;
+        border-style: solid;
+        border-color: ${props => props.color};
+        animation: 
+            ${expandWidth(50)} .25s ease-out forwards;
     }
 `
 

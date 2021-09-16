@@ -1,5 +1,5 @@
-const categories = {
-    name: 'categories',
+const menu = {
+    name: 'menu',
 
     priority: 10,
 
@@ -7,15 +7,16 @@ const categories = {
 
     func: async ({link, libraries, state}) => {
         const response = await libraries.source.api.get({
-            endpoint: '/jasonsegnini/v1/categories/'
+            endpoint: '/jasonsegnini/v1/menu/'
         })
 
-        const categories = await response.json()
+        const menu = await response.json()
 
         Object.assign(state.source.data[link], {
-            categories: categories
+            ...state.source.data[link],
+            menu: menu
         })
     }
 }
 
-export default categories
+export default menu

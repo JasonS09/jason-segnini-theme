@@ -7,56 +7,62 @@ import Hide from "./hide"
 import Logo from "./logo"
 
 const Header = ({state, actions}) => {
+    const data = state.source.get(state.source.customRestPage)
+    const items = data.menu
     const isMenuHidden = !state.theme.showMenu
     const active = state.router.link
     const color = state.theme.color
-    const [menuStates, setMenuStates] = useState({
-        homeText: 'Home',
-        aboutMeText: 'About Me',
-        blogText: 'Blog',
-        contactText: 'Contact',
-        iHome: 0,
-        iAboutMe: 0,
-        iBlog: 0,
-        iContact: 0,
-        contentWidth: 0
+
+    const [menuStates, setMenuStates] = useState(() => {
+        let menuStates = []
+
+        items.forEach(item =>
+            menuStates.push({
+                title: item.title,
+                text: item.title,
+                slug: item.slug,
+                i: 0,
+            })
+        )
+
+        return menuStates
     })
+
+    const [contentWidth, setContentWidth] = useState(0)
     const headerContent = useRef(null)
     const prevActive = useRef(active)
-    let timeout = []
+    let timeout = 0
+    let menu = [...menuStates]
+    let changeState = false
 
-    const generateText = (size) => {
+    const generateText = size => {
         let text = ''
         for (let i = 0; i < size; i++) 
             text += String.fromCharCode(Math.random()*128)
         return text
     }
 
-    const randEffect = (item, iterator, text) => {
-        if (menuStates[iterator] === text.length) {
-            setMenuStates(
-                menuStates => ({
-                    ...menuStates, 
-                    [item]: text,
-                    [iterator]: 0
-                })
-            )
+    const randEffect = (item, iterator, title) => {
+        if (iterator === title.length) {
+            menu[item] = {
+                ...menu[item],
+                text: title,
+                i: 0
+            }
             return
         }
 
-        if (menuStates[iterator] < text.length) {
-            setMenuStates(
-                menuStates => ({
-                    ...menuStates, 
-                    [item]: generateText(text.length),
-                    [iterator]: menuStates[iterator]+1
-                })
-            )
+        if (iterator < title.length) {
+            menu[item] = {
+                ...menu[item],
+                text: generateText(title.length),
+                i: iterator+1
+            }
         }
     }
 
     useEffect(() => {
-        if (menuStates.contentWidth === 0) {
+        if (contentWidth === 0) {
             const padding = parseFloat(
                             getComputedStyle(
                                 headerContent.current
@@ -66,39 +72,23 @@ const Header = ({state, actions}) => {
                                 headerContent.current
                             ).paddingRight)
             const width = headerContent.current.clientWidth
-
-            setMenuStates(menuStates => ({
-                ...menuStates,
-                contentWidth: width-padding
-            }))
+            setContentWidth(width-padding)
         }
 
         prevActive.current = active
-        return () => timeout.forEach(timeout => 
-            clearTimeout(timeout)
-        )
+        clearTimeout(timeout)
     }, [state.router.link])
 
-    if (menuStates.iHome > 0)
-        timeout.push(
-            setTimeout(randEffect, 30, 'homeText', 'iHome', 'Home')
-        )
-
-    if (menuStates.iAboutMe > 0)
-        timeout.push(
-            setTimeout(randEffect, 30, 'aboutMeText', 'iAboutMe', 'About Me')
-        )
-        
-    if (menuStates.iBlog > 0)
-        timeout.push(
-            setTimeout(randEffect, 30, 'blogText', 'iBlog', 'Blog')
-        )
-
-    if (menuStates.iContact > 0)
-        timeout.push(
-            setTimeout(randEffect, 30, 'contactText', 'iContact', 'Contact')
-        )
+    menuStates.forEach((item, i) => {
+        if (item.i > 0) {
+            changeState = true
+            randEffect(i, item.i, item.title)
+        }
+    })
     
+    if (changeState) 
+        timeout = setTimeout(setMenuStates, 30, menu)
+
     return (
         <>
             <AnimatedWrapper 
@@ -115,58 +105,25 @@ const Header = ({state, actions}) => {
                 <HeaderContent ref={headerContent}>
                     <Logo/>
                     <Menu color={color}>
-                        <AnimatedText 
-                            comp="a" 
-                            link="/" 
-                            text={menuStates.homeText} 
-                            onMouseOver={() => randEffect('homeText', 'iHome', 'Home')}
-                            css={setMenuElementStyle(
-                                    '/', 
+                        {menuStates.map((item, i) =>
+                            <AnimatedText
+                                key={item.title}
+                                comp='a'
+                                link={item.slug}
+                                text={item.text}
+                                onMouseOver={() => {
+                                    randEffect(i, item.i, item.title)
+                                    setMenuStates(menu)
+                                }}
+                                css={setMenuElementStyle(
+                                    item.slug, 
                                     active, 
                                     prevActive.current, 
-                                    menuStates.contentWidth,
+                                    contentWidth,
                                     color
                                 )}
-                        />
-                        <AnimatedText 
-                            comp="a" 
-                            link="/about-me" 
-                            text={menuStates.aboutMeText}
-                            onMouseOver={() => randEffect('aboutMeText', 'iAboutMe', 'About Me')}
-                            css={setMenuElementStyle(
-                                    '/about-me/', 
-                                    active, 
-                                    prevActive.current, 
-                                    menuStates.contentWidth,
-                                    color
-                                )}
-                        />
-                        <AnimatedText 
-                            comp="a" 
-                            link="/blog" 
-                            text={menuStates.blogText}
-                            onMouseOver={() => randEffect('blogText', 'iBlog', 'Blog')}
-                            css={setMenuElementStyle(
-                                    '/blog/', 
-                                    active, 
-                                    prevActive.current, 
-                                    menuStates.contentWidth,
-                                    color
-                                )}
-                        />
-                        <AnimatedText 
-                            comp="a" 
-                            link="/contact" 
-                            text={menuStates.contactText}
-                            onMouseOver={() => randEffect('contactText', 'iContact', 'Contact')}
-                            css={setMenuElementStyle(
-                                    '/contact/', 
-                                    active, 
-                                    prevActive.current, 
-                                    menuStates.contentWidth,
-                                    color
-                                )}
-                        />
+                            />
+                        )}
                     </Menu>
                 </HeaderContent>
             </AnimatedWrapper>

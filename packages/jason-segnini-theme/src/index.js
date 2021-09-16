@@ -1,7 +1,7 @@
 import Root from "./components"
 import link from "@frontity/html2react/processors/link"
 import animatedText from "./processors/animated-text"
-import categories from "./handlers/categories"
+import customRest from "./handlers/custom-rest"
 
 const jasonSegniniTheme = {
     name: 'jason-segnini-theme',
@@ -20,14 +20,13 @@ const jasonSegniniTheme = {
     actions: {
         theme: {
             init: ({libraries}) =>
-                libraries.source.handlers.push(categories),
+                libraries.source.handlers.push(customRest),
 
-            beforeSSR: async ({state, actions}) => {
+            beforeSSR: async ({state, actions}) =>
                 await Promise.all([
                     actions.source.fetch(state.source.postsPage),
-                    actions.source.fetch(state.source.catsPage)
-                ])
-            },
+                    actions.source.fetch(state.source.customRestPage)
+                ]),
 
             welcome: ({state}) =>
                 state.theme.isWelcomeReceived = true,

@@ -1,5 +1,10 @@
 import {connect, styled, css} from "frontity"
-import {useState, useRef, useEffect} from "react"
+import {
+    Fragment, 
+    useState, 
+    useRef, 
+    useEffect
+} from "react"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 
@@ -18,13 +23,13 @@ const List = ({
                 ? state.source.get(state.router.link)
                 : (categories
                     ? state.source.get(
-                        state.source.catsPage
+                        state.source.customRestPage
                     )
                     : state.source.get(
                         state.source.postsPage
                     ) 
                 )
-    const items = data.items
+    const items = categories ? data.categories : data.items
     const Html2React = libraries.html2react.Component
     const details = useRef({})
 
@@ -120,41 +125,48 @@ const List = ({
                             item => {
                                 const post = state.source[item.type][item.id]
                                 return (
-                                    <>{postsPage
-                                        ? <>
-                                            <AnimatedWrapper 
-                                                type='polygonal'
-                                                key={item.id}
-                                                css={css`margin-bottom: 1em;`}
-                                            >
-                                                <Title>
-                                                    <AnimatedText
-                                                        comp='a'
-                                                        link={post.link}
-                                                        text={post.title.rendered}
-                                                        data-speed={animationSpeed}
-                                                        css={linkStyles(color)}
-                                                    />
-                                                </Title>
-                                                <Excerpt>
-                                                    <Html2React html={post.excerpt.rendered}/>
-                                                </Excerpt>
-                                            </AnimatedWrapper>
-                                        </>
-                                        : <AnimatedText 
-                                            key={item.id} 
-                                            link={post.link}
-                                            text={post.title.rendered}
-                                            data-speed={animationSpeed}
-                                            comp='a'
-                                        />
-                                    }</>
+                                    <Fragment key={item.id}>
+                                        {postsPage
+                                            ? <Fragment key={item.id}>
+                                                <AnimatedWrapper 
+                                                    key={item.id}
+                                                    type='polygonal'
+                                                    css={css`margin-bottom: 1em;`}
+                                                >
+                                                    <Title key={'title_'+item.id}>
+                                                        <AnimatedText
+                                                            key={item.id}
+                                                            comp='a'
+                                                            link={post.link}
+                                                            text={post.title.rendered}
+                                                            data-speed={animationSpeed}
+                                                            css={linkStyles(color)}
+                                                        />
+                                                    </Title>
+                                                    <Excerpt key={'excerpt_'+item.id}>
+                                                        <Html2React 
+                                                            key={item.id}
+                                                            html={post.excerpt.rendered}
+                                                        />
+                                                    </Excerpt>
+                                                </AnimatedWrapper>
+                                            </Fragment>
+                                            : <AnimatedText 
+                                                key={item.id} 
+                                                comp='a'
+                                                link={post.link}
+                                                text={post.title.rendered}
+                                                data-speed={animationSpeed}
+                                            />
+                                        }
+                                    </Fragment>
                                 )
                             }
                         )
                         : items.map(
                             category => (
                                 <Details 
+                                    key={category.id}
                                     height={reanimateListItem[category.id].detailsHeight}
                                     ref={det => details.current = {
                                         ...details.current,
@@ -162,7 +174,7 @@ const List = ({
                                     }}
                                 >
                                     <AnimatedText 
-                                        key={category.id} 
+                                        key={'summary_'+category.id} 
                                         text={category.name}
                                         data-speed={animationSpeed}
                                         comp='summary'
@@ -184,23 +196,26 @@ const List = ({
                                         }}
                                         css={css`cursor: pointer`}
                                     />
-                                    <Ul>
+                                    <Ul key={'list_'+category.id}>
                                         {category.posts.map(
                                             post => {
                                                 return (
-                                                    <>{!postsPage
-                                                        && <Li>
-                                                            <AnimatedText 
-                                                                key={post.ID} 
-                                                                link={post.post_name}
-                                                                text={post.post_title}
-                                                                data-speed={animationSpeed}
-                                                                comp='a'
-                                                                reanimate={reanimateListItem[category.id].reanimate}
-                                                                css={css`cursor: pointer`}
-                                                            />
-                                                        </Li>
-                                                    }</>
+                                                    <Fragment key={post.ID}>
+                                                        {!postsPage
+                                                            && 
+                                                            <Li key={post.ID}>
+                                                                <AnimatedText 
+                                                                    key={post.ID} 
+                                                                    comp='a'
+                                                                    link={post.post_name}
+                                                                    text={post.post_title}
+                                                                    data-speed={animationSpeed}
+                                                                    reanimate={reanimateListItem[category.id].reanimate}
+                                                                    css={css`cursor: pointer`}
+                                                                />
+                                                            </Li>
+                                                        }
+                                                    </Fragment>
                                                 )
                                             }
                                         )}

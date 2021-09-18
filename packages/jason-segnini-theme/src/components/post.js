@@ -48,6 +48,7 @@ export default connect(Post)
 const H2 = styled.h2`
     text-align: center;
     padding-top: 10px;
+    margin-bottom: 10px;
 `
 
 const PostInfo = styled.div`
@@ -55,20 +56,17 @@ const PostInfo = styled.div`
     margin-bottom: 1em;
     padding: 0.5em;
     font-size: 0.8em;
-    
-    p {
-        margin: 0;
-        :first-of-type {margin-top: 1em;}
-    }
+    p {margin: 0;}
 
     ::before {
         content: '';
         position: absolute;
+        top: 0;
         height: 100%;
         border-width: 1px 0;
         border-style: solid;
         border-color: ${props => props.color};
-        transition: border-width .25s ease-out;
+        transition: border-width 0s .25s;
         animation: 
             ${expandWidth(50)} .25s ease-out forwards;
     }
@@ -80,6 +78,7 @@ const wrapperStyles = css`
             ::before {
                 border-top-width: 2px;
                 border-bottom-width: 2px;
+                transition: none;
             }
         }
     }

@@ -124,7 +124,7 @@ const Root = ({state, actions}) => {
                     <Archive/>
                 </>
             }
-            <Main 
+            <Main
                 isMenuHidden={!state.theme.showMenu}
                 isArchiveHidden={!state.theme.showArchive}
             >
@@ -192,7 +192,7 @@ const Main = styled.main`
     }
 
     figcaption {
-        color: #828282;
+        color: #628a6c;
         font-size: 0.8em;
         margin-bottom: 1em;
     }

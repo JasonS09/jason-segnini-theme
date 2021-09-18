@@ -12,13 +12,13 @@ const AnimatedWrapper = ({
     state,
     width = 0,
     hideOffset = 0,
+    color = state.theme.color,
     type,
     right,
     isComponentHidden,
     ...rest
 }) => {
     const data = state.source.get(state.router.link)
-    const color = state.theme.color
     const [dimensions, setDimensions] = useState({})
     const [reanimate, setReanimate] = useState(false)
     const ref = useRef(null)
@@ -167,7 +167,7 @@ const AnimatedWrapper = ({
                                 100% 100%, 
                                 0 100%
                             );
-                            ::before, ::after {transition: border-width .25s ease-out;}
+                            ::before, ::after {transition: border-width 0s .25s;}
                         `}
                     >
                         <StyledBorder color={color}/>
@@ -595,17 +595,18 @@ const StyledCorner = styled.div`
 
 const LightEffect = styled.div`
     position: absolute;
+    top: 0;
     height: 2px;
     width: 2px;
     border: 1px solid ${props => props.color};
     border-radius: 50%;
+    ${props => !props.absolute && 'left: 0;'}
     ${props => css`
         box-shadow: 0 0 5px 2px ${props.color},
             0 0 5px 2px ${props.color} inset,
             0 0 23px 5px ${props.color};
     `}
-    ${props => props.absolute && "top: 0;"}
-    ${props => (props.absolute && props.right)
+    ${props => props.absolute && props.right
         ? css`right: ${props.hideOffset};`
         : css`left: ${props.hideOffset}`
     }
@@ -669,7 +670,7 @@ const AbsoluteAnimatedDiv = styled.div`
             props.color
         )
     }
-    z-index: 1;
+    z-index: 2;
     transition: margin 1s ease-in-out;
     ::before {z-index: 1;}
 
@@ -745,7 +746,10 @@ const PolygonalAnimatedDiv = styled.div`
         }
 
         ${AllbordersAnimatedDiv} {
-            ::before, ::after {border-width: 2px;}
+            ::before, ::after {
+                border-width: 2px;
+                transition: none;
+            }
         }
     }
 `

@@ -1,5 +1,6 @@
 import {connect, styled, css} from "frontity"
 import {expandWidth} from "../../styles/keyframes"
+import {center, input, inputWithWrapper} from "../../styles/common"
 import AnimatedText from "../common/animated-text"
 import AnimatedWrapper from "../common/animated-wrapper"
 
@@ -15,8 +16,8 @@ const SearchBar = ({state, actions}) => {
                     type='text'
                     placeholder='Search blog posts.'
                     color={color}
-                    placeholderColor={data.isError ? '#8a6262' : '#628a6c'}
-                    onChange={event => inputState = {value: event.target.value}}
+                    placeholderColor={!data.isError ? '#628a6c' : '#8a6262'}
+                    onChange={e => inputState = {value: e.target.value}}
                 />
             </AnimatedWrapper>
             <AnimatedWrapper shadows css={css`
@@ -36,32 +37,18 @@ const SearchBar = ({state, actions}) => {
 
 export default connect(SearchBar);
 
-const common = color => css`
-    font-family: 'Share Tech Mono';
-    color: ${color};
-    position: relative;
-    display: block;
-    border: 0;
-    background-color: transparent;
-    z-index: 1;
-`
-
 const Input = styled.input`
-    ${props => common(props.color)}
+    ${inputWithWrapper}
+    ${props => input(
+        props.color, props.placeholderColor
+    )}
     margin-bottom: 1em;
-    padding: 2px 1px;
     animation: ${expandWidth()} 1s ease-out forwards;
-
-    :focus {
-        outline: none;
-        box-shadow: 0 0 10px ${props => props.color};
-    }
-
-    ::placeholder {color: ${props => props.placeholderColor}}
 `
 
 const Button = styled.button`
-    ${props => common(props.color)}
+    ${inputWithWrapper}
+    ${props => input(props.color)}
     width: 51px;
     height: 23px;
     cursor: pointer;
@@ -71,28 +58,17 @@ const Button = styled.button`
     :hover {
         color: black;
         border-radius: 3px;
-        ::before, ::after {width: 50%;}
+        ::before {width: 100%;}
     }
 
     ::before {
-        right: 50%;
-        border-top-left-radius: 3px;
-        border-bottom-left-radius: 3px;
-    }
-    ::after {
-        left: 50%;
-        border-top-right-radius: 3px;
-        border-bottom-right-radius: 3px;
-    }
-
-    ::before, ::after {
         content: '';
         position: absolute;
         width: 0;
         height: 100%;
-        top: 0;
         background-color: ${props => props.color};
         z-index: -1;
         transition: width .25s ease-out;
+        ${center}
     }
 `

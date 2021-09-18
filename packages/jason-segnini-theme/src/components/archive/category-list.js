@@ -68,9 +68,9 @@ const CategoryList = ({
                                 text={category.name}
                                 data-speed={animationSpeed}
                                 comp='summary'
-                                onClick={event => {
+                                onClick={e => {
                                     const det = details.current[category.id]
-                                    event.preventDefault()
+                                    e.preventDefault()
                                     det.open = true
                                     setReanimateListItem(reanimateListItem => ({
                                         ...reanimateListItem, 

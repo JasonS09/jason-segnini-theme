@@ -1,6 +1,7 @@
 import {connect, styled, css} from "frontity"
 import {useState, useEffect} from "react"
 import {glow, glowForPolygon, makeAppear} from "../../styles/keyframes"
+import {center} from "../../styles/common"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 import Switch from "@frontity/components/switch"
@@ -9,6 +10,7 @@ const Hide = ({
     state, 
     type, 
     isComponentHidden, 
+    text,
     ...rest
 }) => {
     const color = state.theme.color
@@ -37,7 +39,7 @@ const Hide = ({
                     isComponentHidden={isComponentHidden}
                     color={color}
                 >
-                    <AnimatedText comp='h1' text='>'/>
+                    <AnimatedText comp='h1' text={text || '>'}/>
                 </HideButton>
             </OuterWrapper>
             <OuterWrapper
@@ -52,7 +54,7 @@ const Hide = ({
                         isComponentHidden={isComponentHidden}
                         color={color}
                     >
-                        <AnimatedText comp='h1' text='<'/>
+                        <AnimatedText comp='h1' text={text || '<'}/>
                     </HideButton>
                     </AnimatedWrapper>
             </OuterWrapper>
@@ -82,12 +84,6 @@ const archiveConfig = isComponentHidden => css`
         `
         : css`left: 9%;`
     }
-`
-
-const center = css`
-    top: 50%;
-    left: 50%;
-    transform: translateY(-50%) translateX(-50%);
 `
 
 const wrapperStyles = css`

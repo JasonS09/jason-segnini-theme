@@ -2,7 +2,7 @@ import {connect, styled} from "frontity"
 import {useEffect} from "react"
 import AnimatedWrapper from "../common/animated-wrapper"
 
-const CommentList = ({
+const CommentsList = ({
     state, 
     actions,
     libraries, 
@@ -31,10 +31,17 @@ const CommentList = ({
     )
 }
 
+export default connect(CommentsList)
+
 const Items = styled.div`
-    position: absolute;
     width: 95%;
-    top: calc(6% + 47px);
+    min-height: calc(20vh - 67px);
+    max-height: calc(75vh - 67px);
+    padding-left: 1em;
+    padding-right: 1em;
+    margin-bottom: 10px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 `
 
 const Author = styled.div`
@@ -43,5 +50,3 @@ const Author = styled.div`
 `
 
 const CommentContent = styled.div`padding: 10px 1em 10px;`
-
-export default connect(CommentList)

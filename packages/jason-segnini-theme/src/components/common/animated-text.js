@@ -9,7 +9,7 @@ const AnimatedText = ({
     'data-speed': speed = 30,
     'data-cover-text': isCoverText,
     comp,
-    text,
+    text = '',
     reanimate,
     ...rest
 }) => {
@@ -83,7 +83,7 @@ const AnimatedText = ({
                     })
                 )
             }
-            else writeText()   
+            else if (text) writeText()   
         }
         else if (textContent.randChar != '')
             setTextContent(textContent => ({...textContent, randChar: ''}))
@@ -112,6 +112,9 @@ const AnimatedText = ({
             <h6 when={comp==='h6'} {...rest}>
                 {textContent.content + textContent.randChar}
             </h6>
+            <p when={comp==='p'} {...rest}>
+                {textContent.content + textContent.randChar}
+            </p>
             <Link when={comp==='a'} {...rest}>
                 {textContent.content + textContent.randChar}
             </Link>
@@ -125,9 +128,7 @@ const AnimatedText = ({
             <tspan when={comp==='tspan'} {...rest}>
                 {textContent.content + textContent.randChar}
             </tspan>
-            <p {...rest}>
-                {textContent.content + textContent.randChar}
-            </p>
+            <>{textContent.content + textContent.randChar}</>
         </Switch>
     )
 }

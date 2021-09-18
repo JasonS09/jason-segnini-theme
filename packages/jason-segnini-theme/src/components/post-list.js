@@ -1,5 +1,6 @@
 import {connect, styled, css} from "frontity"
 import {Fragment} from "react"
+import {center} from "../styles/common"
 import AnimatedText from "./common/animated-text"
 import AnimatedWrapper from "./common/animated-wrapper"
 
@@ -129,10 +130,8 @@ const postsPageItems = css`
 const H1 = styled.h1`
     position: absolute;
     padding-bottom: 1.5%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     transition: color .25s ease-out;
+    ${center}
 `
 
 const PrevNextTab = styled.div`

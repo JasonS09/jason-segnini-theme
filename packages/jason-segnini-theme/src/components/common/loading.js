@@ -3,12 +3,12 @@ import {glowForText} from "../../styles/keyframes"
 import AnimatedText from "./animated-text"
 import Lobo from "./lobo"
 
-const Loading = ({state}) => (
+const Loading = ({state, text='Loading...'}) => (
     <Container>
         <Lobo/>
         <AnimatedText 
-            comp="h1" 
-            text="Loading..." 
+            comp='h1' 
+            text={text}
             css={textStyles(state.theme.color)}    
         />
     </Container>
@@ -16,7 +16,7 @@ const Loading = ({state}) => (
 
 export default connect(Loading)
 
-const textStyles = (color) => css`
+const textStyles = color => css`
     font-family: 'Hacked';
     animation: 
         ${glowForText(

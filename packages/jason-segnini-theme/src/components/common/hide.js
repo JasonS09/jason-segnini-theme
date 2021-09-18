@@ -1,68 +1,58 @@
 import {connect, styled, css} from "frontity"
-import {useState} from "react"
-import {glow, glowForPolygon, makeAppear} from "../styles/keyframes"
+import {useState, useEffect} from "react"
+import {glow, glowForPolygon, makeAppear} from "../../styles/keyframes"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
 import Switch from "@frontity/components/switch"
 
 const Hide = ({
     state, 
-    right, 
+    type, 
     isComponentHidden, 
     ...rest
 }) => {
     const color = state.theme.color
-    const [hideStyles, setHideStyles] = useState(null)
+    const [hideStyles, setHideStyles] = useState(false)
+    let timeout = 0
 
     if (isComponentHidden && !hideStyles) 
-        setTimeout(() => {
-            setHideStyles(right 
-                ? css`
-                    position: fixed; 
-                    left: auto; 
-                    right: 1em;
-                    ${HideButton} {::before {right: 0;}}
-                `
-                : css`
-                    position: fixed; 
-                    left: 1em;
-                    ${HideButton} {::before {right: auto;}}
-                `
-            )
-        }, 725)
+        timeout = setTimeout(() => {setHideStyles(true)}, 725)
     else if (!isComponentHidden)
-        setTimeout(() => {setHideStyles(null)}, 300)
+        timeout = setTimeout(() => {setHideStyles(false)}, 300)
 
-    const setText = () => {
-        if (right) {
-            if (isComponentHidden) return "<"
-            return ">"
-        }
-
-        if (isComponentHidden) return ">"
-        return "<"
-    }
+    useEffect(() => () => clearTimeout(timeout), [])
 
     return (
         <Switch>
-            <OuterWrapper when={right} right css={hideStyles} {...rest}>
+            <OuterWrapper 
+                when={type==='archive'} 
+                archive
+                isComponentHidden={hideStyles}
+                color={color}
+                css={hideStyles} 
+                {...rest}
+            >
                 <HideButton 
-                    right 
-                    color={color}
+                    archive
                     isComponentHidden={isComponentHidden}
+                    color={color}
                 >
-                    <AnimatedText comp="h1" text={setText()}/>
+                    <AnimatedText comp='h1' text='>'/>
                 </HideButton>
             </OuterWrapper>
-            <OuterWrapper color={color} css={hideStyles} {...rest}>
+            <OuterWrapper
+                isComponentHidden={hideStyles} 
+                color={color} 
+                {...rest}
+            >
                 <Shadow color={color}/>
                 <AnimatedWrapper css={wrapperStyles}>
                     <StyledBorder color={color}/>
                     <HideButton 
-                        color={color}
                         isComponentHidden={isComponentHidden}
+                        color={color}
                     >
-                        <AnimatedText comp="h1" text={setText()}/>
+                        <AnimatedText comp='h1' text='<'/>
                     </HideButton>
                     </AnimatedWrapper>
             </OuterWrapper>
@@ -72,19 +62,26 @@ const Hide = ({
 
 export default connect(Hide)
 
-const leftConfig = css`
+const menuConfig = isComponentHidden => css`
     width: 47px;
     height: 40px;
     top: 3%;
     right: 9%;
+    ${isComponentHidden && css`left: 1em;`}
 `
 
-const rightConfig = css`
+const archiveConfig = isComponentHidden => css`
     width: 47px;
     height: 43px;
-    top: calc(2.4% + 4.5px);
-    left: 9%;
     border-radius: 50%;
+    top: calc(2.4% + 4.5px);
+    ${isComponentHidden
+        ? css` 
+            left: auto; 
+            right: 1em;
+        `
+        : css`left: 9%;`
+    }
 `
 
 const center = css`
@@ -112,7 +109,7 @@ const wrapperStyles = css`
 `
 
 const Shadow = styled.div`
-    animation:  ${props => css`
+    animation: ${props => css`
         ${glowForPolygon(
             props.color, 9, 3
         )} .25s ease-out 1,
@@ -166,9 +163,11 @@ const HideButton = styled.div`
     width: 100%;
     height: 100%;
     overflow: hidden;
-    ${props => props.right 
+    ${props => props.archive
         && css`
             background-color: rgba(0,0,0,.85);
+            ${props.isComponentHidden
+                && css`transform: scaleX(-1);`}
             filter: opacity(0);
             animation: 
                 ${makeAppear()} .25s ease-out forwards,
@@ -198,7 +197,10 @@ const HideButton = styled.div`
         position: absolute;
         width: 0;
         height: 100%;
-        ${props => !props.right && 'right: 0;'}
+        ${props => !props.archive 
+            && !props.isComponentHidden
+            && 'right: 0;'
+        }
         background-color: ${props => props.color};
         z-index: -1;
         transition: width .25s ease-out;
@@ -212,21 +214,33 @@ const HideButton = styled.div`
         color: ${props => props.color};
         text-align: center;
         transition: color .25s ease-out;
-        ${props => props.right 
-            ? props.isComponentHidden
-                ? "padding-right: 2px;"
-                : "padding-left: 3px;"
-            : !props.isComponentHidden
-               && "padding-right: 3px;"
+        ${props => props.archive 
+            ? 'padding-left: 3px;'
+            : !props.isComponentHidden 
+                && 'padding-right: 3px;'
         }
         ${center}
+        ${props => !props.archive 
+            && props.isComponentHidden
+            && css`transform: 
+                translateY(-50%) 
+                translateX(-50%) 
+                scaleX(-1);
+            `
+        }
     }
 `
 
 const OuterWrapper = styled.div`
-    position: absolute;
+    position: ${props => props.isComponentHidden
+        ? 'fixed'
+        : 'absolute'
+    };
     cursor: pointer;
-    ${props => props.right ? rightConfig : leftConfig}
+    ${props => props.archive 
+        ? archiveConfig(props.isComponentHidden) 
+        : menuConfig(props.isComponentHidden)
+    }
 
     :hover {
         ${HideButton} {

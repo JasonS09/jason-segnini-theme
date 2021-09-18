@@ -1,7 +1,7 @@
 import {connect, styled, css} from "frontity"
-import {expandWidth} from "../styles/keyframes"
-import AnimatedText from "./animated-text"
-import AnimatedWrapper from "./animated-wrapper"
+import {expandWidth} from "../../styles/keyframes"
+import AnimatedText from "../common/animated-text"
+import AnimatedWrapper from "../common/animated-wrapper"
 
 const SearchBar = ({state, actions}) => {
     const data = state.source.get(state.router.link)
@@ -36,7 +36,7 @@ const SearchBar = ({state, actions}) => {
 
 export default connect(SearchBar);
 
-const common = (color) => css`
+const common = color => css`
     font-family: 'Share Tech Mono';
     color: ${color};
     position: relative;

@@ -6,7 +6,7 @@ import {
     glow, 
     makeAppear,
     glowForPolygon
-} from "../styles/keyframes"
+} from "../../styles/keyframes"
 
 const AnimatedWrapper = ({
     state,
@@ -167,12 +167,7 @@ const AnimatedWrapper = ({
                                 100% 100%, 
                                 0 100%
                             );
-                            ::before {transition: border-width 0s;}
-
-                            ::after {
-                                transition: 
-                                    border-width 0s ease-out .25s;
-                            }
+                            ::before, ::after {transition: border-width .25s ease-out;}
                         `}
                     >
                         <StyledBorder color={color}/>
@@ -529,11 +524,8 @@ const BottomBorderForRight = styled.div`
     );
 
     ::before {
-        content: '';
-        position: absolute;
         width: 10%;
         height: 50%;
-        top: 0;
         right: 0;
         clip-path: polygon(0% 0%, 100% 0, 100% 100%);
         background-color: ${props => props.color};
@@ -544,13 +536,16 @@ const BottomBorderForRight = styled.div`
     }
 
     ::after {
-        content: '';
-        position: absolute;
         top: 0;
         width: 99.4%;
         border-right: 2px solid ${props => props.color};
         animation: 
             ${expandHeight()} .40s ease-out .75s forwards;
+    }
+
+    ::before, ::after {
+        content: '';
+        position: absolute;
     }
 `
 
@@ -751,13 +746,6 @@ const PolygonalAnimatedDiv = styled.div`
 
         ${AllbordersAnimatedDiv} {
             ::before, ::after {border-width: 2px;}
-                                
-            ::before {
-                transition: 
-                    border-width .05s ease-out .05s;
-            }
-
-            ::after {transition: border-width 0s;}
         }
     }
 `

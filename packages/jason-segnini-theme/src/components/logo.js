@@ -1,8 +1,8 @@
 import {connect, styled, css} from "frontity"
 import {glowForText, glowForPolygon, draw} from "../styles/keyframes"
 import {useRef, useState, useEffect} from "react"
-import AnimatedText from "./animated-text"
-import Lobo from "./lobo"
+import AnimatedText from "./common/animated-text"
+import Lobo from "./common/lobo"
 
 const Logo = ({state}) => {
     const data = state.source.get(state.router.link)
@@ -122,7 +122,7 @@ const Logo = ({state}) => {
 
 export default connect(Logo)
 
-const textStyles = (color) => css`
+const textStyles = color => css`
     fill: ${color};
     font-family: 'Hacked';
     font-size: 25px;
@@ -138,7 +138,7 @@ const Svg = styled.svg`
     transition: filter 1s ease-out;
 `
 
-const loboStyles = (color) => css`
+const loboStyles = color => css`
     position: absolute;
     width: 100%;
     height: 100%;
@@ -196,9 +196,7 @@ const common = (
         ${draw} .25s ease-out ${delay}s forwards;
 `
 
-const Div = styled.div`
-    position: relative;
-`
+const Div = styled.div`position: relative;`
 
 const Line = styled.line`
     ${props => common(

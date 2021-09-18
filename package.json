@@ -21,6 +21,7 @@
     "@frontity/html2react": "^1.7.0",
     "@frontity/mars-theme": "./packages/mars-theme",
     "@frontity/tiny-router": "^1.4.4",
+    "@frontity/wp-comments": "^1.0.0",
     "@frontity/wp-source": "^1.11.5",
     "dayjs": "^1.10.6",
     "frontity": "^1.17.0",

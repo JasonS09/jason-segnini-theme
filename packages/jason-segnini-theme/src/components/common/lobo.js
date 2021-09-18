@@ -1,5 +1,5 @@
 import {connect, styled, css} from "frontity"
-import {glowForPolygon, draw} from "../styles/keyframes"
+import {glowForPolygon, draw} from "../../styles/keyframes"
 import {useRef, useEffect, useState} from "react"
 
 const Lobo = ({state, ...rest}) => {

@@ -1,11 +1,12 @@
 import {connect, styled, css} from "frontity"
 import {useRef, useEffect, useState} from "react"
-import {glowForText} from "../styles/keyframes"
+import {glowForText} from "../../styles/keyframes"
 import SearchBar from "./searchbar"
-import AnimatedText from "./animated-text"
-import AnimatedWrapper from "./animated-wrapper"
-import List from "./list"
-import Hide from "./hide"
+import AnimatedText from "../common/animated-text"
+import AnimatedWrapper from "../common/animated-wrapper"
+import PostList from "../post-list"
+import Hide from "../common/hide"
+import CategoryList from "./category-list"
 
 const Archive = ({state, actions}) => {
     const isArchiveHidden = !state.theme.showArchive
@@ -26,26 +27,26 @@ const Archive = ({state, actions}) => {
     return (
         <AnimatedWrapper 
             type='absolute' 
-            width="297" 
-            hideOffset="47" 
+            width='297' 
+            hideOffset='47'
             isComponentHidden={isArchiveHidden}
         >
             <Hide 
-                right 
+                type='archive' 
                 isComponentHidden={isArchiveHidden} 
                 onClick={() => actions.theme.toggleArchive()}
             />
             <ArchiveContent color={state.theme.color}>
                 <AnimatedText 
-                    comp="h1" 
-                    text="Archive" 
+                    comp='h1'
+                    text='Archive'
                     css={css`margin-bottom: 1em`}
                 />
                 <Scrollable overflow={overflow} ref={scrollable}>
-                    <AnimatedText comp="h4" text="Categories"/>
-                    <List categories css={css`margin-bottom: 1em`}/>
-                    <AnimatedText comp="h4" text="Latest Posts"/>
-                    <List maxnum="5" css={css`margin-bottom: 2em`}/>
+                    <AnimatedText comp='h4' text='Categories'/>
+                    <CategoryList css={css`margin-bottom: 1em`}/>
+                    <AnimatedText comp='h4' text='Latest Posts'/>
+                    <PostList css={css`margin-bottom: 2em`}/>
                     <SearchBar/>
                 </Scrollable>
             </ArchiveContent>

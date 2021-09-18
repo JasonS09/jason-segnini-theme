@@ -20,14 +20,14 @@ const settings = {
           "postsPage": "/blog",
           "customRestPage": "/rest-page",
           "params": {
-            "per_page": 5,
-            "type": "post"
+            "per_page": 5
           }
         }
       }
     },
     "@frontity/tiny-router",
-    "@frontity/html2react"
+    "@frontity/html2react",
+    "@frontity/wp-comments"
   ]
 };
 

@@ -1,9 +1,9 @@
 import {connect, styled, css, keyframes} from "frontity"
 import {useState, useRef, useEffect} from "react"
 import {glow, makeAppear} from "../styles/keyframes"
-import AnimatedText from "./animated-text"
-import AnimatedWrapper from "./animated-wrapper"
-import Hide from "./hide"
+import AnimatedText from "./common/animated-text"
+import AnimatedWrapper from "./common/animated-wrapper"
+import Hide from "./common/hide"
 import Logo from "./logo"
 
 const Header = ({state, actions}) => {
@@ -16,14 +16,15 @@ const Header = ({state, actions}) => {
     const [menuStates, setMenuStates] = useState(() => {
         let menuStates = []
 
-        items.forEach(item =>
+        items.forEach(item => {
+            const menuItem = state.source[item.type][item.id]
             menuStates.push({
-                title: item.title,
-                text: item.title,
-                slug: item.slug,
+                title: menuItem.title,
+                text: menuItem.title,
+                link: menuItem.link,
                 i: 0,
             })
-        )
+        })
 
         return menuStates
     })
@@ -76,7 +77,7 @@ const Header = ({state, actions}) => {
         }
 
         prevActive.current = active
-        clearTimeout(timeout)
+        return () => clearTimeout(timeout)
     }, [state.router.link])
 
     menuStates.forEach((item, i) => {
@@ -94,8 +95,8 @@ const Header = ({state, actions}) => {
             <AnimatedWrapper 
                 type='absolute' 
                 right 
-                width="297" 
-                hideOffset="47" 
+                width='297' 
+                hideOffset='47' 
                 isComponentHidden={isMenuHidden}
             >
                 <Hide 
@@ -109,14 +110,14 @@ const Header = ({state, actions}) => {
                             <AnimatedText
                                 key={item.title}
                                 comp='a'
-                                link={item.slug}
+                                link={item.link}
                                 text={item.text}
                                 onMouseOver={() => {
                                     randEffect(i, item.i, item.title)
                                     setMenuStates(menu)
                                 }}
                                 css={setMenuElementStyle(
-                                    item.slug, 
+                                    item.link, 
                                     active, 
                                     prevActive.current, 
                                     contentWidth,

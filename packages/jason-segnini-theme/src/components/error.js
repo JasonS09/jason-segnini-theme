@@ -1,6 +1,6 @@
 import {connect, styled} from "frontity"
-import AnimatedWrapper from "./animated-wrapper"
-import Lobo from "./lobo"
+import AnimatedWrapper from "./common/animated-wrapper"
+import Lobo from "./common/lobo"
 
 const Error = ({state}) => {
     const color = state.theme.color
@@ -22,9 +22,7 @@ const Error = ({state}) => {
 
 export default connect(Error)
 
-const H1 = styled.h1`
-    font-family: 'Hacked';
-`
+const H1 = styled.h1`font-family: 'Hacked';`
 
 const Content = styled.div`
     text-align: center;

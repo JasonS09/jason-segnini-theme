@@ -1,7 +1,8 @@
 import {connect, Head, styled, css} from "frontity"
 import {expandWidth} from "../styles/keyframes"
 import dayjs from "dayjs"
-import AnimatedWrapper from "./animated-wrapper"
+import AnimatedWrapper from "./common/animated-wrapper"
+import Comments from "./comments/comments"
 
 const Post = ({state, libraries}) => {
     const data = state.source.get(state.router.link)
@@ -9,33 +10,36 @@ const Post = ({state, libraries}) => {
     const author = state.source.author[post.author]
     const color = state.theme.color
 
-    const formattedDate = dayjs(post.date).format("DD MMMM YYYY")
+    const formattedDate = dayjs(post.date).format('DD MMMM YYYY')
     const Html2React = libraries.html2react.Component
 
     return (
-        <AnimatedWrapper type='polygonal'>
-            <Head>
-                <title>{post.title.rendered}</title>
-                <meta name="Description" content={post.excerpt.rendered}/>
-            </Head>
-            {!data.isHome && <H2>{post.title.rendered}</H2>}
-            {data.isPost 
-                && 
-                <PostInfo color={color}>
-                    <p>
-                        <strong>Posted: </strong>
-                        {formattedDate}
-                    </p>
-                    <p>
-                        <strong>Author: </strong>
-                        {author.name}
-                    </p>
-                </PostInfo>
-            }
-            <PostContent>
-                <Html2React html={post.content.rendered}/>
-            </PostContent>
-        </AnimatedWrapper>
+        <>
+            <AnimatedWrapper type='polygonal' css={wrapperStyles}>
+                <Head>
+                    <title>{post.title.rendered}</title>
+                    <meta name="Description" content={post.excerpt.rendered}/>
+                </Head>
+                {!data.isHome && <H2>{post.title.rendered}</H2>}
+                {data.isPost 
+                    && 
+                    <PostInfo color={color}>
+                        <p>
+                            <strong>Posted: </strong>
+                            {formattedDate}
+                        </p>
+                        <p>
+                            <strong>Author: </strong>
+                            {author.name}
+                        </p>
+                    </PostInfo>
+                }
+                <PostContent>
+                    <Html2React html={post.content.rendered}/>
+                </PostContent>
+            </AnimatedWrapper>
+            {data.isPost && <Comments postId={data.id}/>}
+        </>
     )
 }
 
@@ -64,11 +68,21 @@ const PostInfo = styled.div`
         border-width: 1px 0;
         border-style: solid;
         border-color: ${props => props.color};
+        transition: border-width .25s ease-out;
         animation: 
             ${expandWidth(50)} .25s ease-out forwards;
     }
 `
 
-const PostContent = styled.div`
-    padding: 10px 1em 10px;
+const wrapperStyles = css`
+    :hover{
+        ${PostInfo} {
+            ::before {
+                border-top-width: 2px;
+                border-bottom-width: 2px;
+            }
+        }
+    }
 `
+
+const PostContent = styled.div`padding: 10px 1em 10px;`

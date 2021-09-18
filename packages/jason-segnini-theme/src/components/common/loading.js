@@ -1,5 +1,5 @@
 import {connect, styled, css} from "frontity"
-import {glowForText} from "../styles/keyframes"
+import {glowForText} from "../../styles/keyframes"
 import AnimatedText from "./animated-text"
 import Lobo from "./lobo"
 
@@ -24,6 +24,4 @@ const textStyles = (color) => css`
         )} 3s ease-out infinite alternate;
 `
 
-const Container = styled.div`
-    text-align: center;
-`
+const Container = styled.div`text-align: center;`

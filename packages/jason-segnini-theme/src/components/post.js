@@ -56,7 +56,7 @@ const PostInfo = styled.div`
     margin-bottom: 1em;
     padding: 0.5em;
     font-size: 0.8em;
-    p {margin: 0;}
+    p {margin: 0 !important;}
 
     ::before {
         content: '';

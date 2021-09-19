@@ -1,6 +1,6 @@
 import {connect, styled, css} from "frontity"
 import {expandWidth} from "../../styles/keyframes"
-import {center, input, inputWithWrapper} from "../../styles/common"
+import {input, inputWithWrapper, submit} from "../../styles/common"
 import AnimatedText from "../common/animated-text"
 import AnimatedWrapper from "../common/animated-wrapper"
 
@@ -49,26 +49,5 @@ const Input = styled.input`
 const Button = styled.button`
     ${inputWithWrapper}
     ${props => input(props.color)}
-    width: 51px;
-    height: 23px;
-    cursor: pointer;
-    padding: 4px;
-    transition: color .25s ease-out;
-
-    :hover {
-        color: black;
-        border-radius: 3px;
-        ::before {width: 100%;}
-    }
-
-    ::before {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 100%;
-        background-color: ${props => props.color};
-        z-index: -1;
-        transition: width .25s ease-out;
-        ${center}
-    }
+    ${props => submit(props.color)}
 `

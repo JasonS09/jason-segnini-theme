@@ -125,6 +125,7 @@ const Root = ({state, actions}) => {
                 </>
             }
             <Main
+                figCapColor={!data.isError ? '#628a6c' : '#8a6262'}
                 isMenuHidden={!state.theme.showMenu}
                 isArchiveHidden={!state.theme.showArchive}
             >
@@ -177,22 +178,11 @@ const Main = styled.main`
                 : defaultMainConfig}
     transition: width 1s ease-in-out,
         margin 1s ease-in-out;
-
-    img {
-        max-width: 100%;
-    }
-
-    h2 {
-        margin: 0.5em 0;
-    }
-
-    p {
-        line-height: 1.25em;
-        margin-bottom: 0.75em;
-    }
+    img {max-width: 100%;}
+    p {line-height: 1.25em;}
 
     figcaption {
-        color: #628a6c;
+        color: ${props => props.figCapColor};
         font-size: 0.8em;
         margin-bottom: 1em;
     }

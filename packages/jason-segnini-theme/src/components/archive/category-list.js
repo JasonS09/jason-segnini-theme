@@ -58,10 +58,7 @@ const CategoryList = ({
                         <Details 
                             key={category.id}
                             height={reanimateListItem[category.id].detailsHeight}
-                            ref={det => details.current = {
-                                ...details.current,
-                                [category.id]: det
-                            }}
+                            ref={det => details.current[category.id] = det}
                         >
                             <AnimatedText 
                                 key={`summary_${category.id}`} 

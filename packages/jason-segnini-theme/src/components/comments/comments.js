@@ -1,22 +1,40 @@
-import {styled, css} from "frontity"
+import {connect, styled, css} from "frontity"
 import {useState, useRef, useEffect} from "react"
 import {center} from "../../styles/common"
 import Hide from "../common/hide"
 import CommentsList from "./comments-list"
 import CommentsForm from "./comments-form"
 
-const Comments = ({postId}) => {
+const Comments = ({state, postId}) => {
     const [states, setStates] = useState({})
     const container = useRef(null)
 
-    useEffect(() => setStates(states => ({
-        ...states,
-        height: container.current.clientHeight
-    })), [states.isCommentsForm])
+    useEffect(() => {
+        setStates(states => ({
+            ...states,
+            height: container.current.clientHeight
+        }))
+
+        if (container.current.clientHeight 
+            < container.current.scrollHeight
+            && states.maxHeight)
+            setStates(states => ({
+                ...states,
+                maxHeight: false
+            }))
+        else if (container.current.clientHeight 
+            > container.current.scrollHeight 
+            && !states.maxHeight)
+            setStates(states => ({
+                ...states,
+                maxHeight: true
+            }))
+    }, [states.isCommentsForm, state.theme.screenSize[1]])
 
     return (
         <Container 
             isComponentHidden={states.isComponentHidden}
+            maxHeight={states.maxHeight}
             height={states.height} 
             ref={container}
         >
@@ -50,7 +68,7 @@ const Comments = ({postId}) => {
     )
 }
 
-export default Comments
+export default connect(Comments)
 
 const hideStyles = isComponentHidden => css`
     position: relative;
@@ -93,7 +111,7 @@ const Container = styled.div`
     position: absolute;
     width: 100%;
     min-height: 20%;
-    max-height: 75%;
+    ${props => props.maxHeight && 'max-height: 75%;'}
     bottom: 0;
     transition: margin 1s ease-out;
     ${props => props.isComponentHidden

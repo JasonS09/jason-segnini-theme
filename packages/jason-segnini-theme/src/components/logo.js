@@ -6,6 +6,8 @@ import Lobo from "./common/lobo"
 
 const Logo = ({state}) => {
     const data = state.source.get(state.router.link)
+    const post = data.type==='post' && state.source.post[data.id]
+    const form = post && state.comments.forms[post.id]
     const glowColor = state.theme.color
     const strokeColor = data.isError ? '#ff7878' : '#7eff78'
     const [sizes, setSizes] = useState([])
@@ -38,7 +40,13 @@ const Logo = ({state}) => {
 
     return (
             <Div>
-                <Lobo css={loboStyles(glowColor)}/>
+                <Lobo 
+                    forceError={form?.errorMessage && true} 
+                    css={loboStyles(
+                        glowColor,
+                        form?.errorMessage && true
+                    )}
+                />
                 <Svg width="143" height="173">
                     <Line 
                         x1="98%" 
@@ -138,7 +146,7 @@ const Svg = styled.svg`
     transition: filter 1s ease-out;
 `
 
-const loboStyles = color => css`
+const loboStyles = (color, forceError) => css`
     position: absolute;
     width: 100%;
     height: 100%;
@@ -150,7 +158,8 @@ const loboStyles = color => css`
     path {
         animation: 
             ${glowForPolygon(
-                color, 3, 7, 1, 1
+                !forceError ? color : '#d75a5a',
+                3, 7, 1, 1
             )} 3s ease-out alternate infinite;
     }
 
@@ -161,7 +170,8 @@ const loboStyles = color => css`
             animation:
                 ${draw} 10s ease-out forwards,
                 ${glowForPolygon(
-                    color, 3, 7, 1, 1
+                    !forceError ? color : '#d75a5a', 
+                    3, 7, 1, 1
                 )} 3s ease-out alternate infinite;
         }
 

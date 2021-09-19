@@ -30,8 +30,7 @@ const Header = ({state, actions}) => {
     })
 
     const [contentWidth, setContentWidth] = useState(0)
-    const headerContent = useRef(null)
-    const prevActive = useRef(active)
+    const refs = useRef({prevActive: active})
     let timeout = 0
     let menu = [...menuStates]
     let changeState = false
@@ -64,19 +63,20 @@ const Header = ({state, actions}) => {
 
     useEffect(() => {
         if (contentWidth === 0) {
+            const headerContent = refs.current.headerContent
             const padding = parseFloat(
                             getComputedStyle(
-                                headerContent.current
+                                headerContent
                             ).paddingLeft)
                         + parseFloat(
                             getComputedStyle(
-                                headerContent.current
+                                headerContent
                             ).paddingRight)
-            const width = headerContent.current.clientWidth
+            const width = headerContent.clientWidth
             setContentWidth(width-padding)
         }
 
-        prevActive.current = active
+        refs.current.prevActive = active
         return () => clearTimeout(timeout)
     }, [state.router.link])
 
@@ -103,7 +103,9 @@ const Header = ({state, actions}) => {
                     isComponentHidden={isMenuHidden} 
                     onClick={() => actions.theme.toggleMenu()}
                 />
-                <HeaderContent ref={headerContent}>
+                <HeaderContent ref={headerContent => 
+                    refs.current.headerContent = headerContent
+                }>
                     <Logo/>
                     <Menu color={color}>
                         {menuStates.map((item, i) =>
@@ -119,7 +121,7 @@ const Header = ({state, actions}) => {
                                 css={setMenuElementStyle(
                                     item.link, 
                                     active, 
-                                    prevActive.current, 
+                                    refs.current.prevActive, 
                                     contentWidth,
                                     color
                                 )}

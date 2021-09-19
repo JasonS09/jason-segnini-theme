@@ -14,7 +14,7 @@ export const inputWithWrapper = css`
     z-index: 1;
 `
 
-export const input = (color, pseudoClassColor=color) => css`
+export const input = (color, placeholderColor=color) => css`
     font-family: 'Share Tech Mono';
     color: ${color};
     border-radius: 3px;
@@ -25,10 +25,19 @@ export const input = (color, pseudoClassColor=color) => css`
         box-shadow: 0 0 10px ${color};
     }
 
-    ::placeholder {color: ${pseudoClassColor}}
+    :-webkit-autofill {
+        border: 1px solid ${color};
+        box-shadow: 0 0 0 50px black inset;
+        -webkit-text-fill-color: ${color};
 
-    :--webkit-autofill {
-        background-color: ${pseudoClassColor};
+        :focus {
+            outline: none;
+            box-shadow: 0 0 0 50px black inset,
+                0 0 10px ${color};
+        }
+
+        ::first-line {font-family: 'Share Tech Mono';}
+        ::selection {-webkit-text-fill-color: black;}
     }
 
     ::-webkit-scrollbar-thumb {
@@ -36,5 +45,29 @@ export const input = (color, pseudoClassColor=color) => css`
         :hover {background-color: ${color}}
     }
 
-    ::selection {background-color: ${color};}
+    ::placeholder {color: ${placeholderColor}}
+    ::selection {background-color: ${color}}
+`
+
+export const submit = color => css`
+    cursor: pointer;
+    padding: 4px;
+    transition: color .25s ease-out;
+
+    :hover {
+        color: black;
+        ::before {width: 100%;}
+    }
+
+    ::before {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 100%;
+        border-radius: 3px;
+        background-color: ${color};
+        z-index: -1;
+        transition: width .25s ease-out;
+        ${center}
+    }
 `

@@ -19,8 +19,7 @@ const AnimatedWrapper = ({
     ...rest
 }) => {
     const data = state.source.get(state.router.link)
-    const [dimensions, setDimensions] = useState({})
-    const [reanimate, setReanimate] = useState(false)
+    const [states, setStates] = useState({})
     const ref = useRef(null)
     let timeout = 0
 
@@ -41,17 +40,20 @@ const AnimatedWrapper = ({
     width = formatSizeProp(width)
 
     useEffect(() =>  {
-        setDimensions({
+        setStates({
+            reanimate: true,
             width: ref.current.clientWidth,
             height: ref.current.clientHeight
         })
-        setReanimate(true)
         return () => clearTimeout(timeout)
     }, [data.isError])
 
-    if (reanimate)
+    if (states.reanimate)
         timeout = setTimeout(() => 
-            setReanimate(false), 
+            setStates(states => ({
+                ...states,
+                reanimate: false
+            })), 
             1000
         )
 
@@ -84,9 +86,9 @@ const AnimatedWrapper = ({
                         <LightEffect 
                             absolute
                             right
-                            reanimate={reanimate} 
-                            width={dimensions.width}
-                            height={dimensions.height}
+                            reanimate={states.reanimate} 
+                            width={states.width}
+                            height={states.height}
                             hideOffset={hideOffset}
                             color={color}
                         />
@@ -101,7 +103,7 @@ const AnimatedWrapper = ({
                                 right: 21%;
                                 border: none;
                                 box-shadow: none;
-                                ${reanimate 
+                                ${states.reanimate 
                                     && css`
                                         filter: opacity(1);
                                         animation: 
@@ -110,7 +112,7 @@ const AnimatedWrapper = ({
                                                 color, 0, 10, 0, 4
                                             )} .10s ease-out .75s forwards,
                                             ${moveDownForRightAlt(
-                                                dimensions.width, dimensions.height
+                                                states.width, states.height
                                             )} .25s ease-out .75s forwards;
                                     `
                                 }
@@ -142,9 +144,9 @@ const AnimatedWrapper = ({
                         />
                         <LightEffect 
                             absolute
-                            reanimate={reanimate}
-                            width={dimensions.width}
-                            height={dimensions.height}
+                            reanimate={states.reanimate}
+                            width={states.width}
+                            height={states.height}
                             hideOffset={hideOffset}
                             color={color}
                         />
@@ -172,9 +174,9 @@ const AnimatedWrapper = ({
                     >
                         <StyledBorder color={color}/>
                         <LightEffect 
-                            reanimate={reanimate}
-                            width={dimensions.width} 
-                            height={dimensions.height} 
+                            reanimate={states.reanimate}
+                            width={states.width} 
+                            height={states.height} 
                             color={color} 
                         />
                         {rest.children}
@@ -190,9 +192,9 @@ const AnimatedWrapper = ({
                     {...rest}
                 >
                     <LightEffect 
-                        reanimate={reanimate} 
-                        width={dimensions.width} 
-                        height={dimensions.height} 
+                        reanimate={states.reanimate} 
+                        width={states.width} 
+                        height={states.height} 
                         color={color} 
                     />
                     {rest.children}

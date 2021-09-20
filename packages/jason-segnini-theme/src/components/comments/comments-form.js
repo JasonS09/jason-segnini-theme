@@ -144,7 +144,6 @@ const scaleWrapper = css`
 const wrapperStyles = (color, scale, visible) => css`
     visibility: ${visible ? 'visible;' : 'hidden;'};
     color: ${color};
-    padding: 1em;
     background-color: rgba(0,0,0,.85);
     ${scale && scaleWrapper}
     transition: transform .25s ease-out;
@@ -195,5 +194,6 @@ const Textarea = styled.textarea`
 const Form = styled.form`
     position: relative;
     color: ${props => props.color};
+    padding: 1em;
     z-index: 1;
 `

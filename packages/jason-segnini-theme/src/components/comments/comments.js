@@ -6,15 +6,15 @@ import CommentsList from "./comments-list"
 import CommentsForm from "./comments-form"
 
 const Comments = ({state, postId}) => {
-    const [states, setStates] = useState({})
     const formHeight = state.theme.commentsHeight.form
     const listHeight = state.theme.commentsHeight.list
+    const [states, setStates] = useState({})
 
     return (
         <Container 
             isComponentHidden={states.isComponentHidden}
-            contentHeight={Math.max(formHeight, listHeight)}
-            contentOffset={states.isCommentsForm ? formHeight : listHeight}
+            contentHeight={Math.max(formHeight+20, listHeight+20)}
+            contentOffset={states.isCommentsForm ? formHeight+20 : listHeight+20}
         >
             <ButtonsTab>
                 <Hide 
@@ -107,18 +107,13 @@ const tabButtonStyles = (isActive, isCommentsList) => css`
 const Content = styled.div`
     position: relative;
     height: ${props => props.height};
-    min-height: 20vh;
-    max-height: 75vh;
     padding: 10px;
-    overflow-y: scroll;
-    overflow-x: hidden;
 `
 
 const ButtonsTab = styled.div`
     width: 100%;
     padding-left: 1em;
     padding-top: 10px;
-    padding-bottom: 10px;
 `
 
 const Container = styled.div`
@@ -128,7 +123,7 @@ const Container = styled.div`
     transition: margin 1s ease-out;
     margin-bottom: ${props => 
         props.isComponentHidden
-            ? `-${props.contentHeight+20}px;`
-            : `-${props.contentHeight-20-props.contentOffset}px;`
+            ? `-${props.contentHeight}px;`
+            : `-${props.contentHeight-props.contentOffset}px;`
     };
 `

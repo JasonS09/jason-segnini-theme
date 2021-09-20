@@ -41,12 +41,15 @@ export default connect(CommentsList)
 
 const Items = styled.div`
     position: absolute;
-    top: 0;
+    top: 10px;
     visibility: ${props => 
         props.visible ? 'visible;' : 'hidden;'};
+    max-height: 75vh;
     width: 95%;
     padding-left: 1em;
     padding-right: 1em;
+    overflow-y: scroll;
+    overflow-x: hidden;
 `
 
 const Author = styled.div`

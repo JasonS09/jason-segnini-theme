@@ -1,19 +1,25 @@
 import {connect, styled} from "frontity"
-import {useEffect} from "react"
+import {useEffect, useRef} from "react"
 import AnimatedWrapper from "../common/animated-wrapper"
 
 const CommentsList = ({
     state, 
     actions,
     libraries, 
-    postId
+    postId,
+    visible
 }) => {
     const data = state.source.get(`@comments/${postId}`)
     const Html2React = libraries.html2react.Component
-    useEffect(() => actions.source.fetch(`@comments/${postId}`), [])
+    const items = useRef(null)
+
+    useEffect(() => {
+        actions.source.fetch(`@comments/${postId}`)
+        actions.theme.getCommentsListHeight(items.current.clientHeight)
+    }, [data.items])
 
     return (
-        <Items>
+        <Items ref={items} visible={visible}>
             {data.isReady && data.items?.map(({id}) => (
                 <AnimatedWrapper key={id} type='polygonal'>
                     <Author key={`author_${id}`}>
@@ -34,14 +40,13 @@ const CommentsList = ({
 export default connect(CommentsList)
 
 const Items = styled.div`
+    position: absolute;
+    top: 0;
+    visibility: ${props => 
+        props.visible ? 'visible;' : 'hidden;'};
     width: 95%;
-    min-height: calc(20vh - 67px);
-    max-height: calc(75vh - 67px);
     padding-left: 1em;
     padding-right: 1em;
-    margin-bottom: 10px;
-    overflow-y: scroll;
-    overflow-x: hidden;
 `
 
 const Author = styled.div`

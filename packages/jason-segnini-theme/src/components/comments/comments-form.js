@@ -1,27 +1,35 @@
 import {connect, styled, css} from "frontity"
 import {input, inputWithWrapper, submit} from "../../styles/common"
-import {useState} from "react"
+import {useState, useRef, useEffect} from "react"
 import Loading from "../common/loading"
 import AnimatedWrapper from "../common/animated-wrapper"
 import AnimatedText from "../common/animated-text"
 import Lobo from "../common/lobo"
 
-const CommentsForm = ({state, actions, postId}) => {
+const CommentsForm = ({state, actions, postId, visible}) => {
     const form = state.comments.forms[postId]
     const color = !form?.errorMessage ? state.theme.color : '#d75a5a'
     const autofillColor = !form?.errorMessage ? '#628a6c' : '#8a6262'
     const [scale, setScale] = useState(false)
+    const ref = useRef(null)
+
+    useEffect(() => 
+        actions.theme.getCommentsFormHeight(ref.current.clientHeight), 
+    [form])
 
     return (
         <AnimatedWrapper 
             shadows
             color={color}
-            css={wrapperStyles(color, scale)}
+            css={wrapperStyles(color, scale, visible)}
         >
-            <Form onSubmit={e => {
-                e.preventDefault()
-                actions.comments.submit(postId)
-            }}>
+            <Form 
+                onSubmit={e => {
+                    e.preventDefault()
+                    actions.comments.submit(postId)
+                }}
+                ref={ref}
+            >
                 {form?.isSubmitting && <Loading text='Submitting...'/>}
                 {form?.errorMessage 
                     && 
@@ -133,11 +141,11 @@ const scaleWrapper = css`
     }
 `
 
-const wrapperStyles = (color, scale) => css`
+const wrapperStyles = (color, scale, visible) => css`
+    visibility: ${visible ? 'visible;' : 'hidden;'};
     color: ${color};
-    background-color: rgba(0,0,0,.85);
     padding: 1em;
-    margin-bottom: 10px;
+    background-color: rgba(0,0,0,.85);
     ${scale && scaleWrapper}
     transition: transform .25s ease-out;
 

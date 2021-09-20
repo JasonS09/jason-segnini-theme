@@ -3,7 +3,7 @@ import {css} from "frontity"
 export const center = css`
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%)
+    transform: translate(-50%, -50%);
 `
 
 export const inputWithWrapper = css`
@@ -19,6 +19,8 @@ export const input = (color, placeholderColor=color) => css`
     color: ${color};
     border-radius: 3px;
     background-color: transparent;
+    scrollbar-color: ${color} black;
+    scrollbar-width: thin;
 
     :focus {
         outline: none;
@@ -38,11 +40,6 @@ export const input = (color, placeholderColor=color) => css`
 
         ::first-line {font-family: 'Share Tech Mono';}
         ::selection {-webkit-text-fill-color: black;}
-    }
-
-    ::-webkit-scrollbar-thumb {
-        border: 1px solid ${color};
-        :hover {background-color: ${color}}
     }
 
     ::placeholder {color: ${placeholderColor}}

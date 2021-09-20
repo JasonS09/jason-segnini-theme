@@ -9,9 +9,10 @@ const Post = ({state, libraries}) => {
     const post = state.source[data.type][data.id]
     const author = state.source.author[post.author]
     const color = state.theme.color
-
     const formattedDate = dayjs(post.date).format('DD MMMM YYYY')
     const Html2React = libraries.html2react.Component
+
+    console.log(data)
 
     return (
         <>

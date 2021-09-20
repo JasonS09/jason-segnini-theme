@@ -1,5 +1,5 @@
 import {connect, styled, css} from "frontity"
-import {useState, useRef, useEffect} from "react"
+import {useState} from "react"
 import {center} from "../../styles/common"
 import Hide from "../common/hide"
 import CommentsList from "./comments-list"
@@ -7,63 +7,62 @@ import CommentsForm from "./comments-form"
 
 const Comments = ({state, postId}) => {
     const [states, setStates] = useState({})
-    const container = useRef(null)
-
-    useEffect(() => {
-        setStates(states => ({
-            ...states,
-            height: container.current.clientHeight
-        }))
-
-        if (container.current.clientHeight 
-            < container.current.scrollHeight
-            && states.maxHeight)
-            setStates(states => ({
-                ...states,
-                maxHeight: false
-            }))
-        else if (container.current.clientHeight 
-            > container.current.scrollHeight 
-            && !states.maxHeight)
-            setStates(states => ({
-                ...states,
-                maxHeight: true
-            }))
-    }, [states.isCommentsForm, state.theme.screenSize[1]])
+    const formHeight = state.theme.commentsHeight.form
+    const listHeight = state.theme.commentsHeight.list
 
     return (
         <Container 
             isComponentHidden={states.isComponentHidden}
-            maxHeight={states.maxHeight}
-            height={states.height} 
-            ref={container}
+            contentHeight={Math.max(formHeight, listHeight)}
+            contentOffset={states.isCommentsForm ? formHeight : listHeight}
         >
             <ButtonsTab>
                 <Hide 
                     type='archive' 
-                    onClick={() => {setStates(states => ({
-                        ...states,
-                        isComponentHidden: !states.isComponentHidden
-                    }))}}
+                    onClick={() => {
+                        setStates(states => ({
+                            ...states,
+                            isComponentHidden: !states.isComponentHidden
+                        })
+                    )}}
                     css={hideStyles(states.isComponentHidden)}
                 />
                 <Hide 
                     type='archive'
+                    text='C'
+                    onClick={() => 
+                        {setStates(states => ({
+                            ...states,
+                            isCommentsForm: false
+                        }))}
+                    }
+                    css={css`
+                        ${tabButtonStyles(!states.isCommentsForm, true)}
+                        transform: none;
+                    `}
+                />
+                <Hide 
+                    type='archive'
                     text='+'
-                    onClick={() => {setStates(states => ({
-                        ...states,
-                        isCommentsForm: true
-                    }))}}
+                    onClick={()=> {
+                        setStates(states => ({
+                            ...states,
+                            isCommentsForm: true
+                        }))}
+                    }
                     css={css`
                         ${tabButtonStyles(states.isCommentsForm)}
                         transform: none;
                     `}
                 />
             </ButtonsTab>
-            {states.isCommentsForm 
-                ? <CommentsForm postId={postId}/>
-                : <CommentsList postId={postId}/>
-            }
+            <Content 
+                isCommentsForm={states.isCommentsForm}  
+                height={formHeight >= listHeight ? 'auto;' : `${listHeight}px;`}
+            >
+                <CommentsForm postId={postId} visible={states.isCommentsForm}/>
+                <CommentsList postId={postId} visible={!states.isCommentsForm}/>
+            </Content>
         </Container>
     )
 }
@@ -78,17 +77,23 @@ const hideStyles = isComponentHidden => css`
     right: auto;
     left: auto;
     margin-right: 10px;
-    ${isComponentHidden
-        ? css`transform: rotate(-90deg);`
-        : css`transform: rotate(90deg);`
+    transform: ${isComponentHidden
+        ? 'rotate(-90deg);'
+        : 'rotate(90deg);'
     }
 `
 
-const tabButtonStyles = isActive => css`
+const tabButtonStyles = (isActive, isCommentsList) => css`
     ${hideStyles()}
     & > div {
         ::before {
             ${center}
+            ${isCommentsList 
+                && css`
+                    transform: 
+                        translate(-50%, -50%) rotate(90deg);
+                `
+            }
             ${isActive && 'width: 100%;'}
         }
 
@@ -99,8 +104,17 @@ const tabButtonStyles = isActive => css`
     }
 `
 
+const Content = styled.div`
+    position: relative;
+    height: ${props => props.height};
+    min-height: 20vh;
+    max-height: 75vh;
+    padding: 10px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+`
+
 const ButtonsTab = styled.div`
-    display: block;
     width: 100%;
     padding-left: 1em;
     padding-top: 10px;
@@ -110,11 +124,11 @@ const ButtonsTab = styled.div`
 const Container = styled.div`
     position: absolute;
     width: 100%;
-    min-height: 20%;
-    ${props => props.maxHeight && 'max-height: 75%;'}
     bottom: 0;
     transition: margin 1s ease-out;
-    ${props => props.isComponentHidden
-        && css`margin-bottom: calc(-${props.height}px + 67px);`
-    }
+    margin-bottom: ${props => 
+        props.isComponentHidden
+            ? `-${props.contentHeight+20}px;`
+            : `-${props.contentHeight-20-props.contentOffset}px;`
+    };
 `

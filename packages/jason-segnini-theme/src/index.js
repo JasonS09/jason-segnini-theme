@@ -14,7 +14,8 @@ const jasonSegniniTheme = {
             showMenu: true,
             showArchive: true,
             color: '#60d75a',
-            screenSize: [0, 0]
+            screenSize: [0, 0],
+            commentsHeight: {list: 0, form: 0}
         }
     },
     actions: {
@@ -40,10 +41,16 @@ const jasonSegniniTheme = {
             setThemeColor: ({state}) => color =>
                 state.theme.color = color,
 
-            setScreenSize: ({state}) => (width, height) => {
+            getScreenSize: ({state}) => (width, height) => {
                 state.theme.screenSize[0] = width
                 state.theme.screenSize[1] = height
-            }    
+            },
+
+            getCommentsListHeight: ({state}) => height =>
+                state.theme.commentsHeight.list = height,
+
+            getCommentsFormHeight: ({state}) => height =>
+                state.theme.commentsHeight.form = height,
         }
     },
     libraries: {

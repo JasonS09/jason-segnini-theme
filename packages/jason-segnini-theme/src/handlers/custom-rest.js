@@ -5,7 +5,7 @@ const customRest = {
 
     pattern: '/rest-page/',
 
-    func: async ({link, libraries, state}) => {
+    func: async ({libraries, state}) => {
         const catsResponse = await libraries.source.api.get({
             endpoint: '/jasonsegnini/v1/categories/'
         })
@@ -25,7 +25,7 @@ const customRest = {
             response: menuResponse
         })
 
-        Object.assign(state.source.data[link], {
+        Object.assign(state.source.data['/rest-page/'], {
             categories: categories,
             menu: menu
         })

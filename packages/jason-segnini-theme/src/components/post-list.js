@@ -119,7 +119,6 @@ const linkStyles = color => css`
 
 const postsPageItems = css`
     position: relative;
-    display: block;
     width: 100%;
     max-height: 93vh;
     padding-left: 1em;
@@ -136,7 +135,6 @@ const H1 = styled.h1`
 
 const PrevNextTab = styled.div`
     position: relative;
-    display: block;
     width: 100%;
     height: 5%;
 `

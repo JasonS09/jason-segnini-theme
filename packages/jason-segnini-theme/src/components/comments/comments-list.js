@@ -1,5 +1,5 @@
-import {connect, styled} from "frontity"
-import {useEffect, useRef} from "react"
+import { connect, styled } from "frontity"
+import { useEffect, useRef } from "react"
 import AnimatedWrapper from "../common/animated-wrapper"
 
 const CommentsList = ({
@@ -7,7 +7,8 @@ const CommentsList = ({
     actions,
     libraries, 
     postId,
-    visible
+    visible,
+    isComponentHidden
 }) => {
     const data = state.source.get(`@comments/${postId}`)
     const Html2React = libraries.html2react.Component
@@ -16,7 +17,7 @@ const CommentsList = ({
     useEffect(() => {
         actions.source.fetch(`@comments/${postId}`)
         actions.theme.getCommentsListHeight(items.current.clientHeight)
-    }, [data.items])
+    }, [visible, isComponentHidden])
 
     return (
         <Items ref={items} visible={visible}>

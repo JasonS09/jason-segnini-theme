@@ -1,6 +1,6 @@
-import {connect, styled, css} from "frontity"
-import {Fragment} from "react"
-import {center} from "../styles/common"
+import { connect, styled, css } from "frontity"
+import { Fragment } from "react"
+import { center } from "../styles/common"
 import AnimatedText from "./common/animated-text"
 import AnimatedWrapper from "./common/animated-wrapper"
 

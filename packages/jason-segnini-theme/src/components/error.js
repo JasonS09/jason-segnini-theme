@@ -1,4 +1,4 @@
-import {connect, styled} from "frontity"
+import { connect, styled } from "frontity"
 import AnimatedWrapper from "./common/animated-wrapper"
 import Lobo from "./common/lobo"
 

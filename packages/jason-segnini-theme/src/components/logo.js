@@ -1,6 +1,6 @@
-import {connect, styled, css} from "frontity"
-import {glowForText, glowForPolygon, draw} from "../styles/keyframes"
-import {useRef, useState, useEffect} from "react"
+import { connect, styled, css } from "frontity"
+import { glowForText, glowForPolygon, draw } from "../styles/keyframes"
+import { useRef, useState, useEffect } from "react"
 import AnimatedText from "./common/animated-text"
 import Lobo from "./common/lobo"
 

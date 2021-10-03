@@ -1,6 +1,6 @@
-import {connect, styled, css} from "frontity"
-import {useState} from "react"
-import {center} from "../../styles/common"
+import { connect, styled, css } from "frontity"
+import { useState } from "react"
+import { center } from "../../styles/common"
 import Hide from "../common/hide"
 import CommentsList from "./comments-list"
 import CommentsForm from "./comments-form"
@@ -8,7 +8,7 @@ import CommentsForm from "./comments-form"
 const Comments = ({state, postId}) => {
     const formHeight = state.theme.commentsHeight.form
     const listHeight = state.theme.commentsHeight.list
-    const [states, setStates] = useState({})
+    const [states, setStates] = useState({ isComponentHidden: true })
 
     return (
         <Container 
@@ -61,7 +61,11 @@ const Comments = ({state, postId}) => {
                 height={formHeight >= listHeight ? 'auto;' : `${listHeight}px;`}
             >
                 <CommentsForm postId={postId} visible={states.isCommentsForm}/>
-                <CommentsList postId={postId} visible={!states.isCommentsForm}/>
+                <CommentsList 
+                    postId={postId} 
+                    visible={!states.isCommentsForm} 
+                    isComponentHidden={states.isComponentHidden}    
+                />
             </Content>
         </Container>
     )

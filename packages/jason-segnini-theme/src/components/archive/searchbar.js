@@ -1,6 +1,6 @@
-import {connect, styled, css} from "frontity"
-import {expandWidth} from "../../styles/keyframes"
-import {input, inputWithWrapper, submit} from "../../styles/common"
+import { connect, styled, css } from "frontity"
+import { expandWidth } from "../../styles/keyframes"
+import { input, inputWithWrapper, submit } from "../../styles/common"
 import AnimatedText from "../common/animated-text"
 import AnimatedWrapper from "../common/animated-wrapper"
 

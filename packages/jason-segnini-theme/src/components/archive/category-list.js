@@ -1,4 +1,4 @@
-import {connect, styled, css} from "frontity"
+import { connect, styled, css } from "frontity"
 import {
     Fragment, 
     useState, 

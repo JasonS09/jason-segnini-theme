@@ -1,4 +1,4 @@
-import {css} from "frontity"
+import { css } from "frontity"
 
 export const center = css`
     top: 50%;

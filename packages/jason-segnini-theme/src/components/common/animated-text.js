@@ -1,5 +1,5 @@
-import {useState, useEffect, useLayoutEffect} from "react"
-import {connect} from "frontity"
+import { useState, useEffect, useLayoutEffect } from "react"
+import { connect } from "frontity"
 import Link from "@frontity/components/link"
 import Switch from "@frontity/components/switch"
 

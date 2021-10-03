@@ -1,4 +1,4 @@
-import {keyframes} from "frontity"
+import { keyframes } from "frontity"
 
 export const expandWidth = (width = 100) => keyframes`
     from {width: 0;}

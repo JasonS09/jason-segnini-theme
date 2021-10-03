@@ -1,5 +1,5 @@
-import {connect, styled} from "frontity"
-import {useRef, useEffect} from "react"
+import { connect, styled } from "frontity"
+import { useRef, useEffect } from "react"
 
 const Background = ({state}) => {
     const canvas = useRef(null)

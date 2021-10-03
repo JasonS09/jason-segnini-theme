@@ -1,5 +1,5 @@
-import {connect, Head, styled, css} from "frontity"
-import {expandWidth} from "../styles/keyframes"
+import { connect, Head, styled, css } from "frontity"
+import { expandWidth } from "../styles/keyframes"
 import dayjs from "dayjs"
 import AnimatedWrapper from "./common/animated-wrapper"
 import Comments from "./comments/comments"
@@ -11,8 +11,6 @@ const Post = ({state, libraries}) => {
     const color = state.theme.color
     const formattedDate = dayjs(post.date).format('DD MMMM YYYY')
     const Html2React = libraries.html2react.Component
-
-    console.log(data)
 
     return (
         <>

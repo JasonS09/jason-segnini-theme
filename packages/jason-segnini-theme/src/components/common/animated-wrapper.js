@@ -1,5 +1,5 @@
-import {connect, styled, keyframes, css} from "frontity"
-import {useRef, useEffect, useState} from "react"
+import { connect, styled, keyframes, css } from "frontity"
+import { useRef, useEffect, useState } from "react"
 import {
     expandWidth, 
     expandHeight, 

@@ -8,11 +8,15 @@ import CommentsForm from "./comments-form"
 const Comments = ({state, postId}) => {
     const formHeight = state.theme.commentsHeight.form
     const listHeight = state.theme.commentsHeight.list
-    const [states, setStates] = useState({ isComponentHidden: true })
+    const [states, setStates] = useState({ 
+        isComponentHidden: true,
+        isFirstTime: true
+    })
 
     return (
         <Container 
             isComponentHidden={states.isComponentHidden}
+            isFirstTime={states.isFirstTime}
             contentHeight={Math.max(formHeight+20, listHeight+20)}
             contentOffset={states.isCommentsForm ? formHeight+20 : listHeight+20}
         >
@@ -22,7 +26,8 @@ const Comments = ({state, postId}) => {
                     onClick={() => {
                         setStates(states => ({
                             ...states,
-                            isComponentHidden: !states.isComponentHidden
+                            isComponentHidden: !states.isComponentHidden,
+                            isFirstTime: false
                         })
                     )}}
                     css={hideStyles(states.isComponentHidden)}
@@ -124,7 +129,9 @@ const Container = styled.div`
     position: absolute;
     width: 100%;
     bottom: 0;
-    transition: margin 1s ease-out;
+    ${props => !props.isFirstTime 
+        && css`transition: margin 1s ease-out;`
+    }
     margin-bottom: ${props => 
         props.isComponentHidden
             ? `-${props.contentHeight}px;`

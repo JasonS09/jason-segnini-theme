@@ -1,17 +1,27 @@
 import { connect, styled, css } from "frontity"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { center } from "../../styles/common"
 import Hide from "../common/hide"
 import CommentsList from "./comments-list"
 import CommentsForm from "./comments-form"
 
 const Comments = ({state, postId}) => {
-    const formHeight = state.theme.commentsHeight.form
-    const listHeight = state.theme.commentsHeight.list
+    const formHeight = state.comments.commentsHeight.form
+    const listHeight = state.comments.commentsHeight.list
+    const items = state.source.get(`@comments/${postId}`).items
     const [states, setStates] = useState({ 
         isComponentHidden: true,
-        isFirstTime: true
+        isFirstTime: true,
+        isCommentsForm: items?.length ? false : true
     })
+
+    useEffect(() => {
+        if (items?.length)
+            setStates(states => ({
+                ...states,
+                isCommentsForm: false
+            }))
+    }, [items])
 
     return (
         <Container 
@@ -32,20 +42,23 @@ const Comments = ({state, postId}) => {
                     )}}
                     css={hideStyles(states.isComponentHidden)}
                 />
-                <Hide 
-                    type='archive'
-                    text='C'
-                    onClick={() => 
-                        {setStates(states => ({
-                            ...states,
-                            isCommentsForm: false
-                        }))}
-                    }
-                    css={css`
-                        ${tabButtonStyles(!states.isCommentsForm, true)}
-                        transform: none;
-                    `}
-                />
+                {items?.length !== 0
+                    && 
+                    <Hide 
+                        type='archive'
+                        text='C'
+                        onClick={() => 
+                            {setStates(states => ({
+                                ...states,
+                                isCommentsForm: false
+                            }))}
+                        }
+                        css={css`
+                            ${tabButtonStyles(!states.isCommentsForm, true)}
+                            transform: none;
+                        `}
+                    />
+                }
                 <Hide 
                     type='archive'
                     text='+'

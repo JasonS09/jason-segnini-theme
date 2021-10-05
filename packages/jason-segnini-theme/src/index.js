@@ -13,9 +13,16 @@ const jasonSegniniTheme = {
             isWelcomeReceived: false,
             showMenu: true,
             showArchive: true,
-            color: '#60d75a',
-            screenSize: [0, 0],
+            color: '#60d75a'
+        },
+
+        comments: {
+            replyComment: false,
             commentsHeight: {list: 0, form: 0}
+        },
+
+        screen: {
+            screenSize: [0, 0]
         }
     },
     actions: {
@@ -39,18 +46,22 @@ const jasonSegniniTheme = {
                 state.theme.showArchive = !state.theme.showArchive,
 
             setThemeColor: ({state}) => color =>
-                state.theme.color = color,
+                state.theme.color = color
+        },
 
-            getScreenSize: ({state}) => (width, height) => {
-                state.theme.screenSize[0] = width
-                state.theme.screenSize[1] = height
-            },
-
+        comments: {
             getCommentsListHeight: ({state}) => height =>
-                state.theme.commentsHeight.list = height,
+                state.comments.commentsHeight.list = height,
 
             getCommentsFormHeight: ({state}) => height =>
-                state.theme.commentsHeight.form = height,
+                state.comments.commentsHeight.form = height
+        },
+
+        screen: {
+            getScreenSize: ({state}) => (width, height) => {
+                state.screen.screenSize[0] = width
+                state.screen.screenSize[1] = height
+            }
         }
     },
     libraries: {

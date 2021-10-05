@@ -22,7 +22,7 @@ const Archive = ({state, actions}) => {
             > scrollable.current.scrollHeight 
             && overflow === 'scroll')
             setOverflow('hidden')
-    }, [state.theme.screenSize[1]])
+    }, [state.screen.screenSize[1]])
 
     return (
         <AnimatedWrapper 

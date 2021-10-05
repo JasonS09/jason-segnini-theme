@@ -3,7 +3,6 @@ import { input, inputWithWrapper, submit } from "../../styles/common"
 import { useState, useRef, useEffect } from "react"
 import Loading from "../common/loading"
 import AnimatedWrapper from "../common/animated-wrapper"
-import AnimatedText from "../common/animated-text"
 import Lobo from "../common/lobo"
 
 const CommentsForm = ({state, actions, postId, visible}) => {
@@ -14,8 +13,9 @@ const CommentsForm = ({state, actions, postId, visible}) => {
     const ref = useRef(null)
 
     useEffect(() => 
-        actions.theme.getCommentsFormHeight(ref.current.clientHeight), 
-    [form])
+        actions.comments.getCommentsFormHeight(ref.current.clientHeight), 
+        [form?.errorMessage, form?.isSubmitting]
+    )
 
     return (
         <AnimatedWrapper 
@@ -39,7 +39,7 @@ const CommentsForm = ({state, actions, postId, visible}) => {
                     </Div>
                 }
                 <label>
-                    <AnimatedText text='Name:'/>
+                    Name:
                     <AnimatedWrapper color={color} css={wrapperInputStyles}>
                         <Input
                             name='author_name'
@@ -56,12 +56,12 @@ const CommentsForm = ({state, actions, postId, visible}) => {
                             }
                         />
                     </AnimatedWrapper>
-                    <AnimatedText text={form?.errors?.authorName}/>
+                    {form?.errors?.authorName}
                 </label>
                 <br/>
                 <br/>
                 <label>
-                    <AnimatedText text='Email:'/>
+                    Email:
                     <AnimatedWrapper color={color} css={wrapperInputStyles}>
                         <Input
                             name='author_email'
@@ -78,7 +78,7 @@ const CommentsForm = ({state, actions, postId, visible}) => {
                             }
                         />
                     </AnimatedWrapper>
-                    <AnimatedText text={form?.errors?.authorEmail}/>
+                    {form?.errors?.authorEmail}
                 </label>
                 <br/>
                 <br/>
@@ -103,11 +103,8 @@ const CommentsForm = ({state, actions, postId, visible}) => {
                             }
                         />
                     </AnimatedWrapper>
-                    <AnimatedText text={form?.errors?.content}/>
+                    {form?.errors?.content}
                 </label>
-                <div>
-                    {form?.isSubmitted && 'The comment was submitted succesfully!'}
-                </div>
                 <AnimatedWrapper shadows color={color} css={css`
                     ${wrapperInputStyles}
                     margin: auto;
@@ -117,7 +114,7 @@ const CommentsForm = ({state, actions, postId, visible}) => {
                         onFocus={() => setScale(true)}
                         onBlur={() => setScale(false)}
                     > 
-                        <AnimatedText text='Post'/> 
+                        Post
                     </Button> 
                 </AnimatedWrapper>
             </Form>

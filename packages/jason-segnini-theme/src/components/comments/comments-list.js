@@ -1,38 +1,32 @@
 import { connect, styled } from "frontity"
-import { useEffect, useRef } from "react"
-import AnimatedWrapper from "../common/animated-wrapper"
+import { useEffect, useRef, Fragment } from "react"
+import Comment from "./comment"
 
 const CommentsList = ({
     state, 
-    actions,
-    libraries, 
+    actions, 
     postId,
     visible,
     isComponentHidden
 }) => {
+    const form = state.comments.forms[postId]
     const data = state.source.get(`@comments/${postId}`)
-    const Html2React = libraries.html2react.Component
     const items = useRef(null)
 
     useEffect(() => {
         actions.source.fetch(`@comments/${postId}`)
-        actions.theme.getCommentsListHeight(items.current.clientHeight)
-    }, [visible, isComponentHidden])
+        actions.comments.getCommentsListHeight(items.current.clientHeight)
+    }, [visible, isComponentHidden, form?.isSubmitted])
 
     return (
         <Items ref={items} visible={visible}>
-            {data.isReady && data.items?.map(({id}) => (
-                <AnimatedWrapper key={id} type='polygonal'>
-                    <Author key={`author_${id}`}>
-                        {state.source.comment[id].author_name || 'Anonymous'}:
-                    </Author>
-                    <CommentContent key={`comment_content_${id}`}>
-                        <Html2React 
-                            key={id}
-                            html={state.source.comment[id].content.rendered}
-                        />
-                    </CommentContent>
-                </AnimatedWrapper>
+            {data.isReady && data.items.map(({id, children}) => (
+                <Fragment key={id}>
+                    <Comment key={`comment_${id}`} id={id}/>
+                    {children?.map(({id}) => 
+                        <Comment key={`child_${id}`} id={id} isChildren/>
+                    )}
+                </Fragment>
             ))}
         </Items>
     )
@@ -52,10 +46,3 @@ const Items = styled.div`
     overflow-y: scroll;
     overflow-x: hidden;
 `
-
-const Author = styled.div`
-    padding-top: 10px;
-    padding-left: 10px;
-`
-
-const CommentContent = styled.div`padding: 10px 1em 10px;`

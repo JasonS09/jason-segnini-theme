@@ -704,6 +704,7 @@ const AllbordersAnimatedDiv = styled.div`
         position: absolute;
         border: 1px solid transparent;
         border-radius: 3px;
+        z-index: -1;
     }
 
     ::before {

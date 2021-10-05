@@ -25,7 +25,7 @@ const Root = ({state, actions}) => {
     useEffect(() => {    
         window.addEventListener(
             'resize', 
-            () => actions.theme.getScreenSize(
+            () => actions.screen.getScreenSize(
                 window.innerWidth, window.innerHeight
             )
         )

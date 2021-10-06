@@ -62,23 +62,24 @@ const Header = ({state, actions}) => {
     }
 
     useEffect(() => {
-        if (contentWidth === 0) {
-            const headerContent = refs.current.headerContent
-            const padding = parseFloat(
-                            getComputedStyle(
-                                headerContent
-                            ).paddingLeft)
-                        + parseFloat(
-                            getComputedStyle(
-                                headerContent
-                            ).paddingRight)
-            const width = headerContent.clientWidth
-            setContentWidth(width-padding)
-        }
-
-        refs.current.prevActive = active
+        const headerContent = refs.current.headerContent
+        const padding = parseFloat(
+                        getComputedStyle(
+                            headerContent
+                        ).paddingLeft)
+                    + parseFloat(
+                        getComputedStyle(
+                            headerContent
+                        ).paddingRight)
+        const width = headerContent.clientWidth
+        setContentWidth(width-padding)
         return () => clearTimeout(timeout)
-    }, [state.router.link])
+    }, [])
+
+    useEffect(() =>
+        refs.current.prevActive = active, 
+        [state.router.link]
+    )
 
     menuStates.forEach((item, i) => {
         if (item.i > 0) {

@@ -22,21 +22,20 @@ const Root = ({state, actions}) => {
     const isWelcomeReceived = state.theme.isWelcomeReceived
     const color = state.theme.color
 
-    useEffect(() => {    
+    useEffect(() =>         
         window.addEventListener(
             'resize', 
             () => actions.screen.getScreenSize(
                 window.innerWidth, window.innerHeight
             )
-        )
+        ), []
+    )
 
-        if (data.isError 
-            && state.theme.color === '#60d75a')
-                actions.theme.setThemeColor('#d75a5a')
-
-        if (!data.isError 
-            && state.theme.color === '#d75a5a')
-                actions.theme.setThemeColor('#60d75a')
+    useEffect(() => {    
+        if (data.isError)
+            actions.theme.setThemeColor('#d75a5a')
+        else
+            actions.theme.setThemeColor('#60d75a')
     }, [data.isError])
 
     return (

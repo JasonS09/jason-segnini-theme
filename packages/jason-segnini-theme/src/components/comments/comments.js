@@ -5,9 +5,9 @@ import Hide from "../common/hide"
 import CommentsList from "./comments-list"
 import CommentsForm from "./comments-form"
 
-const Comments = ({state, postId}) => {
-    const formHeight = state.comments.commentsHeight.form
-    const listHeight = state.comments.commentsHeight.list
+const Comments = ({state, actions, postId}) => {
+    const formHeight = state.comments.commentsHeight.form + 20
+    const listHeight = state.comments.commentsHeight.list + 20
     const items = state.source.get(`@comments/${postId}`).items
     const [states, setStates] = useState({ 
         isComponentHidden: true,
@@ -15,20 +15,32 @@ const Comments = ({state, postId}) => {
         isCommentsForm: items?.length ? false : true
     })
 
+    useEffect(() => {        
+        if (state.comments.replyComment)
+            setStates(states => ({
+                ...states,
+                isCommentsForm: true
+            }))
+    }, [state.comments.replyComment])
+
     useEffect(() => {
-        if (items?.length)
+        if (items?.length) {
             setStates(states => ({
                 ...states,
                 isCommentsForm: false
             }))
-    }, [items])
+
+            if (state.comments.replyComment)
+                actions.comments.setReplyComment()
+        }
+    }, [JSON.stringify(items)])
 
     return (
         <Container 
             isComponentHidden={states.isComponentHidden}
             isFirstTime={states.isFirstTime}
-            contentHeight={Math.max(formHeight+20, listHeight+20)}
-            contentOffset={states.isCommentsForm ? formHeight+20 : listHeight+20}
+            contentHeight={Math.max(formHeight, listHeight)}
+            contentOffset={states.isCommentsForm ? formHeight : listHeight}
         >
             <ButtonsTab>
                 <Hide 

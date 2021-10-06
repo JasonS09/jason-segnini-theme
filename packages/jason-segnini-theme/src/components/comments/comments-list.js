@@ -14,9 +14,16 @@ const CommentsList = ({
     const items = useRef(null)
 
     useEffect(() => {
+        const per_page = state.source.params.per_page
+        Object.assign(state.source.params, {per_page: 100})
         actions.source.fetch(`@comments/${postId}`)
-        actions.comments.getCommentsListHeight(items.current.clientHeight)
-    }, [visible, isComponentHidden, form?.isSubmitted])
+        Object.assign(state.source.params, {per_page: per_page})
+    }, [form?.isSubmitted])
+
+    useEffect(() =>
+        actions.comments.getCommentsListHeight(items.current.clientHeight),
+        [visible, isComponentHidden]
+    )
 
     return (
         <Items ref={items} visible={visible}>

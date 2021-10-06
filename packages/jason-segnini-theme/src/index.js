@@ -17,7 +17,7 @@ const jasonSegniniTheme = {
         },
 
         comments: {
-            replyComment: false,
+            replyComment: 0,
             commentsHeight: {list: 0, form: 0}
         },
 
@@ -54,7 +54,10 @@ const jasonSegniniTheme = {
                 state.comments.commentsHeight.list = height,
 
             getCommentsFormHeight: ({state}) => height =>
-                state.comments.commentsHeight.form = height
+                state.comments.commentsHeight.form = height,
+
+            setReplyComment: ({state}) => (id = 0) => 
+                state.comments.replyComment = id
         },
 
         screen: {

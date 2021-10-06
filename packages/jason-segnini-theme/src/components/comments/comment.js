@@ -3,6 +3,7 @@ import AnimatedWrapper from "../common/animated-wrapper"
 
 const Comment = ({
     state, 
+    actions,
     libraries, 
     id, 
     isChildren
@@ -28,7 +29,9 @@ const Comment = ({
                 {!isChildren 
                     && 
                     <Reply color={state.theme.color}>
-                        <span>Reply</span>
+                        <span onClick={() => 
+                            actions.comments.setReplyComment(id)
+                        }>Reply</span>
                     </Reply>
                 }
             </CommentContent>
@@ -40,7 +43,7 @@ export default connect(Comment)
 
 const wrapperForChildren = css`
     width: 80%;
-    right: 0;
+    left: 20%;
 `
 
 const Reply = styled.div`

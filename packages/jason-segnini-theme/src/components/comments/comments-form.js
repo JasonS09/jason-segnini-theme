@@ -6,6 +6,7 @@ import AnimatedWrapper from "../common/animated-wrapper"
 import Lobo from "../common/lobo"
 
 const CommentsForm = ({state, actions, postId, visible}) => {
+    const replyComment = state.comments.replyComment
     const form = state.comments.forms[postId]
     const color = !form?.errorMessage ? state.theme.color : '#d75a5a'
     const autofillColor = !form?.errorMessage ? '#628a6c' : '#8a6262'
@@ -14,7 +15,7 @@ const CommentsForm = ({state, actions, postId, visible}) => {
 
     useEffect(() => 
         actions.comments.getCommentsFormHeight(ref.current.clientHeight), 
-        [form?.errorMessage, form?.isSubmitting]
+        [form?.errorMessage, form?.isSubmitting, replyComment]
     )
 
     return (
@@ -26,10 +27,32 @@ const CommentsForm = ({state, actions, postId, visible}) => {
             <Form 
                 onSubmit={e => {
                     e.preventDefault()
+                    if (replyComment) 
+                        actions.comments.updateFields(
+                            postId,
+                            {parent: replyComment}
+                        )
                     actions.comments.submit(postId)
                 }}
                 ref={ref}
             >
+                {replyComment !== 0
+                    && 
+                    <Div>
+                        <span>Reply comment from {
+                            state.source.comment[replyComment].author_name
+                        }
+                        </span> 
+                        <span 
+                            onClick={() => actions.comments.setReplyComment()}
+                            css={css`
+                                color: ${color};
+                                cursor: pointer;
+                            `}
+                        > X </span>
+                        <br/>
+                    </Div>
+                }
                 {form?.isSubmitting && <Loading text='Submitting...'/>}
                 {form?.errorMessage 
                     && 
@@ -149,7 +172,10 @@ const wrapperStyles = (color, scale, visible) => css`
         ${scaleWrapper}
     }
 
-    ::before, ::after {transition: border-width 0s .25s;}
+    ::before, ::after {
+        z-index: 0;
+        transition: border-width 0s .25s;
+    }
 `
 
 const wrapperInputStyles = css`

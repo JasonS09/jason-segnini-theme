@@ -5,16 +5,38 @@ const animatedText = {
 
     priority: 9,
 
-    test: ({node}) => node.children?.[0]?.type === 'text'
-        && node.props['className'] != 'nonAnimatedText',
+    test: ({node}) => {
+        const testComponents = () => 
+            [
+                'h1', 'h2', 'h3',
+                'h4', 'h5', 'h6',
+                'p', 'a', 'summary',
+                'text', 'tspan'
+            ].find(comp => comp === node.component)
+
+        const testChildrenText = () =>
+            node.children.find(child => 
+                child.type !== 'text'
+            )
+
+        return node.type === 'element' 
+            && testComponents()
+            && !testChildrenText()
+            && node.props['className'] !== 'nonAnimatedText'
+    },
 
     processor: ({node}) => {
         if (node.component === 'a'  
             && !node.props?.href?.startsWith('#'))
                 node.props.link = node.props.href
       
-        node.props['text'] = node.children[0].content
-        node.children[0].content= ''
+        node.props['text'] = ''
+
+        node.children.forEach(child =>
+            node.props['text']+= child.content
+        )
+
+        node.children = []
         node.props['comp'] = node.component
 
         if (!node.props['data-speed'])
@@ -22,7 +44,7 @@ const animatedText = {
 
         node.component = AnimatedText
         return node
-    },
-};
+    }
+}
 
 export default animatedText

@@ -5,9 +5,10 @@ import Hide from "../common/hide"
 import CommentsList from "./comments-list"
 import CommentsForm from "./comments-form"
 
-const Comments = ({state, actions, postId}) => {
+const Comments = ({state, postId}) => {
     const formHeight = state.comments.commentsHeight.form + 20
     const listHeight = state.comments.commentsHeight.list + 20
+    const replyComment = state.comments.replyComment
     const items = state.source.get(`@comments/${postId}`).items
     const [states, setStates] = useState({ 
         isComponentHidden: true,
@@ -16,23 +17,19 @@ const Comments = ({state, actions, postId}) => {
     })
 
     useEffect(() => {        
-        if (state.comments.replyComment)
+        if (replyComment)
             setStates(states => ({
                 ...states,
                 isCommentsForm: true
             }))
-    }, [state.comments.replyComment])
+    }, [replyComment])
 
     useEffect(() => {
-        if (items?.length) {
+        if (items?.length)
             setStates(states => ({
                 ...states,
                 isCommentsForm: false
             }))
-
-            if (state.comments.replyComment)
-                actions.comments.setReplyComment()
-        }
     }, [JSON.stringify(items)])
 
     return (

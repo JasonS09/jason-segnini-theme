@@ -27,11 +27,13 @@ const CommentsForm = ({state, actions, postId, visible}) => {
             <Form 
                 onSubmit={e => {
                     e.preventDefault()
-                    if (replyComment) 
+                    if (replyComment) {
                         actions.comments.updateFields(
                             postId,
                             {parent: replyComment}
                         )
+                        actions.comments.setReplyComment()
+                    }
                     actions.comments.submit(postId)
                 }}
                 ref={ref}

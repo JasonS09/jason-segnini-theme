@@ -29,9 +29,14 @@ const CommentsList = ({
         <Items ref={items} visible={visible}>
             {data.isReady && data.items.map(({id, children}) => (
                 <Fragment key={id}>
-                    <Comment key={`comment_${id}`} id={id}/>
+                    <Comment key={`comment_${id}`} postId={postId} id={id}/>
                     {children?.map(({id}) => 
-                        <Comment key={`child_${id}`} id={id} isChildren/>
+                        <Comment 
+                            key={`child_${id}`} 
+                            postId={postId} 
+                            id={id} 
+                            isChildren    
+                        />
                     )}
                 </Fragment>
             ))}

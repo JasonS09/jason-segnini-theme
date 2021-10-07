@@ -1,10 +1,11 @@
 import { connect, styled, css } from "frontity"
+import { glowForText } from "../../styles/keyframes"
 import AnimatedWrapper from "../common/animated-wrapper"
 
 const Comment = ({
     state, 
     actions,
-    libraries, 
+    libraries,
     id, 
     isChildren
 }) => {
@@ -23,16 +24,14 @@ const Comment = ({
                 {comment.author_name || 'Anonymous'}:
             </Author>
             <CommentContent>
-                <Html2React 
-                    html={comment.content.rendered}
-                />
-                {!isChildren 
-                    && 
-                    <Reply color={state.theme.color}>
+                <Html2React html={comment.content.rendered}/>
+                {!isChildren
+                    &&
+                    <Options color={state.theme.color}>
                         <span onClick={() => 
                             actions.comments.setReplyComment(id)
                         }>Reply</span>
-                    </Reply>
+                    </Options>
                 }
             </CommentContent>
         </AnimatedWrapper>
@@ -46,12 +45,19 @@ const wrapperForChildren = css`
     left: 20%;
 `
 
-const Reply = styled.div`
+const Options = styled.div`
     position: relative;
     width: 100%;
     text-align: right;
     color: ${props => props.color};
-    span {cursor: pointer;}
+    span {
+        cursor: pointer;
+
+        :hover {
+            animation: 
+                ${glowForText()} 3s ease-out alternate infinite;
+        }
+    }
 `
 
 const Author = styled.div`

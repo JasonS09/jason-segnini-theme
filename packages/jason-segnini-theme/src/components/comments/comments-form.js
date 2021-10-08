@@ -15,7 +15,12 @@ const CommentsForm = ({state, actions, postId, visible}) => {
 
     useEffect(() => 
         actions.comments.getCommentsFormHeight(ref.current.clientHeight), 
-        [form?.errorMessage, form?.isSubmitting, replyComment]
+        [
+            form?.errorMessage, 
+            form?.isSubmitting, 
+            form?.isSubmitted, 
+            replyComment
+        ]
     )
 
     return (
@@ -62,6 +67,13 @@ const CommentsForm = ({state, actions, postId, visible}) => {
                         <Lobo forceError/> <br/>
                         ERROR! {form?.errorMessage}
                     </Div>
+                }
+                {form?.isSubmitted 
+                    && 
+                    <div css={css`text-align: center;`}>
+                        Comment submitted succesfully! Please wait until it's approved.
+                        <br/>
+                    </div>
                 }
                 <label>
                     Name:

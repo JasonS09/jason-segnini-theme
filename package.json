@@ -25,6 +25,8 @@
     "@frontity/wp-source": "^1.11.5",
     "dayjs": "^1.10.6",
     "frontity": "^1.17.0",
-    "jason-segnini-theme": "file:packages/jason-segnini-theme"
+    "html-entities": "^1.4.0",
+    "jason-segnini-theme": "file:packages/jason-segnini-theme",
+    "marked": "^3.0.7"
   }
 }

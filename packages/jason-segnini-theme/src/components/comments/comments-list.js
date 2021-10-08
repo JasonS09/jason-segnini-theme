@@ -17,6 +17,7 @@ const CommentsList = ({
         const per_page = state.source.params.per_page
         Object.assign(state.source.params, {per_page: 100})
         actions.source.fetch(`@comments/${postId}`)
+        actions.source.fetch(`/jasonsegnini/v1/comments?post_id=${postId}`)
         Object.assign(state.source.params, {per_page: per_page})
     }, [form?.isSubmitted])
 

@@ -9,6 +9,8 @@ const Comments = ({state, postId}) => {
     const formHeight = state.comments.commentsHeight.form + 20
     const listHeight = state.comments.commentsHeight.list + 20
     const replyComment = state.comments.replyComment
+    const form = state.comments.forms[postId]
+    const commentContent = form?.fields?.content
     const items = state.source.get(`@comments/${postId}`).items
     const [states, setStates] = useState({ 
         isComponentHidden: true,
@@ -17,25 +19,27 @@ const Comments = ({state, postId}) => {
     })
 
     useEffect(() => {        
-        if (replyComment)
+        if (replyComment || commentContent)
             setStates(states => ({
                 ...states,
                 isCommentsForm: true
             }))
-    }, [replyComment])
+    }, [replyComment, commentContent])
 
     useEffect(() => {
-        if (items?.length)
+        if (items?.length && !form?.isSubmitting) {
             setStates(states => ({
                 ...states,
                 isCommentsForm: false
             }))
-    }, [JSON.stringify(items)])
+        }
+    }, [items?.length])
 
     return (
         <Container 
             isComponentHidden={states.isComponentHidden}
-            isFirstTime={states.isFirstTime}
+            transition={!states.isFirstTime 
+                && (!form?.isSubmitting || states.isComponentHidden)}
             contentHeight={Math.max(formHeight, listHeight)}
             contentOffset={states.isCommentsForm ? formHeight : listHeight}
         >
@@ -151,7 +155,7 @@ const Container = styled.div`
     position: absolute;
     width: 100%;
     bottom: 0;
-    ${props => !props.isFirstTime 
+    ${props => props.transition 
         && css`transition: margin 1s ease-out;`
     }
     margin-bottom: ${props => 

@@ -82,7 +82,7 @@ const CommentsForm = ({state, actions, postId, visible}) => {
                             name='author_name'
                             color={color}
                             autofillColor={autofillColor}
-                            value={state.comments.forms[postId]?.fields?.authorName || ''}
+                            value={form?.fields?.authorName || ''}
                             onFocus={() => setScale(true)}
                             onBlur={() => setScale(false)}
                             onChange={e => 
@@ -104,7 +104,7 @@ const CommentsForm = ({state, actions, postId, visible}) => {
                             name='author_email'
                             color={color}
                             autofillColor={autofillColor}
-                            value={state.comments.forms[postId]?.fields?.authorEmail || ''}
+                            value={form?.fields?.authorEmail || ''}
                             onFocus={() => setScale(true)}
                             onBlur={() => setScale(false)}
                             onChange={e => 
@@ -129,7 +129,7 @@ const CommentsForm = ({state, actions, postId, visible}) => {
                         <Textarea
                             name='content'
                             color={color}
-                            value={state.comments.forms[postId]?.fields?.content || ''}
+                            value={form?.fields?.content || ''}
                             onFocus={() => setScale(true)}
                             onBlur={() => setScale(false)}
                             onChange={e => 

@@ -1,5 +1,5 @@
 import { connect, styled, css } from "frontity"
-import { glowForText } from "../../styles/keyframes"
+import { select, getQuote } from "../scripts/utilities"
 import marked from "marked"
 import AnimatedWrapper from "../common/animated-wrapper"
 
@@ -13,63 +13,48 @@ const Comment = ({
 }) => {
     const comment = state.source.comment[id]
     const Html2React = libraries.html2react.Component
-
-    const getSelectedText = () => {
-        var text = '';
-        if (window.getSelection) 
-            text = window.getSelection().toString();
-        else if (document.selection && document.selection.type != 'Control')
-            text = document.selection.createRange().text;
-        return text;
-    }
-
-    const getQuote = () => {
-        const text = `${comment.author_name} said:\r\n${
-            getSelectedText() || comment.content.plain
-        }`
-        const paragraphs = text.split(/\r?\n/)
-        return paragraphs.map((p, i) =>
-            i < paragraphs.length-1 ? `>${p}\r\n` : `>${p}`
-        ).join('')
-    }
+    const color = state.theme.color
+    let selection = ''
 
     return (
-        <>
-            {comment.content.plain
-                &&
-                <AnimatedWrapper
-                    type='polygonal' 
-                    css={css`
-                        margin-bottom: 10px;
-                        ${isChildren && wrapperForChildren}
-                    `}
-                >
-                    <Author>
-                        {comment.author_name || 'Anonymous'}:
-                    </Author>
-                    <CommentContent>
-                            <Html2React html={marked(comment.content.plain)}/>
-                            <Options color={state.theme.color}>
-                                <span 
-                                    onClick={() => 
-                                        actions.comments.updateFields(
-                                            postId,
-                                            {content: getQuote()}
-                                        )
-                                    }
-                                    css={css`margin-right: 10px;`}
-                                >Quote</span>
-                                {!isChildren
-                                    &&
-                                    <span onClick={() => 
-                                        actions.comments.setReplyComment(id)
-                                    }>Reply</span>
-                                }
-                            </Options>
-                    </CommentContent>
-                </AnimatedWrapper>
-            }
-        </>
+        <AnimatedWrapper
+            type='polygonal' 
+            css={css`
+                margin-bottom: 10px;
+                ${isChildren && wrapperForChildren}
+            `}
+        >
+            <Author>
+                {comment.author_name || 'Anonymous'}:
+            </Author>
+            <CommentContent 
+                color={color} 
+                onMouseUp={() => selection = select()+''}
+            >
+                <Html2React html={marked(comment.content.plain)}/>
+                <Options color={color}>
+                    <span 
+                        onMouseDown={() => {
+                            actions.comments.updateFields(
+                                postId,
+                                {content: getQuote(
+                                    comment.author_name,
+                                    selection || comment.content.plain
+                                )}
+                            )
+                            selection = ''
+                        }}
+                        css={css`margin-right: 10px;`}
+                    >Quote</span>
+                    {!isChildren
+                        &&
+                        <span onClick={() => 
+                            actions.comments.setReplyComment(id)
+                        }>Reply</span>
+                    }
+                </Options>
+            </CommentContent>
+        </AnimatedWrapper>
     )
 }
 
@@ -85,13 +70,11 @@ const Options = styled.div`
     width: 100%;
     text-align: right;
     color: ${props => props.color};
+
     span {
         cursor: pointer;
-
-        :hover {
-            animation: 
-                ${glowForText()} 3s ease-out alternate infinite;
-        }
+        transition: text-shadow .25s ease-out;
+        :hover {text-shadow: 0 0 2px ${props => props.color}}
     }
 `
 
@@ -100,4 +83,14 @@ const Author = styled.div`
     padding-left: 10px;
 `
 
-const CommentContent = styled.div`padding: 10px 1em 10px;`
+const CommentContent = styled.div`
+    padding: 10px 1em 10px;
+
+    blockquote {
+        border-left: 1px;
+        border-left-color: ${props => props.color};
+        border-left-style: solid;
+        padding-left: 5px;
+        margin-bottom: 5px;
+    }
+`

@@ -9,17 +9,8 @@ const CommentsList = ({
     visible,
     isComponentHidden
 }) => {
-    const form = state.comments.forms[postId]
     const data = state.source.get(`@comments/${postId}`)
     const items = useRef(null)
-
-    useEffect(() => {
-        const per_page = state.source.params.per_page
-        Object.assign(state.source.params, {per_page: 100})
-        actions.source.fetch(`@comments/${postId}`)
-        actions.source.fetch(`/jasonsegnini/v1/comments?post_id=${postId}`)
-        Object.assign(state.source.params, {per_page: per_page})
-    }, [form?.isSubmitted])
 
     useEffect(() =>
         actions.comments.getCommentsListHeight(items.current.clientHeight),
@@ -29,17 +20,19 @@ const CommentsList = ({
     return (
         <Items ref={items} visible={visible}>
             {data.isReady && data.items.map(({id, children}) => (
-                <Fragment key={id}>
-                    <Comment key={`comment_${id}`} postId={postId} id={id}/>
-                    {children?.map(({id}) => 
-                        <Comment 
-                            key={`child_${id}`} 
-                            postId={postId} 
-                            id={id} 
-                            isChildren    
-                        />
-                    )}
-                </Fragment>
+                state.source.comment[id].content.plain
+                    &&
+                    <Fragment key={id}>
+                        <Comment key={`comment_${id}`} postId={postId} id={id}/>
+                        {children?.map(({id}) => 
+                            <Comment 
+                                key={`child_${id}`} 
+                                postId={postId} 
+                                id={id} 
+                                isChildren    
+                            />
+                        )}
+                    </Fragment>
             ))}
         </Items>
     )

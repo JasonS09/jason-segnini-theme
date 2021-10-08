@@ -5,7 +5,12 @@ const animatedText = {
 
     priority: 9,
 
-    test: ({node}) => {
+    test: ({node, state}) => {
+        const data = state.source.get(state.router.link)
+        if ((data.type === 'page' && !data.isHome) 
+            || (data.type === 'post' && !data.isPostArchive))
+            return false
+
         const testComponents = () => 
             [
                 'h1', 'h2', 'h3',
@@ -40,7 +45,7 @@ const animatedText = {
         node.props['comp'] = node.component
 
         if (!node.props['data-speed'])
-            node.props['data-speed'] = 5
+            node.props['data-speed'] = 0.01
 
         node.component = AnimatedText
         return node

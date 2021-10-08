@@ -124,6 +124,7 @@ const Root = ({state, actions}) => {
                 </>
             }
             <Main
+                color={color}
                 figCapColor={!data.isError ? '#628a6c' : '#8a6262'}
                 isMenuHidden={!state.theme.showMenu}
                 isArchiveHidden={!state.theme.showArchive}
@@ -179,6 +180,7 @@ const Main = styled.main`
         margin 1s ease-in-out;
     img {max-width: 100%;}
     p {line-height: 1.25em;}
+    a {:link, :visited {color: ${props => props.color};}}
 
     figcaption {
         color: ${props => props.figCapColor};

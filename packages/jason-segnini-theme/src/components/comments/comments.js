@@ -5,41 +5,71 @@ import Hide from "../common/hide"
 import CommentsList from "./comments-list"
 import CommentsForm from "./comments-form"
 
-const Comments = ({state, postId}) => {
+const Comments = ({state, actions, postId}) => {
     const formHeight = state.comments.commentsHeight.form + 20
     const listHeight = state.comments.commentsHeight.list + 20
     const replyComment = state.comments.replyComment
     const form = state.comments.forms[postId]
     const commentContent = form?.fields?.content
-    const items = state.source.get(`@comments/${postId}`).items
+
+    const checkAtLeastOneCommentApproved = () => {
+        const items = state.source.get(`@comments/${postId}`).items
+        return items?.length 
+            && items.find(({id}) => 
+                state.source.comment[id].content.plain
+            )
+            ? true
+            : false
+    }
+
+    const areThereComments = checkAtLeastOneCommentApproved()
     const [states, setStates] = useState({ 
         isComponentHidden: true,
         isFirstTime: true,
-        isCommentsForm: items?.length ? false : true
+        isCommentsForm: areThereComments ? false : true
     })
 
+    useEffect(() => {
+        const per_page = state.source.params.per_page
+        Object.assign(state.source.params, {per_page: 100})
+        actions.source.fetch(`@comments/${postId}`)
+        actions.source.fetch(`/jasonsegnini/v1/comments?post_id=${postId}`)
+        Object.assign(state.source.params, {per_page: per_page})
+    }, [form?.isSubmitted])
+
     useEffect(() => {        
-        if (replyComment || commentContent)
+        if (replyComment)
             setStates(states => ({
                 ...states,
                 isCommentsForm: true
             }))
+
+        if (commentContent)
+            setStates(states => ({
+                ...states,
+                isCommentsForm: true,
+                isComponentHidden: false
+            }))
     }, [replyComment, commentContent])
 
     useEffect(() => {
-        if (items?.length && !form?.isSubmitting) {
+        if (areThereComments 
+            && !form?.isSubmitting 
+            && !commentContent) {
             setStates(states => ({
                 ...states,
                 isCommentsForm: false
             }))
         }
-    }, [items?.length])
+    }, [areThereComments])
 
     return (
         <Container 
             isComponentHidden={states.isComponentHidden}
-            transition={!states.isFirstTime 
-                && (!form?.isSubmitting || states.isComponentHidden)}
+            transition={commentContent
+                || (!states.isFirstTime 
+                    && (!form?.isSubmitting || states.isComponentHidden))
+            }
             contentHeight={Math.max(formHeight, listHeight)}
             contentOffset={states.isCommentsForm ? formHeight : listHeight}
         >
@@ -55,8 +85,8 @@ const Comments = ({state, postId}) => {
                     )}}
                     css={hideStyles(states.isComponentHidden)}
                 />
-                {items?.length !== 0
-                    && 
+                {areThereComments
+                    &&
                     <Hide 
                         type='archive'
                         text='C'
@@ -92,11 +122,14 @@ const Comments = ({state, postId}) => {
                 height={formHeight >= listHeight ? 'auto;' : `${listHeight}px;`}
             >
                 <CommentsForm postId={postId} visible={states.isCommentsForm}/>
-                <CommentsList 
-                    postId={postId} 
-                    visible={!states.isCommentsForm} 
-                    isComponentHidden={states.isComponentHidden}    
-                />
+                {areThereComments
+                    && 
+                    <CommentsList 
+                        postId={postId} 
+                        visible={!states.isCommentsForm} 
+                        isComponentHidden={states.isComponentHidden}    
+                    />
+                }
             </Content>
         </Container>
     )

@@ -45,7 +45,7 @@ const Items = styled.div`
     top: 10px;
     visibility: ${props => 
         props.visible ? 'visible;' : 'hidden;'};
-    max-height: 75vh;
+    max-height: 50vh;
     width: 95%;
     padding-left: 1em;
     padding-right: 1em;

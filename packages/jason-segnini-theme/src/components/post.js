@@ -1,7 +1,7 @@
 import { connect, Head, styled, css } from "frontity"
 import { expandWidth } from "../styles/keyframes"
-import { select, getQuote } from "./scripts/utilities"
-import { useState } from "react"
+import { select, getQuote } from "../scripts/utilities"
+import { useState, useEffect } from "react"
 import dayjs from "dayjs"
 import AnimatedWrapper from "./common/animated-wrapper"
 import Comments from "./comments/comments"
@@ -11,9 +11,16 @@ const Post = ({state, actions, libraries}) => {
     const post = state.source[data.type][data.id]
     const author = state.source.author[post.author]
     const color = state.theme.color
+    const maxHeight = state.screen.screenSize[1] - 150 - state.comments.commentsHeight.container
     const formattedDate = dayjs(post.date).format('DD MMMM YYYY')
     const Html2React = libraries.html2react.Component
     const [selection, setSelection] = useState('')
+    const deselect = () => setSelection('')
+
+    useEffect(() => {
+        window.addEventListener('mousedown', deselect)
+        return () => window.removeEventListener('mousedown', deselect)
+    }, [])
 
     return (
         <>
@@ -37,11 +44,9 @@ const Post = ({state, actions, libraries}) => {
                     </PostInfo>
                 }
                 <PostContent
-                    color={color} 
-                    onMouseUp={() => {
-                        if (select()+'') setSelection(select()+'')
-                        else setSelection('')
-                    }}
+                    color={color}
+                    maxHeight={maxHeight} 
+                    onMouseUp={() => setSelection(select()+'')}
                 >
                     <Html2React html={post.content.rendered}/>
                 </PostContent>
@@ -51,15 +56,13 @@ const Post = ({state, actions, libraries}) => {
                         {selection
                             &&
                             <span 
-                                onMouseDown={() => {
+                                onMouseDown={() =>
                                     actions.comments.updateFields(
                                         data.id,
                                         {content: getQuote(
                                             author.name, selection
                                         )}
-                                    )
-                                    setSelection('')
-                                }}
+                                    )}
                             >Quote</span>
                         }
                     </Options>
@@ -125,9 +128,15 @@ const wrapperStyles = css`
             }
         }
     }
+
+    div:nth-of-type(2) {padding-right: 5px;}
 `
 
 const PostContent = styled.div`
+    max-height: ${props => props.maxHeight}px;
     color: ${props => props.color};
+    text-align: justify;
     padding: 10px 1em 10px;
+    overflow-y: scroll;
+    transition: max-height 1s ease-out;
 `

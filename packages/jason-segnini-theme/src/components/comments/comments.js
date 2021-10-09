@@ -1,5 +1,5 @@
 import { connect, styled, css } from "frontity"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { center } from "../../styles/common"
 import Hide from "../common/hide"
 import CommentsList from "./comments-list"
@@ -11,6 +11,7 @@ const Comments = ({state, actions, postId}) => {
     const replyComment = state.comments.replyComment
     const form = state.comments.forms[postId]
     const commentContent = form?.fields?.content
+    const ref = useRef(null)
 
     const checkAtLeastOneCommentApproved = () => {
         const items = state.source.get(`@comments/${postId}`).items
@@ -28,6 +29,17 @@ const Comments = ({state, actions, postId}) => {
         isFirstTime: true,
         isCommentsForm: areThereComments ? false : true
     })
+
+    const getHeightToHide = () => {
+        const totalContentHeight = Math.max(formHeight, listHeight)
+        return states.isComponentHidden 
+            ? totalContentHeight
+            : states.isCommentsForm 
+                ? totalContentHeight - formHeight 
+                : totalContentHeight - listHeight
+    }
+
+    const heightTohide = getHeightToHide()
 
     useEffect(() => {
         const per_page = state.source.params.per_page
@@ -63,6 +75,13 @@ const Comments = ({state, actions, postId}) => {
         }
     }, [areThereComments])
 
+    useEffect(() => 
+        actions.comments.getCommentsContainerHeight(
+            ref.current.clientHeight - heightTohide
+        ),
+        [states.isComponentHidden, states.isCommentsForm]
+    )
+
     return (
         <Container 
             isComponentHidden={states.isComponentHidden}
@@ -70,8 +89,8 @@ const Comments = ({state, actions, postId}) => {
                 || (!states.isFirstTime 
                     && (!form?.isSubmitting || states.isComponentHidden))
             }
-            contentHeight={Math.max(formHeight, listHeight)}
-            contentOffset={states.isCommentsForm ? formHeight : listHeight}
+            heightToHide={heightTohide}
+            ref={ref}
         >
             <ButtonsTab>
                 <Hide 
@@ -191,9 +210,5 @@ const Container = styled.div`
     ${props => props.transition 
         && css`transition: margin 1s ease-out;`
     }
-    margin-bottom: ${props => 
-        props.isComponentHidden
-            ? `-${props.contentHeight}px;`
-            : `-${props.contentHeight-props.contentOffset}px;`
-    };
+    margin-bottom: ${props => `-${props.heightToHide}px;`};
 `

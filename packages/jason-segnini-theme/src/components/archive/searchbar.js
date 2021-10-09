@@ -1,13 +1,14 @@
 import { connect, styled, css } from "frontity"
 import { expandWidth } from "../../styles/keyframes"
 import { input, inputWithWrapper, submit } from "../../styles/common"
+import { useState } from "react"
 import AnimatedText from "../common/animated-text"
 import AnimatedWrapper from "../common/animated-wrapper"
 
 const SearchBar = ({state, actions}) => {
     const data = state.source.get(state.router.link)
     const color = state.theme.color
-    let inputState = {value: ''}
+    const [value, setValue] = useState('')
     
     return (
         <>
@@ -17,7 +18,8 @@ const SearchBar = ({state, actions}) => {
                     placeholder='Search blog posts.'
                     color={color}
                     placeholderColor={!data.isError ? '#628a6c' : '#8a6262'}
-                    onChange={e => inputState = {value: e.target.value}}
+                    value={value}
+                    onChange={e => setValue(e.target.value)}
                 />
             </AnimatedWrapper>
             <AnimatedWrapper shadows css={css`
@@ -26,7 +28,7 @@ const SearchBar = ({state, actions}) => {
             `}>
                 <Button 
                     color={color}
-                    onClick={() => actions.router.set('/?s='+inputState.value)}
+                    onClick={() => actions.router.set('/?s='+value)}
                 >
                     <AnimatedText text='Search'/>
                 </Button>

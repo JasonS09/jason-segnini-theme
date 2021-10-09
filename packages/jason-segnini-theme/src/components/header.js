@@ -62,6 +62,18 @@ const Header = ({state, actions}) => {
     }
 
     useEffect(() => {
+        menuStates.forEach((item, i) => {
+            if (item.i > 0) {
+                changeState = true
+                randEffect(i, item.i, item.title)
+            }
+        })
+
+        if (changeState)
+            timeout = setTimeout(setMenuStates, 30, menu)
+    }, [menuStates])
+
+    useEffect(() => {
         const headerContent = refs.current.headerContent
         const padding = parseFloat(
                         getComputedStyle(
@@ -80,16 +92,6 @@ const Header = ({state, actions}) => {
         refs.current.prevActive = active, 
         [state.router.link]
     )
-
-    menuStates.forEach((item, i) => {
-        if (item.i > 0) {
-            changeState = true
-            randEffect(i, item.i, item.title)
-        }
-    })
-    
-    if (changeState) 
-        timeout = setTimeout(setMenuStates, 30, menu)
 
     return (
         <>

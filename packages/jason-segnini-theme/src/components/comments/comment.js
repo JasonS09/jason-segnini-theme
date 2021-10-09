@@ -1,5 +1,6 @@
 import { connect, styled, css } from "frontity"
-import { select, getQuote } from "../scripts/utilities"
+import { select, getQuote } from "../../scripts/utilities"
+import { useEffect } from "react"
 import marked from "marked"
 import AnimatedWrapper from "../common/animated-wrapper"
 
@@ -15,6 +16,12 @@ const Comment = ({
     const Html2React = libraries.html2react.Component
     const color = state.theme.color
     let selection = ''
+    const deselect = () => selection = ''
+
+    useEffect(() => {
+        window.addEventListener('mousedown', deselect)
+        return () => window.removeEventListener('mousedown', deselect)
+    }, [])
 
     return (
         <AnimatedWrapper
@@ -34,16 +41,14 @@ const Comment = ({
                 <Html2React html={marked(comment.content.plain)}/>
                 <Options color={color}>
                     <span 
-                        onMouseDown={() => {
+                        onMouseDown={() => 
                             actions.comments.updateFields(
                                 postId,
                                 {content: getQuote(
                                     comment.author_name,
                                     selection || comment.content.plain
                                 )}
-                            )
-                            selection = ''
-                        }}
+                            )}
                         css={css`margin-right: 10px;`}
                     >Quote</span>
                     {!isChildren

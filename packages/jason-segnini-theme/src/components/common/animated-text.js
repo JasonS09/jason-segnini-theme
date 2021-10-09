@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect } from "react"
+import { useState, useEffect } from "react"
 import { connect } from "frontity"
 import Link from "@frontity/components/link"
 import Switch from "@frontity/components/switch"
@@ -17,7 +17,7 @@ const AnimatedText = ({
     const isWelcomeReceived = state.theme.isWelcomeReceived
     const [textContent, setTextContent] = useState({
         content: '',
-        randChar: '',
+        randChar: String.fromCharCode(Math.random()*(128-1)+1),
         i: 0,
         randTimer: 0,
         animationFinished: false
@@ -41,16 +41,52 @@ const AnimatedText = ({
     }
 
     useEffect(() => {
+        if (textContent.animationFinished 
+            && textContent.content !== text) {
+                setTextContent(
+                    textContent => (
+                        {...textContent, content: text}
+                    )
+                )
+                return
+            }
+        
+        if (isWelcomeReceived || data.isHome) {
+            if (!textContent.animationFinished) {
+                if (textContent.randTimer > 0) {
+                    timeout = setTimeout(
+                        setTextContent,
+                        10,
+                        textContent => ({
+                            ...textContent, 
+                            randChar: String.fromCharCode(
+                                Math.random()*128,
+                            ),
+                            randTimer: textContent.randTimer-10
+                        })
+                    )
+                    return
+                }
+                if (text) writeText()
+                return
+            }
+            if (textContent.randChar !== '')
+                setTextContent(textContent => ({...textContent, randChar: ''}))
+
+            if (!isWelcomeReceived) 
+                setTimeout(actions.theme.welcome, 1500)
+        }
+    }, [textContent, text])
+
+    useEffect(() => {
         if (textContent.i === text.length)
             setTextContent(textContent => ({
                 ...textContent,
                 animationFinished: true
             }))
-
-        return () => clearTimeout(timeout)
     }, [textContent.i])
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (textContent.animationFinished && reanimate)
             setTextContent({
                 content: '',
@@ -60,37 +96,7 @@ const AnimatedText = ({
             })
     }, [reanimate])
 
-    if (textContent.animationFinished 
-        && textContent.content != text) 
-            setTextContent(
-                textContent => (
-                    {...textContent, content: text}
-                )
-            )
-    
-    else if (isWelcomeReceived || data.isHome) {
-        if (!textContent.animationFinished) {
-            if (textContent.randTimer > 0) {
-                timeout = setTimeout(
-                    setTextContent,
-                    10,
-                    textContent => ({
-                        ...textContent, 
-                        randChar: String.fromCharCode(
-                            Math.random()*128,
-                        ),
-                        randTimer: textContent.randTimer-10
-                    })
-                )
-            }
-            else if (text) writeText()   
-        }
-        else if (textContent.randChar != '')
-            setTextContent(textContent => ({...textContent, randChar: ''}))
-
-        if (!isWelcomeReceived) 
-            setTimeout(actions.theme.welcome, 1500)
-    }
+    useEffect(() => () => clearTimeout(timeout), [])
 
     return (
         <Switch>

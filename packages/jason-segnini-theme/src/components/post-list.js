@@ -3,6 +3,7 @@ import { Fragment } from "react"
 import { center } from "../styles/common"
 import AnimatedText from "./common/animated-text"
 import AnimatedWrapper from "./common/animated-wrapper"
+import Link from "@frontity/components/link"
 
 const PostList = ({
     state,
@@ -59,7 +60,12 @@ const PostList = ({
                     }
                 </PrevNextTab>
             }
-            <Items color={color} postsPage={postsPage} {...rest}>
+            <Items 
+                color={color} 
+                postsPage={postsPage}
+                isMobile={state.screen.isMobile}
+                {...rest}
+            >
                 {data.isReady
                     && items.map(item => {
                         const post = state.source[item.type][item.id]
@@ -74,13 +80,13 @@ const PostList = ({
                                         >
                                             <Title key={`title_${item.id}`}>
                                                 <AnimatedText
-                                                    key={item.id}
-                                                    comp='a'
-                                                    link={post.link}
-                                                    text={post.title.rendered}
-                                                    data-speed={animationSpeed}
-                                                    css={linkStyles(color)}
-                                                />
+                                                       key={item.id}
+                                                       comp='a'
+                                                       link={post.link}
+                                                       text={post.title.rendered}
+                                                       data-speed={animationSpeed}
+                                                       css={linkStyles(color)}
+                                                   />
                                             </Title>
                                             <Excerpt key={`excerpt_${item.id}`}>
                                                 <Html2React 
@@ -120,7 +126,7 @@ const linkStyles = color => css`
 const postsPageItems = css`
     position: relative;
     width: 100%;
-    max-height: 93vh;
+    height: 93%;
     padding-left: 1em;
     padding-right: 1em;
     overflow-y: scroll;
@@ -156,8 +162,9 @@ const Excerpt = styled.div`
 const Items = styled.div`
     ${props => props.postsPage 
         && postsPageItems}
+    text-align: justify;
 
-    a, summary {
+    a {
         display: block;
         margin: 6px 0;
         color: ${props => props.color};

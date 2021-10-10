@@ -22,14 +22,22 @@ const Root = ({state, actions}) => {
     const isWelcomeReceived = state.theme.isWelcomeReceived
     const color = state.theme.color
 
-    useEffect(() =>         
+    useEffect(() => {
+        actions.screen.getScreenSize(
+            window.innerWidth, window.innerHeight
+        )
+
+        if (window.innerWidth <= 412) {
+            actions.theme.toggleArchive()
+            actions.theme.toggleMenu()
+        }
+
         window.addEventListener(
             'resize', 
             () => actions.screen.getScreenSize(
                 window.innerWidth, window.innerHeight
             )
-        ), []
-    )
+    )}, [])
 
     useEffect(() => {    
         if (data.isError)
@@ -119,8 +127,8 @@ const Root = ({state, actions}) => {
             {isWelcomeReceived && 
                 <>
                     <Background/> 
-                    <Header/> 
                     <Archive/>
+                    <Header/> 
                 </>
             }
             <Main
@@ -128,11 +136,21 @@ const Root = ({state, actions}) => {
                 figCapColor={!data.isError ? '#628a6c' : '#8a6262'}
                 isMenuHidden={!state.theme.showMenu}
                 isArchiveHidden={!state.theme.showArchive}
+                isMobile={state.screen.isMobile}
+                onClick={state.screen.isMobile 
+                    ? () => {
+                        if (state.theme.showMenu)
+                            actions.theme.toggleMenu()
+            
+                        if (state.theme.showArchive)
+                            actions.theme.toggleArchive()
+                    } 
+                    : undefined}
             >
                 <Switch>
                     <Loading when={data.isFetching}/>
                     <List when={data.isArchive} postsPage/>
-                    <Post when={data.isPost || data.isPage}/>
+                    <Post when={(data.isPost || data.isPage)}/>
                     <Error when={data.isError}/>
                 </Switch>
             </Main>
@@ -167,7 +185,10 @@ const Main = styled.main`
     position: relative;
     display: block;
     height: 100vh;
-    padding: 1em 0;
+    padding: ${props => props.isMobile
+        ? '10vh 0 1em'
+        : '1em 0'
+    };
     ${props => 
         props.isMenuHidden 
             ? props.isArchiveHidden

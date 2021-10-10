@@ -104,7 +104,13 @@ const Header = ({state, actions}) => {
             >
                 <Hide 
                     isComponentHidden={isMenuHidden} 
-                    onClick={() => actions.theme.toggleMenu()}
+                    onClick={() => {
+                        actions.theme.toggleMenu()
+
+                        if (state.screen.isMobile 
+                            && state.theme.showArchive)
+                            actions.theme.toggleArchive()
+                    }}
                 />
                 <HeaderContent ref={headerContent => 
                     refs.current.headerContent = headerContent
@@ -117,10 +123,13 @@ const Header = ({state, actions}) => {
                                 comp='a'
                                 link={item.link}
                                 text={item.text}
-                                onMouseOver={() => {
-                                    randEffect(i, item.i, item.title)
-                                    setMenuStates(menu)
-                                }}
+                                onMouseOver={!state.screen.isMobile 
+                                    ? () => {
+                                        randEffect(i, item.i, item.title)
+                                        setMenuStates(menu)
+                                    }
+                                    : undefined
+                                }
                                 css={setMenuElementStyle(
                                     item.link, 
                                     active, 
@@ -139,7 +148,7 @@ const Header = ({state, actions}) => {
 
 export default connect(Header)
 
-const changeSide = (contentWidth) => keyframes`
+const changeSide = contentWidth => keyframes`
     to {transform: translateX(${-contentWidth}px);}
 `
 
@@ -149,7 +158,7 @@ const expandAndContract = keyframes`
     100% {width: 0}
 `
 
-const changeColor = (color) => keyframes`
+const changeColor = color => keyframes`
     from {color: black}
     to {color: ${color}}
 `
@@ -170,7 +179,7 @@ const setMenuElementStyle = (
     }
 `
 
-const activeConfig = (color) => css`
+const activeConfig = color => css`
     text-shadow: 0 0 7px ${color};
     transition: text-shadow .5s ease-out;
 

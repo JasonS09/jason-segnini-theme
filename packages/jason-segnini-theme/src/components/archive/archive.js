@@ -34,7 +34,13 @@ const Archive = ({state, actions}) => {
             <Hide 
                 type='archive' 
                 isComponentHidden={isArchiveHidden} 
-                onClick={() => actions.theme.toggleArchive()}
+                onClick={() => {
+                    actions.theme.toggleArchive()
+
+                    if (state.screen.isMobile 
+                        && state.theme.showMenu)
+                        actions.theme.toggleMenu()
+                }}
             />
             <ArchiveContent color={state.theme.color}>
                 <AnimatedText 

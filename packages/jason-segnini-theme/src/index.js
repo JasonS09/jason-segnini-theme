@@ -27,7 +27,8 @@ const jasonSegniniTheme = {
         },
 
         screen: {
-            screenSize: [0, 0]
+            screenSize: [0, 0],
+            isMobile: false
         }
     },
     actions: {
@@ -46,11 +47,11 @@ const jasonSegniniTheme = {
             welcome: ({state}) =>
                 state.theme.isWelcomeReceived = true,
       
-            toggleMenu: ({state}) =>
-                state.theme.showMenu = !state.theme.showMenu,
+            toggleMenu: ({state}) => show =>
+                state.theme.showMenu = show || !state.theme.showMenu,
 
-            toggleArchive: ({state}) =>
-                state.theme.showArchive = !state.theme.showArchive,
+            toggleArchive: ({state}) => show =>
+                state.theme.showArchive = show || !state.theme.showArchive,
 
             setThemeColor: ({state}) => color =>
                 state.theme.color = color
@@ -74,6 +75,7 @@ const jasonSegniniTheme = {
             getScreenSize: ({state}) => (width, height) => {
                 state.screen.screenSize[0] = width
                 state.screen.screenSize[1] = height
+                state.screen.isMobile = width <= 412 ? true : false
             }
         }
     },

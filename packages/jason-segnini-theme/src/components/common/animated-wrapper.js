@@ -39,7 +39,18 @@ const AnimatedWrapper = ({
     hideOffset = formatSizeProp(hideOffset)
     width = formatSizeProp(width)
 
-    useEffect(() =>  {
+    useEffect(() => {
+        if (states.reanimate)
+            timeout = setTimeout(() => 
+                setStates(states => ({
+                    ...states,
+                    reanimate: false
+                })), 
+                1000
+            )
+    }, [states.reanimate])
+
+    useEffect(() => {
         setStates({
             reanimate: true,
             width: ref.current.clientWidth,
@@ -47,15 +58,6 @@ const AnimatedWrapper = ({
         })
         return () => clearTimeout(timeout)
     }, [data.isError])
-
-    if (states.reanimate)
-        timeout = setTimeout(() => 
-            setStates(states => ({
-                ...states,
-                reanimate: false
-            })), 
-            1000
-        )
 
     switch(type) {
         case 'absolute':
@@ -67,6 +69,7 @@ const AnimatedWrapper = ({
                         hideOffset={hideOffset}
                         color={color}
                         isComponentHidden={isComponentHidden}
+                        isMobile={state.screen.isMobile}
                         ref={ref}
                         {...rest}
                     >
@@ -289,7 +292,8 @@ const animateLeft = (
 const animateRight = (
     hideOffset, 
     isComponentHidden, 
-    color
+    color,
+    isMobile
 ) => css`
     ${isComponentHidden 
         && css`margin-left: -250px`}
@@ -311,7 +315,10 @@ const animateRight = (
 
     ::after {
         top: calc(2.5% + 40px + 1%);
-        border-right: 2px solid ${color};
+        border-right: ${isMobile
+            ? 1
+            : 2
+        }px solid ${color};
         clip-path: polygon(
             0% 0%, 
             100% 0, 
@@ -653,18 +660,19 @@ const WrapperForLeft = styled.div`
     position: absolute;
     right: 0;
     width: ${props => props.width};
-    height: 100%;
+    height: 100vh;
     overflow: hidden;
 `
 
 const AbsoluteAnimatedDiv = styled.div`
-    height: 100%;
+    height: 100vh;
     width: ${props => props.width};
     ${props => props.right 
         ? animateRight(
             props.hideOffset, 
             props.isComponentHidden,
-            props.color
+            props.color,
+            props.isMobile
         )
         : animateLeft(
             props.hideOffset, 

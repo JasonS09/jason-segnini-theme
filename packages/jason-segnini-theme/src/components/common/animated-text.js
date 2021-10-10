@@ -17,10 +17,10 @@ const AnimatedText = ({
     const isWelcomeReceived = state.theme.isWelcomeReceived
     const [textContent, setTextContent] = useState({
         content: '',
-        randChar: String.fromCharCode(Math.random()*(128-1)+1),
+        randChar: String.fromCharCode(Math.random()*(128-32)+32),
         i: 0,
         randTimer: 0,
-        animationFinished: false
+        animationFinished: state.screen.isMobile ? true : false
     });
     let timeout = 0
 
@@ -50,6 +50,17 @@ const AnimatedText = ({
                 )
                 return
             }
+
+        if (!textContent.animationFinished 
+            && state.screen.isMobile) {
+            setTextContent(
+                textContent => ({
+                    ...textContent, 
+                    content: text,
+                    animationFinished: true
+                }))
+            return
+        }
         
         if (isWelcomeReceived || data.isHome) {
             if (!textContent.animationFinished) {
@@ -90,6 +101,7 @@ const AnimatedText = ({
         if (textContent.animationFinished && reanimate)
             setTextContent({
                 content: '',
+                randChar: String.fromCharCode(Math.random()*(128-32)+32),
                 i: 0,
                 randTimer: 0,
                 animationFinished: false

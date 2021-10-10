@@ -17,10 +17,10 @@ const AnimatedText = ({
     const isWelcomeReceived = state.theme.isWelcomeReceived
     const [textContent, setTextContent] = useState({
         content: '',
-        randChar: String.fromCharCode(Math.random()*(128-32)+32),
+        randChar: 'j',
         i: 0,
         randTimer: 0,
-        animationFinished: state.screen.isMobile ? true : false
+        animationFinished: false
     });
     let timeout = 0
 
@@ -50,17 +50,6 @@ const AnimatedText = ({
                 )
                 return
             }
-
-        if (!textContent.animationFinished 
-            && state.screen.isMobile) {
-            setTextContent(
-                textContent => ({
-                    ...textContent, 
-                    content: text,
-                    animationFinished: true
-                }))
-            return
-        }
         
         if (isWelcomeReceived || data.isHome) {
             if (!textContent.animationFinished) {
@@ -101,14 +90,30 @@ const AnimatedText = ({
         if (textContent.animationFinished && reanimate)
             setTextContent({
                 content: '',
-                randChar: String.fromCharCode(Math.random()*(128-32)+32),
+                randChar: 'j',
                 i: 0,
                 randTimer: 0,
                 animationFinished: false
             })
     }, [reanimate])
 
-    useEffect(() => () => clearTimeout(timeout), [])
+    useEffect(() => {
+        if (!data.isHome) {
+            const maxTimeout = setTimeout(
+                setTextContent,
+                1000,
+                textContent => ({
+                    ...textContent,
+                    animationFinished: true
+                })
+            )
+            return () => {
+                clearTimeout(timeout)
+                clearTimeout(maxTimeout)
+            }
+        }
+        return () => clearTimeout(timeout)
+    }, [])
 
     return (
         <Switch>

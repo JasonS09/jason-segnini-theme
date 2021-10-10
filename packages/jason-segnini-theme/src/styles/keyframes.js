@@ -32,6 +32,7 @@ export const glowForPolygon = (
         filter: drop-shadow(0 0 ${from}px ${color}) 
             opacity(${fromOpacity})
     }
+    
     to {
         filter: drop-shadow(0 0 ${to}px ${color}) 
             opacity(${toOpacity})

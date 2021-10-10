@@ -126,7 +126,7 @@ const Root = ({state, actions}) => {
             />
             {isWelcomeReceived && 
                 <>
-                    <Background/> 
+                    <Background/>
                     <Archive/>
                     <Header/> 
                 </>

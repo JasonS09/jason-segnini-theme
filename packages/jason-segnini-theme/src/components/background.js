@@ -3,6 +3,8 @@ import { useRef, useEffect } from "react"
 
 const Background = ({state}) => {
     const canvas = useRef(null)
+    const FRAME_PERIOD = 50
+    let lastTime = 0
 
     const drawMatrix = (canvas) => {
         const ctx = canvas.getContext('2d')
@@ -16,7 +18,12 @@ const Background = ({state}) => {
         ctx.fillStyle = 'black'
         ctx.fillRect(0, 0, w, h)
         
-        const matrix = () => {  
+        const matrix = time => {
+            if ((time - lastTime) < FRAME_PERIOD) {
+                return requestAnimationFrame(matrix)
+            }
+
+            lastTime = time
             const data = state.source.get(state.router.link)
             ctx.fillStyle = '#0001'
             ctx.fillRect(0, 0, w, h)
@@ -32,9 +39,10 @@ const Background = ({state}) => {
                 if (y > 100 + Math.random() * 10000) ypos[ind] = 0
                     else ypos[ind] = y + 20
             })
+            requestAnimationFrame(matrix)
         }
 
-        setInterval(matrix, 50)
+        requestAnimationFrame(matrix)
     }
 
     useEffect(() => drawMatrix(canvas.current), [])

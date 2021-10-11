@@ -1,6 +1,5 @@
 import { connect, styled, css } from "frontity"
 import { useRef, useEffect, useState } from "react"
-import { glowForText } from "../../styles/keyframes"
 import SearchBar from "./searchbar"
 import AnimatedText from "../common/animated-text"
 import AnimatedWrapper from "../common/animated-wrapper"
@@ -80,10 +79,7 @@ const ArchiveContent = styled.div`
     h1, h4 {
         ${props => css`
             color: ${props.color};
-            animation: 
-                ${glowForText(
-                    props.color
-                )} 3s ease-out alternate infinite;
+            text-shadow: 0 0 3px ${props.color};
         `}
     }
 `

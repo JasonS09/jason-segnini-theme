@@ -1,5 +1,4 @@
 import { connect, styled, css } from "frontity"
-import { glowForText } from "../../styles/keyframes"
 import AnimatedText from "./animated-text"
 import Lobo from "./lobo"
 
@@ -18,10 +17,7 @@ export default connect(Loading)
 
 const textStyles = color => css`
     font-family: 'Hacked';
-    animation: 
-        ${glowForText(
-            color
-        )} 3s ease-out infinite alternate;
+    text-shadow: 0 0 3px ${color};
 `
 
 const Container = styled.div`text-align: center;`

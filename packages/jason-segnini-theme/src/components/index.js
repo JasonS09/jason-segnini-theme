@@ -1,6 +1,6 @@
 import { connect, Global, css, styled, Head } from "frontity"
-import { glow } from "../styles/keyframes"
 import { useEffect } from "react"
+import { SwipeEventListener } from "swipe-event-listener"
 import Switch from "@frontity/components/switch"
 import List from "./post-list"
 import Post from "./post"
@@ -21,6 +21,25 @@ const Root = ({state, actions}) => {
 
     const isWelcomeReceived = state.theme.isWelcomeReceived
     const color = state.theme.color
+    const isMobile = state.screen.isMobile
+
+    const swipeLeftHandler = e => {
+        e.preventDefault()
+
+        if (state.theme.showMenu)
+            actions.theme.toggleMenu()
+        else if (!state.theme.showArchive)
+            actions.theme.toggleArchive()
+    }
+
+    const swipeRightHandler = e => {
+        e.preventDefault()
+
+        if (state.theme.showArchive) 
+            actions.theme.toggleArchive()
+        else if (!state.theme.showMenu)
+            actions.theme.toggleMenu()
+    }
 
     useEffect(() => {
         actions.screen.getScreenSize(
@@ -28,8 +47,11 @@ const Root = ({state, actions}) => {
         )
 
         if (window.innerWidth <= 412) {
-            actions.theme.toggleArchive()
-            actions.theme.toggleMenu()
+            if (state.theme.showArchive)
+                actions.theme.toggleArchive()
+            
+            if (state.theme.showMenu)
+                actions.theme.toggleMenu()
         }
 
         window.addEventListener(
@@ -37,7 +59,8 @@ const Root = ({state, actions}) => {
             () => actions.screen.getScreenSize(
                 window.innerWidth, window.innerHeight
             )
-    )}, [])
+        )
+    }, [])
 
     useEffect(() => {    
         if (data.isError)
@@ -45,6 +68,17 @@ const Root = ({state, actions}) => {
         else
             actions.theme.setThemeColor('#60d75a')
     }, [data.isError])
+
+    useEffect(() => {
+        if (isMobile) {
+            const { swipeArea, updateOptions } = SwipeEventListener({
+                swipeArea: document.querySelector('body'),
+            })
+
+            swipeArea.addEventListener('swipeLeft', swipeLeftHandler)
+            swipeArea.addEventListener('swipeRight', swipeRightHandler)
+        }
+    }, [isMobile])
 
     return (
         <>
@@ -90,10 +124,7 @@ const Root = ({state, actions}) => {
                             border: 1px solid ${color};
                             border-radius: 10px;
                             background-color: rgba(0,0,0,.85);
-                            animation: 
-                                ${glow(
-                                    color, 2, 5
-                                )} 3s ease-out alternate infinite;
+                            box-shadow: 0 0 3px ${color};
                             :hover {background-color: ${color}}
                         }
 
@@ -136,9 +167,11 @@ const Root = ({state, actions}) => {
                 figCapColor={!data.isError ? '#628a6c' : '#8a6262'}
                 isMenuHidden={!state.theme.showMenu}
                 isArchiveHidden={!state.theme.showArchive}
-                isMobile={state.screen.isMobile}
-                onClick={state.screen.isMobile 
-                    ? () => {
+                isMobile={isMobile}
+                onMouseUp={isMobile
+                    ? e => {
+                        if (e.defaultPrevented) return
+
                         if (state.theme.showMenu)
                             actions.theme.toggleMenu()
             

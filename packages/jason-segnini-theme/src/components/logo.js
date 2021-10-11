@@ -1,5 +1,5 @@
 import { connect, styled, css } from "frontity"
-import { glowForText, glowForPolygon, draw } from "../styles/keyframes"
+import { glowForPolygon, draw } from "../styles/keyframes"
 import { useRef, useState, useEffect } from "react"
 import AnimatedText from "./common/animated-text"
 import Lobo from "./common/lobo"
@@ -135,10 +135,7 @@ const textStyles = color => css`
     font-family: 'Hacked';
     font-size: 25px;
     user-select: none;
-    animation: 
-        ${glowForText(
-            color
-        )} 3s ease-out alternate infinite;
+    text-shadow: 0 0 3px ${color};
 `
 
 const Svg = styled.svg`
@@ -156,33 +153,37 @@ const loboStyles = (color, forceError) => css`
     transition: filter 1s ease-out;
 
     path {
-        animation: 
-            ${glowForPolygon(
-                !forceError ? color : '#d75a5a',
-                3, 7, 1, 1
-            )} 3s ease-out alternate infinite;
+        filter: 
+            drop-shadow(0 0 3px ${!forceError 
+                ? color 
+                : '#d75a5a'
+            });
+            animation: none;
     }
 
     :hover {
         filter: opacity(1);
         
         path {
+            filter: 
+                drop-shadow(0 0 3px ${!forceError 
+                    ? color 
+                    : '#d75a5a'
+                });
             animation:
-                ${draw} 10s ease-out forwards,
-                ${glowForPolygon(
-                    !forceError ? color : '#d75a5a', 
-                    3, 7, 1, 1
-                )} 3s ease-out alternate infinite;
+                ${draw} 10s ease-out forwards;
         }
 
         + ${Svg} {
             filter: opacity(0);
 
             line, circle, text {
-                animation: 
-                    ${glowForPolygon(
-                        color, 3, 7, 1, 1
-                    )} 3s ease-out alternate infinite;
+                filter:
+                    drop-shadow(0 0 3px ${!forceError 
+                        ? color 
+                        : '#d75a5a'
+                    });
+                animation: none;
             }
         }
     }
@@ -202,7 +203,7 @@ const common = (
     animation:
         ${glowForPolygon(
             glowColor, 7, 14, 1, 1
-        )} 3s ease-out ${delay}s alternate infinite,
+        )} 3s ease-out ${delay}s forwards,
         ${draw} .25s ease-out ${delay}s forwards;
 `
 

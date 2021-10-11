@@ -1,5 +1,5 @@
 import { connect, styled, css } from "frontity"
-import { glowForPolygon, draw } from "../../styles/keyframes"
+import { draw } from "../../styles/keyframes"
 import { useRef, useEffect, useState } from "react"
 
 const Lobo = ({state, forceError, ...rest}) => {
@@ -27,9 +27,8 @@ const Path = styled.path`
         stroke: ${props.color};
         stroke-dasharray: ${props.length};
         stroke-dashoffset: ${props.length};
-        animation: ${draw} 10s ease-out forwards,
-            ${glowForPolygon(
-                props.color, 3, 7, 1, 1
-            )} 3s ease-out alternate infinite;
+        filter: 
+            drop-shadow(0 0 3px ${props.color});
+        animation: ${draw} 10s ease-out forwards;
     `}
 `

@@ -15,11 +15,10 @@ const Post = ({state, actions, libraries}) => {
     const formattedDate = dayjs(post.date).format('DD MMMM YYYY')
     const Html2React = libraries.html2react.Component
     const [selection, setSelection] = useState('')
-    const deselect = () => setSelection('')
 
     useEffect(() => {
-        window.addEventListener('mousedown', deselect)
-        return () => window.removeEventListener('mousedown', deselect)
+        window.addEventListener('mousedown', setSelection, '')
+        return () => window.removeEventListener('mousedown', setSelection, '')
     }, [])
 
     return (

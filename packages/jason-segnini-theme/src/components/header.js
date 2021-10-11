@@ -1,12 +1,12 @@
 import { connect, styled, css, keyframes } from "frontity"
 import { useState, useRef, useEffect } from "react"
-import { glow, makeAppear } from "../styles/keyframes"
+import { makeAppear } from "../styles/keyframes"
 import AnimatedText from "./common/animated-text"
 import AnimatedWrapper from "./common/animated-wrapper"
 import Hide from "./common/hide"
 import Logo from "./logo"
 
-const Header = ({state, actions}) => {
+const Header = ({state, actions, libraries}) => {
     const data = state.source.get(state.source.customRestPage)
     const items = data.menu
     const isMenuHidden = !state.theme.showMenu
@@ -21,7 +21,7 @@ const Header = ({state, actions}) => {
             menuStates.push({
                 title: menuItem.title,
                 text: menuItem.title,
-                link: menuItem.link,
+                link: libraries.source.parse(menuItem.url).path,
                 i: 0,
             })
         })
@@ -88,11 +88,6 @@ const Header = ({state, actions}) => {
         return () => clearTimeout(timeout)
     }, [])
 
-    useEffect(() =>
-        refs.current.prevActive = active, 
-        [state.router.link]
-    )
-
     return (
         <>
             <AnimatedWrapper 
@@ -123,19 +118,21 @@ const Header = ({state, actions}) => {
                                 comp='a'
                                 link={item.link}
                                 text={item.text}
-                                onMouseOver={!state.screen.isMobile 
-                                    ? () => {
-                                        randEffect(i, item.i, item.title)
-                                        setMenuStates(menu)
-                                    }
-                                    : undefined
-                                }
+                                onMouseOver={() => {
+                                    randEffect(i, item.i, item.title)
+                                    setMenuStates(menu)
+                                }}
+                                onClick={() =>{
+                                    if (item.link !== active)
+                                        refs.current.prevActive = active
+                                }}
                                 css={setMenuElementStyle(
                                     item.link, 
                                     active, 
                                     refs.current.prevActive, 
                                     contentWidth,
-                                    color
+                                    color,
+                                    state.screen.isMobile
                                 )}
                             />
                         )}
@@ -148,19 +145,24 @@ const Header = ({state, actions}) => {
 
 export default connect(Header)
 
-const changeSide = contentWidth => keyframes`
-    to {transform: translateX(${-contentWidth}px);}
+const changeSide = (contentWidth, forActive)=> keyframes`
+    to {transform: translateX(
+            ${forActive 
+                ? contentWidth - (5*contentWidth)/100
+                : -contentWidth
+            }px
+        );}
 `
 
 const expandAndContract = keyframes`
     0% {width: 5%}
     50% {width: 100%}
-    100% {width: 0}
+    100% {width: 0%}
 `
 
-const changeColor = color => keyframes`
-    from {color: black}
-    to {color: ${color}}
+const changeColor = (color, forActive) => keyframes`
+    from {color: ${forActive ? 'black' : color}}
+    to {color: ${forActive ? color : 'black'}}
 `
 
 const setMenuElementStyle = (
@@ -168,26 +170,42 @@ const setMenuElementStyle = (
     active, 
     prevActive, 
     contentWidth,
-    color
+    color,
+    isMobile
 ) => css`
     margin-bottom: 1em;
     ${active === link
-        ? activeConfig(color)
+        ? activeConfig(contentWidth, color, isMobile)
         : prevActive === link
             ? changeActive(contentWidth, color)
             : nonActiveConfig
     }
 `
 
-const activeConfig = color => css`
+const activeConfig = (
+    contentWidth, 
+    color, 
+    isMobile
+) => css`
+    ${isMobile && css`
+            animation: ${changeColor(color, true)} .5s ease-out 1;
+    `}
     text-shadow: 0 0 7px ${color};
     transition: text-shadow .5s ease-out;
 
     ::before {
         width: 5%;
-        right: 0;
-        animation: 
-            ${glow(color)} 3s ease-out alternate infinite;
+        box-shadow: 0 0 5px ${color};
+        ${isMobile 
+            ? css`
+                animation: 
+                    ${expandAndContract} .5s ease-out backwards,
+                    ${changeSide(
+                        contentWidth, true
+                    )} .25s ease-out .25s forwards;
+            `
+            : 'right: 0;'
+        }
     }
 `
 
@@ -201,7 +219,7 @@ const nonActiveConfig = css`
 `
 
 const changeActive = (contentWidth, color) => css`
-    animation: ${changeColor(color)} .5s ease-out 1;
+    animation: ${changeColor(color)} .25s ease-out 2 alternate;
 
     :hover {
         color: black;
@@ -210,7 +228,8 @@ const changeActive = (contentWidth, color) => css`
 
     ::after {
         right: 0;
-        animation: ${expandAndContract} .5s ease-out forwards,
+        animation: 
+            ${expandAndContract} .5s ease-out forwards,
             ${changeSide(contentWidth)} .25s ease-out .25s forwards;
     }
 

@@ -69,7 +69,9 @@ const menuConfig = isComponentHidden => css`
     height: 40px;
     top: 3%;
     right: 9%;
-    ${isComponentHidden && css`left: 1em;`}
+    ${isComponentHidden 
+        && css`transform: translateX(27px);`
+    }
 `
 
 const archiveConfig = isComponentHidden => css`
@@ -77,12 +79,9 @@ const archiveConfig = isComponentHidden => css`
     height: 43px;
     border-radius: 50%;
     top: calc(2.4% + 4.5px);
+    left: 9%;
     ${isComponentHidden
-        ? css` 
-            left: auto; 
-            right: 1em;
-        `
-        : css`left: 9%;`
+        && css`transform: translateX(-29px)`
     }
 `
 
@@ -105,14 +104,9 @@ const wrapperStyles = css`
 `
 
 const Shadow = styled.div`
-    animation: ${props => css`
-        ${glowForPolygon(
-            props.color, 9, 3
-        )} .25s ease-out 1,
-        ${glowForPolygon(
-            props.color
-        )} 3s ease-out .25s alternate infinite;
-    `};
+    filter: 
+        drop-shadow(0 0 3px ${props => props.color}) 
+        opacity(.85);
 
     ::before {
         content: '';
@@ -169,10 +163,7 @@ const HideButton = styled.div`
                 ${makeAppear()} .25s ease-out forwards,
                 ${glow(
                     props.color, 5, 10, 0, 2
-                )} .375s ease-out .25s 2 alternate,
-                ${glow(
-                    props.color, 5, 10
-                )} 3s ease-out 1s alternate infinite;
+                )} .375s ease-out .25s 2 alternate forwards;
 
             ::after {
                 content: '';
@@ -228,11 +219,9 @@ const HideButton = styled.div`
 `
 
 const OuterWrapper = styled.div`
-    position: ${props => props.isComponentHidden
-        ? 'fixed'
-        : 'absolute'
-    };
+    position: absolute;
     cursor: pointer;
+    transition: transform .25s ease-out;
     ${props => props.archive 
         ? archiveConfig(props.isComponentHidden) 
         : menuConfig(props.isComponentHidden)

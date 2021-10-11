@@ -47,11 +47,11 @@ const jasonSegniniTheme = {
             welcome: ({state}) =>
                 state.theme.isWelcomeReceived = true,
       
-            toggleMenu: ({state}) => show =>
-                state.theme.showMenu = show || !state.theme.showMenu,
+            toggleMenu: ({state}) =>
+                state.theme.showMenu = !state.theme.showMenu,
 
-            toggleArchive: ({state}) => show =>
-                state.theme.showArchive = show || !state.theme.showArchive,
+            toggleArchive: ({state}) =>
+                state.theme.showArchive = !state.theme.showArchive,
 
             setThemeColor: ({state}) => color =>
                 state.theme.color = color

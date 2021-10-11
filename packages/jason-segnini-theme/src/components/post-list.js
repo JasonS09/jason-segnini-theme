@@ -3,7 +3,6 @@ import { Fragment } from "react"
 import { center } from "../styles/common"
 import AnimatedText from "./common/animated-text"
 import AnimatedWrapper from "./common/animated-wrapper"
-import Link from "@frontity/components/link"
 
 const PostList = ({
     state,

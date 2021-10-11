@@ -252,7 +252,8 @@ const animateLeft = (
     color
 ) => css`
     ${isComponentHidden 
-        && css`margin-right: -250px`}
+        && css`transform: translate3d(250px, 0, 0)`
+    }
     right: 0;
 
     :hover {
@@ -296,7 +297,8 @@ const animateRight = (
     isMobile
 ) => css`
     ${isComponentHidden 
-        && css`margin-left: -250px`}
+        && css`transform: translate3d(-250px, 0, 0);`
+    }
 
     :hover {
         ${ShadowForRight} {
@@ -354,10 +356,7 @@ const ShadowForPolygon = styled.div`
         ${props => css`
             ${glowForPolygon(
                 props.color, 9, 3
-            )} .25s ease-out 1,
-            ${glowForPolygon(
-                props.color
-            )} 3s ease-out .25s alternate infinite;
+            )} .25s ease-out forwards;
         `};
 
     ::before {
@@ -384,10 +383,7 @@ const ShadowForLeft = styled.div`
         left: ${props.hideOffset};
         animation: ${glowForPolygon(
                 props.color, 9, 3
-            )} .25s ease-out forwards,
-            ${glowForPolygon(
-                props.color
-            )} 3s ease-out .25s alternate infinite;
+            )} .25s ease-out forwards;
     `}
 
     ::before {
@@ -414,10 +410,7 @@ const ShadowForRight = styled.div`
     animation: ${props => css`
         ${glowForPolygon(
             props.color, 9, 3
-        )} .25s ease-out forwards,
-        ${glowForPolygon(
-            props.color
-        )} 3s ease-out .25s alternate infinite;
+        )} .25s ease-out forwards
     `};
 
     ::before {
@@ -681,7 +674,7 @@ const AbsoluteAnimatedDiv = styled.div`
         )
     }
     z-index: 2;
-    transition: margin 1s ease-in-out;
+    transition: transform 1s ease-in-out;
     ::before {z-index: 1;}
 
     ::before, ::after {
@@ -745,7 +738,6 @@ const AllbordersAnimatedDiv = styled.div`
 const PolygonalAnimatedDiv = styled.div`
     position: relative;
     transition: transform .25s ease-out;
-
     :hover {
         transform: scale(1.01, 1.01);
 

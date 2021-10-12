@@ -1,6 +1,6 @@
 import { connect, styled, css } from "frontity"
 import { select, getQuote } from "../../scripts/utilities"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import marked from "marked"
 import AnimatedWrapper from "../common/animated-wrapper"
 
@@ -15,12 +15,23 @@ const Comment = ({
     const comment = state.source.comment[id]
     const Html2React = libraries.html2react.Component
     const color = state.theme.color
+    const ref = useRef(null)
     let selection = ''
-    const deselect = () => selection = ''
+
+    const onSelectionChange = () => {
+        const selected = select()+''
+
+        if (ref.current.textContent.includes(
+                selected.replace(/[\n\r]/g, '')
+            )) {
+            selection = selected
+        }
+        else selection = ''
+    }
 
     useEffect(() => {
-        window.addEventListener('mousedown', deselect)
-        return () => window.removeEventListener('mousedown', deselect)
+        document.addEventListener('selectionchange', onSelectionChange)
+        return () => document.removeEventListener('selectionchange', onSelectionChange)
     }, [])
 
     return (
@@ -36,9 +47,9 @@ const Comment = ({
             </Author>
             <CommentContent 
                 color={color} 
-                onMouseUp={() => selection = select()+''}
+                ref={ref}
             >
-                <Html2React html={marked(comment.content.plain)}/>
+                <Html2React html={marked(comment.content.plain || '')}/>
                 <Options color={color}>
                     <span 
                         onMouseDown={() => 

@@ -93,8 +93,8 @@ const Header = ({state, actions, libraries}) => {
             <AnimatedWrapper 
                 type='absolute' 
                 right 
-                width='297' 
-                hideOffset='47' 
+                width='297px' 
+                hideOffset='47px' 
                 isComponentHidden={isMenuHidden}
             >
                 <Hide 

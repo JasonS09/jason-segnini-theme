@@ -71,7 +71,7 @@ const Root = ({state, actions}) => {
 
     useEffect(() => {
         if (isMobile) {
-            const { swipeArea, updateOptions } = SwipeEventListener({
+            const { swipeArea } = SwipeEventListener({
                 swipeArea: document.querySelector('body'),
             })
 
@@ -167,7 +167,6 @@ const Root = ({state, actions}) => {
                 figCapColor={!data.isError ? '#628a6c' : '#8a6262'}
                 isMenuHidden={!state.theme.showMenu}
                 isArchiveHidden={!state.theme.showArchive}
-                isMobile={isMobile}
                 onMouseUp={isMobile
                     ? e => {
                         if (e.defaultPrevented) return
@@ -218,10 +217,7 @@ const Main = styled.main`
     position: relative;
     display: block;
     height: 100vh;
-    padding: ${props => props.isMobile
-        ? '10vh 0 1em'
-        : '1em 0'
-    };
+    padding: 1em 0;
     ${props => 
         props.isMenuHidden 
             ? props.isArchiveHidden

@@ -23,22 +23,6 @@ const AnimatedWrapper = ({
     const ref = useRef(null)
     let timeout = 0
 
-    const formatSizeProp = (prop) => {
-        if (typeof(prop) != "string") return prop.toString()+'px'
-
-        if (prop.endsWith('px')
-            || prop.endsWith('em')
-            || prop.endsWith('vh')
-            || prop.endsWith('vw')
-            || prop.endsWith('%'))
-            return prop
-
-        return prop+'px'
-    }
-
-    hideOffset = formatSizeProp(hideOffset)
-    width = formatSizeProp(width)
-
     useEffect(() => {
         if (states.reanimate)
             timeout = setTimeout(() => 
@@ -252,7 +236,7 @@ const animateLeft = (
     color
 ) => css`
     ${isComponentHidden 
-        && css`transform: translate3d(250px, 0, 0)`
+        && css`transform: translateX(250px)`
     }
     right: 0;
 
@@ -297,7 +281,7 @@ const animateRight = (
     isMobile
 ) => css`
     ${isComponentHidden 
-        && css`transform: translate3d(-250px, 0, 0);`
+        && css`transform: translateX(-250px);`
     }
 
     :hover {

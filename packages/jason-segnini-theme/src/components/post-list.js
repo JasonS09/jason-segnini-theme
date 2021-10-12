@@ -3,6 +3,7 @@ import { Fragment } from "react"
 import { center } from "../styles/common"
 import AnimatedText from "./common/animated-text"
 import AnimatedWrapper from "./common/animated-wrapper"
+import Link from "@frontity/components/link"
 
 const PostList = ({
     state,
@@ -78,7 +79,16 @@ const PostList = ({
                                             css={css`margin-bottom: 1em;`}
                                         >
                                             <Title key={`title_${item.id}`}>
-                                                <AnimatedText
+                                                {state.screen.isMobile 
+                                                    ? 
+                                                    <Link 
+                                                        link={post.link}
+                                                        css={linkStyles(color)}
+                                                    >
+                                                        {post.title.rendered}
+                                                    </Link>
+                                                    :
+                                                    <AnimatedText
                                                        key={item.id}
                                                        comp='a'
                                                        link={post.link}
@@ -86,6 +96,7 @@ const PostList = ({
                                                        data-speed={animationSpeed}
                                                        css={linkStyles(color)}
                                                    />
+                                                }
                                             </Title>
                                             <Excerpt key={`excerpt_${item.id}`}>
                                                 <Html2React 

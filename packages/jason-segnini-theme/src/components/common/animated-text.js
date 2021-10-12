@@ -6,23 +6,24 @@ import Switch from "@frontity/components/switch"
 const AnimatedText = ({
     state,
     actions,
-    'data-speed': speed = 30,
-    'data-cover-text': isCoverText,
+    'data-speed': speed = 10,
+    isCoverText,
     comp,
     text = '',
     reanimate,
     ...rest
 }) => {
-    const data = state.source.get(state.router.link)
+    const isHome = state.source.get(state.router.link).isHome
     const isWelcomeReceived = state.theme.isWelcomeReceived
     const [textContent, setTextContent] = useState({
         content: '',
         randChar: 'j',
         i: 0,
-        randTimer: 0,
+        j: 0,
         animationFinished: false
     });
     let timeout = 0
+    let maxTimeout = 0
 
     const writeText = () => {
         let char = text.charAt(textContent.i)
@@ -35,34 +36,35 @@ const AnimatedText = ({
                 content: textContent.content + char,
                 randChar: '',
                 i: textContent.i + 1,
-                randTimer: speed
+                j: 0
             })
         )
     }
 
     useEffect(() => {
-        if (textContent.animationFinished 
-            && textContent.content !== text) {
+        if (textContent.animationFinished) {
+            if (textContent.content !== text) {
                 setTextContent(
                     textContent => (
                         {...textContent, content: text}
                     )
                 )
-                return
+                return      
             }
+        }
         
-        if (isWelcomeReceived || data.isHome) {
+        if (isWelcomeReceived || isHome) {
             if (!textContent.animationFinished) {
-                if (textContent.randTimer > 0) {
+                if (textContent.j < 6) {
                     timeout = setTimeout(
                         setTextContent,
-                        10,
+                        speed,
                         textContent => ({
                             ...textContent, 
                             randChar: String.fromCharCode(
                                 Math.random()*128,
                             ),
-                            randTimer: textContent.randTimer-10
+                            j: textContent.j + 1
                         })
                     )
                     return
@@ -70,16 +72,17 @@ const AnimatedText = ({
                 if (text) writeText()
                 return
             }
+
             if (textContent.randChar !== '')
                 setTextContent(textContent => ({...textContent, randChar: ''}))
 
             if (!isWelcomeReceived) 
-                setTimeout(actions.theme.welcome, 1500)
+                setTimeout(actions.theme.welcome, 1200)
         }
     }, [textContent, text])
 
     useEffect(() => {
-        if (textContent.i === text.length)
+        if (textContent.i === text.length) 
             setTextContent(textContent => ({
                 ...textContent,
                 animationFinished: true
@@ -92,14 +95,14 @@ const AnimatedText = ({
                 content: '',
                 randChar: 'j',
                 i: 0,
-                randTimer: 0,
+                j: 0,
                 animationFinished: false
             })
     }, [reanimate])
 
     useEffect(() => {
-        if (!data.isHome) {
-            const maxTimeout = setTimeout(
+        if (!isHome) {
+            maxTimeout = setTimeout(
                 setTextContent,
                 1000,
                 textContent => ({
@@ -107,12 +110,13 @@ const AnimatedText = ({
                     animationFinished: true
                 })
             )
-            return () => {
-                clearTimeout(timeout)
-                clearTimeout(maxTimeout)
-            }
+            return
         }
-        return () => clearTimeout(timeout)
+            
+        return () => {
+            clearTimeout(timeout)
+            clearTimeout(maxTimeout)
+        }
     }, [])
 
     return (
@@ -138,6 +142,9 @@ const AnimatedText = ({
             <p when={comp==='p'} {...rest}>
                 {textContent.content + textContent.randChar}
             </p>
+            <strong when={comp==='strong'} {...rest}>
+                {textContent.content + textContent.randChar}
+            </strong>
             <Link when={comp==='a'} {...rest}>
                 {textContent.content + textContent.randChar}
             </Link>

@@ -82,6 +82,14 @@ const Comments = ({state, actions, postId}) => {
         [states.isComponentHidden, states.isCommentsForm]
     )
 
+    useEffect(() => 
+        setStates(states => ({
+            ...states,
+            isFirstTime: false
+        })),
+        [state.screen.screenSize[1]]
+    )
+
     return (
         <Container 
             isComponentHidden={states.isComponentHidden}
@@ -90,6 +98,7 @@ const Comments = ({state, actions, postId}) => {
                     && (!form?.isSubmitting || states.isComponentHidden))
             }
             heightToHide={heightTohide}
+            screenHeight={state.screen.screenSize[1]}
             ref={ref}
         >
             <ButtonsTab>
@@ -208,7 +217,11 @@ const Container = styled.div`
     width: 100%;
     bottom: 0;
     ${props => props.transition 
-        && css`transition: margin 1s ease-out;`
+        && css`transition: transform 1s ease-out;`
     }
-    margin-bottom: ${props => `-${props.heightToHide}px;`};
+    transform: ${props => 
+        `translateY(${props.screenHeight}px) \
+        translateY(-100vh) \
+        translateY(${props.heightToHide}px);`
+    };
 `

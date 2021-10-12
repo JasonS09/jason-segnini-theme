@@ -1,7 +1,7 @@
 import { connect, Head, styled, css } from "frontity"
 import { expandWidth } from "../styles/keyframes"
 import { select, getQuote } from "../scripts/utilities"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import dayjs from "dayjs"
 import AnimatedWrapper from "./common/animated-wrapper"
 import Comments from "./comments/comments"
@@ -15,10 +15,22 @@ const Post = ({state, actions, libraries}) => {
     const formattedDate = dayjs(post.date).format('DD MMMM YYYY')
     const Html2React = libraries.html2react.Component
     const [selection, setSelection] = useState('')
+    const ref = useRef(null)
+
+    const onSelectionChange = () => {
+        const selected = select()+''
+
+        if (ref.current.textContent.includes(
+                selected.replace(/[\n\r]/g, '')
+            )) {
+            setSelection(selected)
+        }
+        else setSelection('')
+    }
 
     useEffect(() => {
-        window.addEventListener('mousedown', setSelection, '')
-        return () => window.removeEventListener('mousedown', setSelection, '')
+        document.addEventListener('selectionchange', onSelectionChange)
+        return () => document.removeEventListener('selectionchange', onSelectionChange)
     }, [])
 
     return (
@@ -44,8 +56,11 @@ const Post = ({state, actions, libraries}) => {
                 }
                 <PostContent
                     color={color}
-                    maxHeight={maxHeight} 
-                    onMouseUp={() => setSelection(select()+'')}
+                    maxHeight={(data.isPost && state.comments.commentsHeight.container) 
+                        ? `${maxHeight}px` 
+                        : 'none'
+                    } 
+                    ref={ref}
                 >
                     <Html2React html={post.content.rendered}/>
                 </PostContent>
@@ -74,6 +89,12 @@ const Post = ({state, actions, libraries}) => {
 
 export default connect(Post)
 
+const H2 = styled.h2`
+    text-align: center;
+    padding-top: 10px;
+    margin-bottom: 10px;
+`
+
 const Options = styled.div`
     position: relative;
     width: 100%;
@@ -88,12 +109,6 @@ const Options = styled.div`
         transition: text-shadow .25s ease-out;
         :hover {text-shadow: 0 0 2px ${props => props.color}}
     }
-`
-
-const H2 = styled.h2`
-    text-align: center;
-    padding-top: 10px;
-    margin-bottom: 10px;
 `
 
 const PostInfo = styled.div`
@@ -132,7 +147,7 @@ const wrapperStyles = css`
 `
 
 const PostContent = styled.div`
-    max-height: ${props => props.maxHeight}px;
+    max-height: ${props => props.maxHeight};
     color: ${props => props.color};
     text-align: justify;
     padding: 10px 1em 10px;

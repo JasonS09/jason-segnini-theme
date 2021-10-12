@@ -19,7 +19,8 @@ const CommentsForm = ({state, actions, postId, visible}) => {
             form?.errorMessage, 
             form?.isSubmitting, 
             form?.isSubmitted, 
-            replyComment
+            replyComment,
+            state.screen.screenSize[1]
         ]
     )
 
@@ -64,7 +65,8 @@ const CommentsForm = ({state, actions, postId, visible}) => {
                 {form?.errorMessage 
                     && 
                     <Div> 
-                        <Lobo forceError/> <br/>
+                        {state.screen.screenSize[1] > 500 
+                            && <><Lobo forceError/><br/></>}
                         ERROR! {form?.errorMessage}
                     </Div>
                 }
@@ -72,6 +74,7 @@ const CommentsForm = ({state, actions, postId, visible}) => {
                     && 
                     <div css={css`text-align: center;`}>
                         Comment submitted succesfully! Please wait until it's approved.
+                        <br/>
                         <br/>
                     </div>
                 }
@@ -219,7 +222,7 @@ const Input = styled.input`
 const Textarea = styled.textarea`
     font-size: medium;
     width: 100%;
-    height: 10em;
+    height: 15vh;
     resize: none;
     ${inputWithWrapper}
     ${props => input(props.color)}

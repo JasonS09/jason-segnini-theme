@@ -14,7 +14,8 @@ const jasonSegniniTheme = {
             isWelcomeReceived: false,
             showMenu: true,
             showArchive: true,
-            color: '#60d75a'
+            animatingPostText: false,
+            color: '#60d75a',
         },
 
         comments: {
@@ -54,7 +55,10 @@ const jasonSegniniTheme = {
                 state.theme.showArchive = !state.theme.showArchive,
 
             setThemeColor: ({state}) => color =>
-                state.theme.color = color
+                state.theme.color = color,
+
+            toggleAnimatePostText: ({state}) => 
+                state.theme.animatingPostText = !state.theme.animatingPostText   
         },
 
         comments: {

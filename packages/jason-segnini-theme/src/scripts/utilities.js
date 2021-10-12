@@ -10,6 +10,7 @@ export const select = () => {
 }
 
 export const getQuote = (author, content) => {
+    console.log(content)
     const text = `${author} said:\r\n\r\n${content}`
     const paragraphs = text.split(/\r?\n/)
     return paragraphs.map((p, i) =>

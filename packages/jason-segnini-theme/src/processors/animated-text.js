@@ -7,8 +7,10 @@ const animatedText = {
 
     test: ({node, state}) => {
         const data = state.source.get(state.router.link)
+
         if ((data.type === 'page' && !data.isHome) 
-            || (data.type === 'post' && !data.isPostArchive))
+            || (data.type === 'post' && !data.isPostArchive)
+            || (state.screen.isMobile && !data.isHome))
             return false
 
         const testComponents = () => 
@@ -30,7 +32,8 @@ const animatedText = {
             && node.props['className'] !== 'nonAnimatedText'
     },
 
-    processor: ({node}) => {
+    processor: ({node, state}) => {
+        const data = state.source.get(state.router.link)
         if (node.component === 'a'  
             && !node.props?.href?.startsWith('#'))
                 node.props.link = node.props.href
@@ -43,9 +46,10 @@ const animatedText = {
 
         node.children = []
         node.props['comp'] = node.component
+        node.props['isCoverText'] = data.isHome
 
         if (!node.props['data-speed'])
-            node.props['data-speed'] = 0.01
+            node.props['data-speed'] = 1
 
         node.component = AnimatedText
         return node

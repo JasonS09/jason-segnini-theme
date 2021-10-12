@@ -26,8 +26,8 @@ const Archive = ({state, actions}) => {
     return (
         <AnimatedWrapper 
             type='absolute' 
-            width='297' 
-            hideOffset='47'
+            width='297px' 
+            hideOffset='47px'
             isComponentHidden={isArchiveHidden}
         >
             <Hide 

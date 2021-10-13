@@ -4,6 +4,8 @@ import { center } from "../../styles/common"
 import Hide from "../common/hide"
 import CommentsList from "./comments-list"
 import CommentsForm from "./comments-form"
+import SvgComments from "./icons/svg-comments"
+import SvgAddComment from "./icons/svg-add-comment"
 
 const Comments = ({state, actions, postId}) => {
     const formHeight = state.comments.commentsHeight.form + 20
@@ -11,7 +13,7 @@ const Comments = ({state, actions, postId}) => {
     const replyComment = state.comments.replyComment
     const form = state.comments.forms[postId]
     const commentContent = form?.fields?.content
-    const ref = useRef(null)
+    const refs = useRef({initScreenHeight: state.screen.screenSize[1]})
 
     const checkAtLeastOneCommentApproved = () => {
         const items = state.source.get(`@comments/${postId}`).items
@@ -75,31 +77,34 @@ const Comments = ({state, actions, postId}) => {
         }
     }, [areThereComments])
 
+    useEffect(() => {
+        if (refs.current.initScreenHeight != state.screen.screenSize[1])
+            setStates(states => ({
+                ...states,
+                isFirstTime: false
+            }))
+    }, [
+        state.screen.screenSize[1]
+    ])
+
     useEffect(() => 
         actions.comments.getCommentsContainerHeight(
-            ref.current.clientHeight - heightTohide
+            refs.current.container.clientHeight - heightTohide
         ),
         [states.isComponentHidden, states.isCommentsForm]
     )
-
-    useEffect(() => 
-        setStates(states => ({
-            ...states,
-            isFirstTime: false
-        })),
-        [state.screen.screenSize[1]]
-    )
-
     return (
         <Container 
             isComponentHidden={states.isComponentHidden}
             transition={commentContent
+                || (states.isFirstTime 
+                    && refs.current.initScreenHeight !== state.screen.screenSize[1])
                 || (!states.isFirstTime 
                     && (!form?.isSubmitting || states.isComponentHidden))
             }
             heightToHide={heightTohide}
             screenHeight={state.screen.screenSize[1]}
-            ref={ref}
+            ref={container => refs.current.container = container}
         >
             <ButtonsTab>
                 <Hide 
@@ -117,7 +122,6 @@ const Comments = ({state, actions, postId}) => {
                     &&
                     <Hide 
                         type='archive'
-                        text='C'
                         onClick={() => 
                             {setStates(states => ({
                                 ...states,
@@ -125,14 +129,15 @@ const Comments = ({state, actions, postId}) => {
                             }))}
                         }
                         css={css`
-                            ${tabButtonStyles(!states.isCommentsForm, true)}
+                            ${tabButtonStyles(!states.isCommentsForm, '', true)}
                             transform: none;
                         `}
-                    />
+                    >
+                        <SvgComments isActive={!states.isCommentsForm}/>
+                    </Hide>
                 }
                 <Hide 
                     type='archive'
-                    text='+'
                     onClick={()=> {
                         setStates(states => ({
                             ...states,
@@ -140,10 +145,15 @@ const Comments = ({state, actions, postId}) => {
                         }))}
                     }
                     css={css`
-                        ${tabButtonStyles(states.isCommentsForm)}
+                        ${tabButtonStyles(
+                            states.isCommentsForm,
+                            state.theme.color
+                        )}
                         transform: none;
                     `}
-                />
+                >
+                    <SvgAddComment isActive={states.isCommentsForm}/>
+                </Hide>
             </ButtonsTab>
             <Content 
                 isCommentsForm={states.isCommentsForm}  
@@ -179,7 +189,11 @@ const hideStyles = isComponentHidden => css`
     }
 `
 
-const tabButtonStyles = (isActive, isCommentsList) => css`
+const tabButtonStyles = (
+    isActive, 
+    color,
+    isCommentsList
+) => css`
     ${hideStyles()}
     & > div {
         ::before {
@@ -196,6 +210,29 @@ const tabButtonStyles = (isActive, isCommentsList) => css`
         h1 {
             padding: 0;
             ${isActive && 'color: black;'}
+        }
+    }
+
+    :hover {
+        svg {
+            ${isCommentsList 
+                ? css`
+                    g {
+                        stroke: black;
+                        fill: black;
+                    }
+                `
+                : css`
+                    ellipse, path:first-of-type {
+                        stroke: black;
+                        fill: black;
+                    }
+                    path:nth-of-type(2) {
+                        stroke: ${color};
+                        fill: ${color};
+                    }
+                `
+            }
         }
     }
 `

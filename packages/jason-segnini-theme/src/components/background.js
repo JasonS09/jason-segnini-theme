@@ -2,15 +2,15 @@ import { connect, styled } from "frontity"
 import { useRef, useEffect } from "react"
 
 const Background = ({state}) => {
-    const canvas = useRef(null)
+    const ref = useRef(null)
     const FRAME_PERIOD = 50
     let lastTime = 0
 
-    const drawMatrix = (canvas) => {
+    const drawMatrix = canvas => {
         const ctx = canvas.getContext('2d')
 
-        const w = canvas.width = document.body.offsetWidth
-        const h = canvas.height = document.body.offsetHeight
+        let w = canvas.width = document.body.offsetWidth
+        let h = canvas.height = document.body.offsetHeight
         
         const cols = Math.floor(w / 20) + 1
         const ypos = Array(cols).fill(0)
@@ -19,6 +19,13 @@ const Background = ({state}) => {
         ctx.fillRect(0, 0, w, h)
         
         const matrix = time => {
+            if ((w !== document.body.offsetWidth)
+                || (h !== document.body.offsetHeight)
+            ) {
+                ctx.clearRect(0, 0, w, h)
+                return
+            }
+
             if ((time - lastTime) < FRAME_PERIOD) {
                 return requestAnimationFrame(matrix)
             }
@@ -45,8 +52,16 @@ const Background = ({state}) => {
         requestAnimationFrame(matrix)
     }
 
-    useEffect(() => drawMatrix(canvas.current), [])
-    return <Canvas ref={canvas}/>
+    useEffect(() => {
+        if ((ref.current.width !== document.body.offsetWidth)
+            || (ref.current.height !== document.body.offsetHeight)
+        )
+            drawMatrix(ref.current)
+    }, [
+        state.screen.screenSize[0],
+        state.screen.screenSize[1]
+    ])
+    return <Canvas ref={ref}/>
 }
 
 export default connect(Background)

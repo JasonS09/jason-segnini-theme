@@ -10,7 +10,6 @@ const Hide = ({
     state, 
     type, 
     isComponentHidden, 
-    text,
     ...rest
 }) => {
     const color = state.theme.color
@@ -39,7 +38,7 @@ const Hide = ({
                     isComponentHidden={isComponentHidden}
                     color={color}
                 >
-                    <AnimatedText comp='h1' text={text || '>'}/>
+                    {rest.children || <AnimatedText comp='h1' text='>'/>}
                 </HideButton>
             </OuterWrapper>
             <OuterWrapper
@@ -54,7 +53,7 @@ const Hide = ({
                         isComponentHidden={isComponentHidden}
                         color={color}
                     >
-                        <AnimatedText comp='h1' text={text || '<'}/>
+                        {rest.children || <AnimatedText comp='h1' text='<'/>}
                     </HideButton>
                     </AnimatedWrapper>
             </OuterWrapper>

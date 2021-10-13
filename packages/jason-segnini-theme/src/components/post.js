@@ -29,8 +29,10 @@ const Post = ({state, actions, libraries}) => {
     }
 
     useEffect(() => {
-        document.addEventListener('selectionchange', onSelectionChange)
-        return () => document.removeEventListener('selectionchange', onSelectionChange)
+        if (data.isPost) {
+            document.addEventListener('selectionchange', onSelectionChange)
+            return () => document.removeEventListener('selectionchange', onSelectionChange)
+        }
     }, [])
 
     return (

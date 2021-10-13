@@ -68,3 +68,16 @@ export const submit = color => css`
         ${center}
     }
 `
+
+export const commentIcons = (isActive, color) => css`
+    stroke: ${isActive 
+        ? 'black' 
+        :  color
+    };
+    fill: ${isActive 
+        ? 'black' 
+        :  color
+    };
+    transition: stroke .25s ease-out,
+        fill .25s ease-out;
+`

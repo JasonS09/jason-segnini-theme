@@ -9,7 +9,6 @@ import AnimatedText from "../common/animated-text"
 
 const CategoryList = ({
     state,
-    animationSpeed,
     ...rest
 }) => {
     const color = state.theme.color
@@ -63,7 +62,6 @@ const CategoryList = ({
                             <AnimatedText 
                                 key={`summary_${category.id}`} 
                                 text={category.name}
-                                data-speed={animationSpeed}
                                 comp='summary'
                                 onClick={e => {
                                     const det = details.current[category.id]
@@ -92,7 +90,7 @@ const CategoryList = ({
                                                 comp='a'
                                                 link={post.link}
                                                 text={post.title}
-                                                data-speed={animationSpeed}
+                                                data-speed='1'
                                                 reanimate={reanimateListItem[category.id].reanimate}
                                                 css={css`cursor: pointer`}
                                             />

@@ -12,24 +12,14 @@ const Comments = ({state, actions, postId}) => {
     const listHeight = state.comments.commentsHeight.list + 20
     const replyComment = state.comments.replyComment
     const form = state.comments.forms[postId]
+    const items = state.source.get(`@comments/${postId}`).items
     const commentContent = form?.fields?.content
     const refs = useRef({initScreenHeight: state.screen.screenSize[1]})
 
-    const checkAtLeastOneCommentApproved = () => {
-        const items = state.source.get(`@comments/${postId}`).items
-        return items?.length 
-            && items.find(({id}) => 
-                state.source.comment[id].content.plain
-            )
-            ? true
-            : false
-    }
-
-    const areThereComments = checkAtLeastOneCommentApproved()
     const [states, setStates] = useState({ 
         isComponentHidden: true,
         isFirstTime: true,
-        isCommentsForm: areThereComments ? false : true
+        isCommentsForm: items?.length ? false : true
     })
 
     const getHeightToHide = () => {
@@ -47,9 +37,8 @@ const Comments = ({state, actions, postId}) => {
         const per_page = state.source.params.per_page
         Object.assign(state.source.params, {per_page: 100})
         actions.source.fetch(`@comments/${postId}`)
-        actions.source.fetch(`/jasonsegnini/v1/comments?post_id=${postId}`)
         Object.assign(state.source.params, {per_page: per_page})
-    }, [form?.isSubmitted])
+    }, [])
 
     useEffect(() => {        
         if (replyComment)
@@ -67,7 +56,7 @@ const Comments = ({state, actions, postId}) => {
     }, [replyComment, commentContent])
 
     useEffect(() => {
-        if (areThereComments 
+        if (items?.length
             && !form?.isSubmitting 
             && !commentContent) {
             setStates(states => ({
@@ -75,7 +64,7 @@ const Comments = ({state, actions, postId}) => {
                 isCommentsForm: false
             }))
         }
-    }, [areThereComments])
+    }, [items?.length])
 
     useEffect(() => {
         if (refs.current.initScreenHeight != state.screen.screenSize[1])
@@ -98,6 +87,7 @@ const Comments = ({state, actions, postId}) => {
             isComponentHidden={states.isComponentHidden}
             transition={commentContent
                 || (states.isFirstTime 
+                    && refs.current.initScreenHeight 
                     && refs.current.initScreenHeight !== state.screen.screenSize[1])
                 || (!states.isFirstTime 
                     && (!form?.isSubmitting || states.isComponentHidden))
@@ -118,7 +108,7 @@ const Comments = ({state, actions, postId}) => {
                     )}}
                     css={hideStyles(states.isComponentHidden)}
                 />
-                {areThereComments
+                {items?.length !== 0
                     &&
                     <Hide 
                         type='archive'
@@ -160,7 +150,7 @@ const Comments = ({state, actions, postId}) => {
                 height={formHeight >= listHeight ? 'auto;' : `${listHeight}px;`}
             >
                 <CommentsForm postId={postId} visible={states.isCommentsForm}/>
-                {areThereComments
+                {items?.length !== 0
                     && 
                     <CommentsList 
                         postId={postId} 

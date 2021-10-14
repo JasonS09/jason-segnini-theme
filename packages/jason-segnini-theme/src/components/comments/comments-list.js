@@ -19,21 +19,19 @@ const CommentsList = ({
 
     return (
         <Items ref={items} visible={visible}>
-            {data.isReady && data.items.map(({id, children}) => (
-                state.source.comment[id].content.plain
-                    &&
-                    <Fragment key={id}>
-                        <Comment key={`comment_${id}`} postId={postId} id={id}/>
-                        {children?.map(({id}) => 
-                            <Comment 
-                                key={`child_${id}`} 
-                                postId={postId} 
-                                id={id} 
-                                isChildren    
-                            />
-                        )}
-                    </Fragment>
-            ))}
+            {data.isReady && data.items.map(({id, children}) =>
+                <Fragment key={id}>
+                    <Comment key={`comment_${id}`} postId={postId} id={id}/>
+                    {children?.map(({id}) => 
+                        <Comment 
+                            key={`child_${id}`} 
+                            postId={postId} 
+                            id={id} 
+                            isChildren    
+                        />
+                    )}
+                </Fragment>
+            )}
         </Items>
     )
 }
@@ -42,11 +40,14 @@ export default connect(CommentsList)
 
 const Items = styled.div`
     position: absolute;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
     top: 10px;
     visibility: ${props => 
         props.visible ? 'visible;' : 'hidden;'};
     max-height: 50vh;
-    width: 95%;
+    width: 100%;
     padding-left: 1em;
     padding-right: 1em;
     overflow-y: scroll;

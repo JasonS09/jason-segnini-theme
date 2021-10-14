@@ -6,14 +6,14 @@ import Switch from "@frontity/components/switch"
 const AnimatedText = ({
     state,
     actions,
-    'data-speed': speed = 10,
+    'data-speed': speed = 5,
     isCoverText,
     comp,
     text = '',
     reanimate,
     ...rest
 }) => {
-    const isHome = state.source.get(state.router.link).isHome
+    const data = state.source.get(state.router.link)
     const isWelcomeReceived = state.theme.isWelcomeReceived
     const [textContent, setTextContent] = useState({
         content: '',
@@ -53,7 +53,7 @@ const AnimatedText = ({
             }
         }
         
-        if (isWelcomeReceived || isHome) {
+        if (isWelcomeReceived || data.isHome) {
             if (!textContent.animationFinished) {
                 if (textContent.j < 6) {
                     timeout = setTimeout(
@@ -101,7 +101,7 @@ const AnimatedText = ({
     }, [reanimate])
 
     useEffect(() => {
-        if (!isHome) {
+        if (!data.isHome || 's' in data.query) {
             maxTimeout = setTimeout(
                 setTextContent,
                 1000,

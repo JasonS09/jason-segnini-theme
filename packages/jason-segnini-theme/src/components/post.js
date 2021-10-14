@@ -1,6 +1,6 @@
 import { connect, Head, styled, css } from "frontity"
 import { expandWidth } from "../styles/keyframes"
-import { select, getQuote } from "../scripts/utilities"
+import { select } from "../scripts/utilities"
 import { useState, useEffect, useRef } from "react"
 import dayjs from "dayjs"
 import AnimatedWrapper from "./common/animated-wrapper"
@@ -28,10 +28,19 @@ const Post = ({state, actions, libraries}) => {
         else setSelection('')
     }
 
+    const onMouseDown = () => setSelection('')
+
     useEffect(() => {
         if (data.isPost) {
-            document.addEventListener('selectionchange', onSelectionChange)
-            return () => document.removeEventListener('selectionchange', onSelectionChange)
+            if (state.screen.isMobile)
+                document.addEventListener('selectionchange', onSelectionChange)
+            else
+                window.addEventListener('mousedown', onMouseDown)
+
+            return () => {
+                document.removeEventListener('selectionchange', onSelectionChange)
+                window.removeEventListener('mousedown', onMouseDown)
+            }
         }
     }, [])
 
@@ -62,6 +71,10 @@ const Post = ({state, actions, libraries}) => {
                         ? `${maxHeight}px` 
                         : 'none'
                     } 
+                    onMouseUp={!state.screen.isMobile
+                        ? () => setSelection(select()+'')
+                        : undefined
+                    }
                     ref={ref}
                 >
                     <Html2React html={post.content.rendered}/>
@@ -75,9 +88,13 @@ const Post = ({state, actions, libraries}) => {
                                 onMouseDown={() =>
                                     actions.comments.updateFields(
                                         data.id,
-                                        {content: getQuote(
-                                            author.name, selection
-                                        )}
+                                        {content: 
+                                            '<blockquote>\r\n'
+                                                +
+                                                `${author.name} said:\r\n\r\n${selection}\r\n`
+                                            +
+                                            '</blockquote>'
+                                        }
                                     )}
                             >Quote</span>
                         }

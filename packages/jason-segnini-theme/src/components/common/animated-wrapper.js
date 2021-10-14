@@ -722,6 +722,7 @@ const AllbordersAnimatedDiv = styled.div`
 const PolygonalAnimatedDiv = styled.div`
     position: relative;
     transition: transform .25s ease-out;
+    
     :hover {
         transform: scale(1.01, 1.01);
 

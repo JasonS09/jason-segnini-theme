@@ -1,8 +1,6 @@
 import { connect, styled, css } from "frontity"
-import { select, getQuote } from "../../scripts/utilities"
+import { select } from "../../scripts/utilities"
 import { useEffect, useRef } from "react"
-import marked from "marked"
-import AnimatedWrapper from "../common/animated-wrapper"
 
 const Comment = ({
     state, 
@@ -29,36 +27,48 @@ const Comment = ({
         else selection = ''
     }
 
+    const onMouseDown = () => selection = ''
+
     useEffect(() => {
-        document.addEventListener('selectionchange', onSelectionChange)
-        return () => document.removeEventListener('selectionchange', onSelectionChange)
+        if (state.screen.isMobile)
+            document.addEventListener('selectionchange', onSelectionChange)
+        else
+            window.addEventListener('mousedown', onMouseDown)
+
+        return () => {
+            document.removeEventListener('selectionchange', onSelectionChange)
+            window.removeEventListener('mousedown', onMouseDown)
+        }
     }, [])
 
     return (
-        <AnimatedWrapper
-            type='polygonal' 
-            css={css`
-                margin-bottom: 10px;
-                ${isChildren && wrapperForChildren}
-            `}
-        >
+        <Container isChildren={isChildren} color={state.theme.color}>
             <Author>
                 {comment.author_name || 'Anonymous'}:
             </Author>
             <CommentContent 
                 color={color} 
+                onMouseUp={!state.screen.isMobile
+                    ? () => selection = select()+''
+                    : undefined
+                }
                 ref={ref}
             >
-                <Html2React html={marked(comment.content.plain || '')}/>
+                <Html2React html={comment.content.rendered}/>
                 <Options color={color}>
                     <span 
                         onMouseDown={() => 
                             actions.comments.updateFields(
                                 postId,
-                                {content: getQuote(
-                                    comment.author_name,
-                                    selection || comment.content.plain
-                                )}
+                                 {content: 
+                                    '<blockquote>\r\n'
+                                        +
+                                        `${comment.author_name} said:\r\n\r\n${
+                                            selection || comment.content.rendered
+                                        }\r\n`
+                                    +
+                                    '</blockquote>'
+                                }
                             )}
                         css={css`margin-right: 10px;`}
                     >Quote</span>
@@ -70,15 +80,23 @@ const Comment = ({
                     }
                 </Options>
             </CommentContent>
-        </AnimatedWrapper>
+        </Container>
     )
 }
 
 export default connect(Comment)
 
-const wrapperForChildren = css`
-    width: 80%;
-    left: 20%;
+const Container = styled.div`
+    position: relative;
+    border: 1px solid ${props => props.color};
+    border-radius: 3px;
+    background-color: rgba(0,0,0,.85);
+    ${props => props.isChildren
+        && css`
+            width: 80%;
+            left: 20%;
+        `
+    };
 `
 
 const Options = styled.div`

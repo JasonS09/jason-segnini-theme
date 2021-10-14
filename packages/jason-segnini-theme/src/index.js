@@ -2,7 +2,6 @@ import Root from "./components"
 import link from "@frontity/html2react/processors/link"
 import animatedText from "./processors/animated-text"
 import customRest from "./handlers/custom-rest"
-import plainCommentContent from "./handlers/plain-comment-content"
 
 const jasonSegniniTheme = {
     name: 'jason-segnini-theme',
@@ -35,9 +34,7 @@ const jasonSegniniTheme = {
     actions: {
         theme: {
             init: ({libraries}) => 
-                libraries.source.handlers.push(
-                    customRest, plainCommentContent
-                ),
+                libraries.source.handlers.push(customRest),
 
             beforeSSR: async ({state, actions}) =>
                 await Promise.all([

@@ -242,10 +242,8 @@ const animateLeft = (
 
     :hover {
         ${ShadowForLeft} {
-            animation: 
-                ${glowForPolygon(
-                    color, 5, 9
-                )} .25s ease-out forwards;
+            filter: drop-shadow(0 0 9px ${color}) 
+                opacity(.85)
         }
     }
 
@@ -286,10 +284,8 @@ const animateRight = (
 
     :hover {
         ${ShadowForRight} {
-            animation: 
-                ${glowForPolygon(
-                    color, 5, 9
-                )} .25s ease-out forwards;
+            filter: drop-shadow(0 0 9px ${color}) 
+                opacity(.85)
         }
     }
 
@@ -336,12 +332,9 @@ const StyledBorder = styled.div`
 
 const ShadowForPolygon = styled.div`
     top: 0;
-    animation: 
-        ${props => css`
-            ${glowForPolygon(
-                props.color, 9, 3
-            )} .25s ease-out forwards;
-        `};
+    transition: filter .25s ease-out;
+    filter: drop-shadow(0 0 5px ${props => props.color}) 
+        opacity(.85);
 
     ::before {
         content: '';
@@ -365,10 +358,10 @@ const ShadowForPolygon = styled.div`
 const ShadowForLeft = styled.div`
     ${props => css`
         left: ${props.hideOffset};
-        animation: ${glowForPolygon(
-                props.color, 9, 3
-            )} .25s ease-out forwards;
+        filter: drop-shadow(0 0 3px ${props.color}) 
+            opacity(.85)
     `}
+    transition: filter .25s ease-out;
 
     ::before {
         content: '';
@@ -391,11 +384,9 @@ const ShadowForLeft = styled.div`
 
 const ShadowForRight = styled.div`
     height: 100%;
-    animation: ${props => css`
-        ${glowForPolygon(
-            props.color, 9, 3
-        )} .25s ease-out forwards
-    `};
+    filter: drop-shadow(0 0 3px ${props => props.color}) 
+        opacity(.85);
+    transition: filter .35s ease-out;
 
     ::before {
         height: 95%;
@@ -487,11 +478,8 @@ const CuteCircle = styled.div`
     animation: ${props => css`
         ${makeAppear()} .5s ease-out 1s forwards,
         ${glow(
-            props.color, 5, 10, 2, 1
-        )} .25s ease-out 1.5s 2 alternate forwards,
-        ${glow(
-            props.color, 5, 10, 1, 1
-        )} 3s linear 1.75s infinite alternate;
+            props.color, 5, 10, 1, 0
+        )} .25s ease-out 1.5s 2 alternate forwards;
     `}
 `
 
@@ -672,15 +660,7 @@ const AbsoluteAnimatedDiv = styled.div`
 const AllbordersAnimatedDiv = styled.div`
     position: relative;
     ${props => props.shadows 
-        && css`
-            animation: 
-                ${glow(
-                    props.color, 5, 10
-                )} .25s ease-out 1s 2 alternate forwards,
-                ${glow(
-                    props.color, 5, 10
-                )} 3s linear 1.5s infinite alternate;
-        `
+        && css`box-shadow: 0 0 10px ${props.color};`
     }
 
     ::before, ::after {
@@ -727,10 +707,8 @@ const PolygonalAnimatedDiv = styled.div`
         transform: scale(1.01, 1.01);
 
         ${ShadowForPolygon} {
-            animation: 
-                ${props => 
-                    glowForPolygon(props.color, 5, 9)
-                } .25s ease-out forwards;
+            filter: drop-shadow(0 0 9px ${props => props.color}) 
+                opacity(.85)
         }
 
         ${AllbordersAnimatedDiv} {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { connect } from "frontity"
 import Link from "@frontity/components/link"
 import Switch from "@frontity/components/switch"
@@ -7,7 +7,7 @@ const AnimatedText = ({
     state,
     actions,
     'data-speed': speed = 5,
-    isCoverText,
+    'data-is-cover-text': isCoverText,
     comp,
     text = '',
     reanimate,
@@ -15,38 +15,57 @@ const AnimatedText = ({
 }) => {
     const data = state.source.get(state.router.link)
     const isWelcomeReceived = state.theme.isWelcomeReceived
-    const [textContent, setTextContent] = useState({
-        content: '',
-        randChar: 'j',
-        i: 0,
+    const isFirefox = typeof(InstallTrigger) !== 'undefined'
+    const [states, setStates] = useState({
+        content: isFirefox ? text.charAt(0) : '',
+        randChar: !isFirefox ? 'j'  : '',
+        i: isFirefox ? 1 : 0,
         j: 0,
         animationFinished: false
     });
+    const animationSpeed = useRef(isFirefox ? speed : 5)
     let timeout = 0
     let maxTimeout = 0
 
     const writeText = () => {
-        let char = text.charAt(textContent.i)
+        let char = text.charAt(states.i)
+        animationSpeed.current = isFirefox ? speed : 5
     
-        if (isCoverText && char === '.') 
-            speed = Math.random() < 0.5 ? speed*10 : speed*20
+        if (isCoverText && char === '.') {
+            if (isFirefox)
+                animationSpeed.current = Math.random() < 0.5 ? speed*10 : speed*20
+            else
+                animationSpeed.current = Math.random() < 0.5 ? 10 : 20
+        }
 
-        setTextContent(
-            textContent => ({
-                content: textContent.content + char,
+        if (isFirefox)
+            timeout = setTimeout(
+                setStates,
+                animationSpeed.current,
+                states => ({
+                    content: states.content + char,
+                    randChar: '',
+                    i: states.i + 1,
+                    j: 0
+                })
+            )
+        else 
+        setStates(
+            states => ({
+                content: states.content + char,
                 randChar: '',
-                i: textContent.i + 1,
+                i: states.i + 1,
                 j: 0
             })
         )
     }
 
     useEffect(() => {
-        if (textContent.animationFinished) {
-            if (textContent.content !== text) {
-                setTextContent(
-                    textContent => (
-                        {...textContent, content: text}
+        if (states.animationFinished) {
+            if (states.content !== text) {
+                setStates(
+                    states => (
+                        {...states, content: text}
                     )
                 )
                 return      
@@ -54,17 +73,19 @@ const AnimatedText = ({
         }
         
         if (isWelcomeReceived || data.isHome) {
-            if (!textContent.animationFinished) {
-                if (textContent.j < 6) {
+            if (!states.animationFinished) {
+                if (states.j < animationSpeed.current) {
                     timeout = setTimeout(
-                        setTextContent,
+                        setStates,
                         speed,
-                        textContent => ({
-                            ...textContent, 
-                            randChar: String.fromCharCode(
-                                Math.random()*128,
-                            ),
-                            j: textContent.j + 1
+                        states => ({
+                            ...states, 
+                            randChar: !isFirefox 
+                                ? String.fromCharCode(
+                                    Math.random()*128
+                                )
+                                : '',
+                            j: isFirefox ? animationSpeed.current : states.j + 1
                         })
                     )
                     return
@@ -73,25 +94,25 @@ const AnimatedText = ({
                 return
             }
 
-            if (textContent.randChar !== '')
-                setTextContent(textContent => ({...textContent, randChar: ''}))
+            if (states.randChar !== '')
+                setStates(states => ({...states, randChar: ''}))
 
             if (!isWelcomeReceived) 
                 setTimeout(actions.theme.welcome, 1200)
         }
-    }, [textContent, text])
+    }, [states, text])
 
     useEffect(() => {
-        if (textContent.i === text.length) 
-            setTextContent(textContent => ({
-                ...textContent,
+        if (states.i === text.length) 
+            setStates(states => ({
+                ...states,
                 animationFinished: true
             }))
-    }, [textContent.i])
+    }, [states.i])
 
     useEffect(() => {
-        if (textContent.animationFinished && reanimate)
-            setTextContent({
+        if (states.animationFinished && reanimate)
+            setStates({
                 content: '',
                 randChar: 'j',
                 i: 0,
@@ -103,10 +124,10 @@ const AnimatedText = ({
     useEffect(() => {
         if (!data.isHome || 's' in data.query) {
             maxTimeout = setTimeout(
-                setTextContent,
+                setStates,
                 1000,
-                textContent => ({
-                    ...textContent,
+                states => ({
+                    ...states,
                     animationFinished: true
                 })
             )
@@ -122,43 +143,43 @@ const AnimatedText = ({
     return (
         <Switch>
             <h1 when={comp==='h1'} {...rest}>
-                {textContent.content + textContent.randChar}
+                {states.content + states.randChar}
             </h1>
             <h2 when={comp==='h2'} {...rest}>
-                {textContent.content + textContent.randChar}
+                {states.content + states.randChar}
             </h2>
             <h3 when={comp==='h3'} {...rest}>
-                {textContent.content + textContent.randChar}
+                {states.content + states.randChar}
             </h3>
             <h4 when={comp==='h4'} {...rest}>
-                {textContent.content + textContent.randChar}
+                {states.content + states.randChar}
             </h4>
             <h5 when={comp==='h5'} {...rest}>
-                {textContent.content + textContent.randChar}
+                {states.content + states.randChar}
             </h5>
             <h6 when={comp==='h6'} {...rest}>
-                {textContent.content + textContent.randChar}
+                {states.content + states.randChar}
             </h6>
             <p when={comp==='p'} {...rest}>
-                {textContent.content + textContent.randChar}
+                {states.content + states.randChar}
             </p>
             <strong when={comp==='strong'} {...rest}>
-                {textContent.content + textContent.randChar}
+                {states.content + states.randChar}
             </strong>
             <Link when={comp==='a'} {...rest}>
-                {textContent.content + textContent.randChar}
+                {states.content + states.randChar}
             </Link>
             <summary when={comp==='summary'} {...rest}>
-                {textContent.content + textContent.randChar}
+                {states.content + states.randChar}
             </summary>
             <text when={comp==='text'} {...rest}>
-                {textContent.content + textContent.randChar}
+                {states.content + states.randChar}
                 {rest.children}
             </text>
             <tspan when={comp==='tspan'} {...rest}>
-                {textContent.content + textContent.randChar}
+                {states.content + states.randChar}
             </tspan>
-            <>{textContent.content + textContent.randChar}</>
+            <>{states.content + states.randChar}</>
         </Switch>
     )
 }

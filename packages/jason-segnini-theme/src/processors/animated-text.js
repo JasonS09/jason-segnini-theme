@@ -46,7 +46,6 @@ const animatedText = {
 
         node.children = []
         node.props['comp'] = node.component
-        node.props['isCoverText'] = data.isHome
 
         if (!node.props['data-speed'])
             node.props['data-speed'] = 1

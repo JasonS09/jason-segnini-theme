@@ -137,7 +137,7 @@ const Root = ({state, actions}) => {
                     }
 
                     html {
-                        font-family: 'Share Tech Mono';
+                        font-family: 'Share Tech Mono', monospace;
                         background-color: black;
                         color: white;
                     }

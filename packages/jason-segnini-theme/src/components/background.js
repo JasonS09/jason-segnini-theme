@@ -19,8 +19,8 @@ const Background = ({state}) => {
         ctx.fillRect(0, 0, w, h)
         
         const matrix = time => {
-            if ((w !== document.body.offsetWidth)
-                || (h !== document.body.offsetHeight)
+            if ((w < document.body.offsetWidth)
+                || (h < document.body.offsetHeight)
             ) {
                 ctx.clearRect(0, 0, w, h)
                 return
@@ -53,8 +53,8 @@ const Background = ({state}) => {
     }
 
     useEffect(() => {
-        if ((ref.current.width !== document.body.offsetWidth)
-            || (ref.current.height !== document.body.offsetHeight)
+        if ((ref.current.width < document.body.offsetWidth)
+            || (ref.current.height < document.body.offsetHeight)
         )
             drawMatrix(ref.current)
     }, [

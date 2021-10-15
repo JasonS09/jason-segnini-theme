@@ -1,17 +1,20 @@
 import { connect, Head, styled, css } from "frontity"
-import { expandWidth } from "../styles/keyframes"
+import { expandWidth, makeAppear } from "../styles/keyframes"
 import { select } from "../scripts/utilities"
 import { useState, useEffect, useRef } from "react"
 import dayjs from "dayjs"
 import AnimatedWrapper from "./common/animated-wrapper"
 import Comments from "./comments/comments"
+import Portrait from "../images/portrait.jpeg"
 
 const Post = ({state, actions, libraries}) => {
     const data = state.source.get(state.router.link)
     const post = state.source[data.type][data.id]
     const author = state.source.author[post.author]
     const color = state.theme.color
-    const maxHeight = state.screen.screenSize[1] - 150 - state.comments.commentsHeight.container
+    const maxHeight = data.isPost 
+        ? state.screen.screenSize[1] - 150 - state.comments.commentsHeight.container
+        : state.screen.screenSize[1] - 100
     const formattedDate = dayjs(post.date).format('DD MMMM YYYY')
     const Html2React = libraries.html2react.Component
     const [selection, setSelection] = useState('')
@@ -45,13 +48,26 @@ const Post = ({state, actions, libraries}) => {
     }, [])
 
     return (
-        <>
+        <div css={!state.screen.isMobile
+            ?
+            css`
+                display: flex;
+                gap: 10px;
+            `
+            : undefined
+        }>
+            {data.isHome 
+                && 
+                <AnimatedWrapper shadows css={imgWrapperStyles(color, state.screen.isMobile)}> 
+                    <ImgShadow> <Img src={Portrait} alt='Picture of myself.'/> </ImgShadow>
+                </AnimatedWrapper>
+            }
             <AnimatedWrapper type='polygonal' css={wrapperStyles}>
                 <Head>
                     <title>{post.title.rendered}</title>
                     <meta name="Description" content={post.excerpt.rendered}/>
                 </Head>
-                {!data.isHome && <H2>{post.title.rendered}</H2>}
+                {!data.isHome && <H1>{post.title.rendered}</H1>}
                 {data.isPost 
                     && 
                     <PostInfo color={color}>
@@ -67,10 +83,7 @@ const Post = ({state, actions, libraries}) => {
                 }
                 <PostContent
                     color={color}
-                    maxHeight={(data.isPost && state.comments.commentsHeight.container) 
-                        ? `${maxHeight}px` 
-                        : 'none'
-                    } 
+                    maxHeight={maxHeight} 
                     onMouseUp={!state.screen.isMobile
                         ? () => setSelection(select()+'')
                         : undefined
@@ -102,16 +115,65 @@ const Post = ({state, actions, libraries}) => {
                 }
             </AnimatedWrapper>
             {data.isPost && <Comments postId={data.id}/>}
-        </>
+        </div>
     )
 }
 
 export default connect(Post)
 
-const H2 = styled.h2`
-    text-align: center;
-    padding-top: 10px;
+const ImgShadow = styled.div`
+    position: relative;
+    border-radius: 3px;
+    filter: opacity(0);
+    animation: ${makeAppear()} .25s ease-out .25s forwards;
+
+    ::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        box-shadow: inset 0 0 5px black;
+    }
+`
+
+const imgWrapperStyles = (color, isMobile) => css`
+    width: fit-content;
+    padding: 10px;
+    ${isMobile && css`margin: auto;`}
     margin-bottom: 10px;
+    background-color: rgba(0,0,0,.85);
+    transition: transform .25s ease-out,
+        box-shadow .25s ease-out;
+
+    :hover {
+        box-shadow: 0 0 20px ${color};
+        transform: scale(1.01, 1.01);
+
+        ::before, ::after {
+            border-width: 2px;
+            transition: none;
+        }
+    }
+
+    ::before, ::after {
+        transition: border-width 0s .25s;
+        z-index: 1;
+    }
+`
+
+const Img = styled.img`
+    display: block;
+    max-width: 250px !important;
+    max-height: 277px;
+    border-radius: inherit;
+`
+
+const H1 = styled.h1`
+    font-family: 'Hacked';
+    text-align: center;
+    padding: 0 5px;
+    margin-bottom: 3px;
+    box-decoration-break: clone;
 `
 
 const Options = styled.div`
@@ -135,7 +197,6 @@ const PostInfo = styled.div`
     margin-bottom: 1em;
     padding: 0.5em;
     font-size: 0.8em;
-    p {margin: 0 !important;}
 
     ::before {
         content: '';
@@ -152,6 +213,9 @@ const PostInfo = styled.div`
 `
 
 const wrapperStyles = css`
+    flex: 1;
+    height: fit-content;
+
     :hover{
         ${PostInfo} {
             ::before {
@@ -162,14 +226,16 @@ const wrapperStyles = css`
         }
     }
 
-    div:nth-of-type(2) {padding-right: 5px;}
+    & > div:nth-of-type(2) {padding: 10px 5px 10px 0;}
 `
 
 const PostContent = styled.div`
-    max-height: ${props => props.maxHeight};
+    max-height: ${props => props.maxHeight}px;
     color: ${props => props.color};
     text-align: justify;
     padding: 10px 1em 10px;
     overflow-y: scroll;
     transition: max-height 1s ease-out;
+    p {margin-bottom: 1em;}
+    h1, h2, h3, h4, h5, h6 {margin-bottom: 5px;}
 `

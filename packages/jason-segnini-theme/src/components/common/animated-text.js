@@ -30,7 +30,7 @@ const AnimatedText = ({
         const char = text.charAt(states.i)
         animationSpeed.current = isFirefox ? speed : 5
     
-        if (isCoverText && char === '.') {
+        if (isCoverText && text.charAt(states?.i-1) === '.') {
             if (isFirefox)
                 animationSpeed.current = Math.random() < 0.5 ? speed*10 : speed*20
             else

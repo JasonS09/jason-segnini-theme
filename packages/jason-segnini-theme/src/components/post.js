@@ -84,7 +84,8 @@ const Post = ({state, actions, libraries}) => {
                 }
                 <PostContent
                     color={color}
-                    maxHeight={maxHeight} 
+                    maxHeight={maxHeight}
+                    isMobile={state.screen.isMobile} 
                     onMouseUp={!state.screen.isMobile
                         ? () => setSelection(select()+'')
                         : undefined
@@ -222,9 +223,19 @@ const PostContent = styled.div`
     text-align: justify;
     padding: 10px 1em 10px;
     overflow-y: scroll;
+    overflow-x: hidden;
     transition: max-height 1s ease-out;
     p {margin-bottom: 1em;}
     h1, h2, h3, h4, h5, h6 {margin-bottom: 5px;}
+    ${props => props.isMobile 
+        && css`
+            div {
+                    float: none;
+                    margin: auto;
+                    margin-bottom: 10px;
+                }
+        ` 
+    }
 `
 
 const wrapperStyles = css`

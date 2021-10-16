@@ -10,6 +10,7 @@ const CommentsForm = ({state, actions, postId, visible}) => {
     const form = state.comments.forms[postId]
     const color = !form?.errorMessage ? state.theme.color : '#d75a5a'
     const autofillColor = !form?.errorMessage ? '#628a6c' : '#8a6262'
+    const isMobile = state.screen.isMobile
     const [scale, setScale] = useState(false)
     const ref = useRef(null)
 
@@ -72,19 +73,20 @@ const CommentsForm = ({state, actions, postId, visible}) => {
                 }
                 {form?.isSubmitted 
                     && 
-                    <div css={css`text-align: center;`}>
+                    <Div>
                         Comment submitted succesfully! Please wait until it's approved.
                         <br/>
                         <br/>
-                    </div>
+                    </Div>
                 }
                 <label>
                     Name:
-                    <AnimatedWrapper color={color} css={wrapperInputStyles}>
+                    <AnimatedWrapper color={color} css={wrapperInputStyles(isMobile)}>
                         <Input
                             name='author_name'
                             color={color}
                             autofillColor={autofillColor}
+                            isMobile={isMobile}
                             value={form?.fields?.authorName || ''}
                             onFocus={() => setScale(true)}
                             onBlur={() => setScale(false)}
@@ -102,11 +104,12 @@ const CommentsForm = ({state, actions, postId, visible}) => {
                 <br/>
                 <label>
                     Email:
-                    <AnimatedWrapper color={color} css={wrapperInputStyles}>
+                    <AnimatedWrapper color={color} css={wrapperInputStyles(isMobile)}>
                         <Input
                             name='author_email'
                             color={color}
                             autofillColor={autofillColor}
+                            isMobile={isMobile}
                             value={form?.fields?.authorEmail || ''}
                             onFocus={() => setScale(true)}
                             onBlur={() => setScale(false)}
@@ -146,7 +149,7 @@ const CommentsForm = ({state, actions, postId, visible}) => {
                     {form?.errors?.content}
                 </label>
                 <AnimatedWrapper shadows color={color} css={css`
-                    ${wrapperInputStyles}
+                    ${wrapperInputStyles()}
                     margin: auto;
                 `}> 
                     <Button 
@@ -195,8 +198,8 @@ const wrapperStyles = (color, scale, visible) => css`
     }
 `
 
-const wrapperInputStyles = css`
-    width: fit-content;
+const wrapperInputStyles = isMobile => css`
+    width: ${isMobile ? '100%' : 'fit-content'};
     height: fit-content;
     ::before, ::after {transition: border-width 0s .25s;}
 `
@@ -213,6 +216,7 @@ const Button = styled.button`
 
 const Input = styled.input`
     font-size: medium;
+    width: ${props => props.isMobile ? '100%' : '20vw'};
     ${inputWithWrapper}
     ${props => input(props.color, props.autofillColor)}
     padding-left: 2px;
@@ -233,7 +237,6 @@ const Textarea = styled.textarea`
 
 const Form = styled.form`
     position: relative;
-    color: ${props => props.color};
     padding: 1em;
     z-index: 1;
 `

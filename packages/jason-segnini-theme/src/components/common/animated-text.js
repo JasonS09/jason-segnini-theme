@@ -24,11 +24,10 @@ const AnimatedText = ({
         animationFinished: false
     });
     const animationSpeed = useRef(isFirefox ? speed : 5)
-    let timeout = 0
-    let maxTimeout = 0
 
     const writeText = () => {
-        let char = text.charAt(states.i)
+        let timeout = 0
+        const char = text.charAt(states.i)
         animationSpeed.current = isFirefox ? speed : 5
     
         if (isCoverText && char === '.') {
@@ -58,6 +57,8 @@ const AnimatedText = ({
                 j: 0
             })
         )
+
+        return timeout
     }
 
     useEffect(() => {
@@ -67,13 +68,12 @@ const AnimatedText = ({
                     states => (
                         {...states, content: text}
                     )
-                )
-                return      
+                )   
             }
-        }
-        
+        }   
         if (isWelcomeReceived || data.isHome) {
             if (!states.animationFinished) {
+                let timeout = 0
                 if (states.j < animationSpeed.current) {
                     timeout = setTimeout(
                         setStates,
@@ -88,13 +88,12 @@ const AnimatedText = ({
                             j: isFirefox ? animationSpeed.current : states.j + 1
                         })
                     )
-                    return
                 }
-                if (text) writeText()
-                return
+                else if (text) timeout = writeText()
+                return () => clearTimeout(timeout)
             }
 
-            if (states.randChar !== '')
+            else if (states.randChar !== '')
                 setStates(states => ({...states, randChar: ''}))
 
             if (!isWelcomeReceived) 
@@ -123,7 +122,7 @@ const AnimatedText = ({
 
     useEffect(() => {
         if (!data.isHome || 's' in data.query) {
-            maxTimeout = setTimeout(
+            const maxTimeout = setTimeout(
                 setStates,
                 1000,
                 states => ({
@@ -131,12 +130,7 @@ const AnimatedText = ({
                     animationFinished: true
                 })
             )
-            return
-        }
-            
-        return () => {
-            clearTimeout(timeout)
-            clearTimeout(maxTimeout)
+            return () => clearTimeout(maxTimeout)
         }
     }, [])
 

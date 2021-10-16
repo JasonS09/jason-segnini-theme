@@ -6,6 +6,7 @@ import dayjs from "dayjs"
 import AnimatedWrapper from "./common/animated-wrapper"
 import Comments from "./comments/comments"
 import Portrait from "../images/portrait.jpeg"
+import ContactForm from "./contact-form"
 
 const Post = ({state, actions, libraries}) => {
     const data = state.source.get(state.router.link)
@@ -13,7 +14,7 @@ const Post = ({state, actions, libraries}) => {
     const author = state.source.author[post.author]
     const color = state.theme.color
     const maxHeight = data.isPost 
-        ? state.screen.screenSize[1] - 150 - state.comments.commentsHeight.container
+        ? state.screen.screenSize[1] - 160 - state.comments.commentsHeight.container
         : state.screen.screenSize[1] - 100
     const formattedDate = dayjs(post.date).format('DD MMMM YYYY')
     const Html2React = libraries.html2react.Component
@@ -90,7 +91,10 @@ const Post = ({state, actions, libraries}) => {
                     }
                     ref={ref}
                 >
-                    <Html2React html={post.content.rendered}/>
+                    {state.router.link === '/contact/'  
+                        ? <ContactForm/>
+                        : <Html2React html={post.content.rendered}/>
+                    }
                 </PostContent>
                 {data.isPost
                     &&
@@ -212,6 +216,17 @@ const PostInfo = styled.div`
     }
 `
 
+const PostContent = styled.div`
+    max-height: ${props => props.maxHeight}px;
+    color: ${props => props.color};
+    text-align: justify;
+    padding: 10px 1em 10px;
+    overflow-y: scroll;
+    transition: max-height 1s ease-out;
+    p {margin-bottom: 1em;}
+    h1, h2, h3, h4, h5, h6 {margin-bottom: 5px;}
+`
+
 const wrapperStyles = css`
     flex: 1;
     height: fit-content;
@@ -224,18 +239,15 @@ const wrapperStyles = css`
                 transition: none;
             }
         }
+        
+        ${PostContent} {
+            form div::before,
+            form div::after {
+                border-width: 2px;
+                transition: none;
+            }
+        }   
     }
 
     & > div:nth-of-type(2) {padding: 10px 5px 10px 0;}
-`
-
-const PostContent = styled.div`
-    max-height: ${props => props.maxHeight}px;
-    color: ${props => props.color};
-    text-align: justify;
-    padding: 10px 1em 10px;
-    overflow-y: scroll;
-    transition: max-height 1s ease-out;
-    p {margin-bottom: 1em;}
-    h1, h2, h3, h4, h5, h6 {margin-bottom: 5px;}
 `

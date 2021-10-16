@@ -4,8 +4,7 @@ import {
     expandWidth, 
     expandHeight, 
     glow, 
-    makeAppear,
-    glowForPolygon
+    makeAppear
 } from "../../styles/keyframes"
 
 const AnimatedWrapper = ({
@@ -21,17 +20,18 @@ const AnimatedWrapper = ({
     const data = state.source.get(state.router.link)
     const [states, setStates] = useState({})
     const ref = useRef(null)
-    let timeout = 0
 
     useEffect(() => {
-        if (states.reanimate)
-            timeout = setTimeout(() => 
+        if (states.reanimate) {
+            const timeout = setTimeout(() => 
                 setStates(states => ({
                     ...states,
                     reanimate: false
                 })), 
                 1000
             )
+            return () => clearTimeout(timeout)
+        }
     }, [states.reanimate])
 
     useEffect(() => {
@@ -40,7 +40,6 @@ const AnimatedWrapper = ({
             width: ref.current.clientWidth,
             height: ref.current.clientHeight
         })
-        return () => clearTimeout(timeout)
     }, [data.isError])
 
     switch(type) {

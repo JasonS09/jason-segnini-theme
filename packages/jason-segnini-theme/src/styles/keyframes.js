@@ -21,29 +21,6 @@ export const glow = (
     to {box-shadow: 0 0 ${toBlur}px ${toSpread}px ${color};}
 `
 
-export const glowForPolygon = (
-    color,
-    from = 3, 
-    to = 7, 
-    fromOpacity = .85,
-    toOpacity = .85
-) => keyframes`
-    from {
-        filter: drop-shadow(0 0 ${from}px ${color}) 
-            opacity(${fromOpacity})
-    }
-    
-    to {
-        filter: drop-shadow(0 0 ${to}px ${color}) 
-            opacity(${toOpacity})
-    }
-`
-
-export const glowForText = color => keyframes`
-    from {text-shadow: 0 0 2px ${color}}
-    to {text-shadow: 0 0 5px ${color}}
-`
-
 export const makeAppear = (opacity = 1) => keyframes`
     from {filter: opacity(0)}
     to {filter: opacity(${opacity})}

@@ -1,5 +1,5 @@
-import { connect, styled, css } from "frontity"
-import { glowForPolygon, draw } from "../styles/keyframes"
+import { connect, styled, css, keyframes } from "frontity"
+import { draw } from "../styles/keyframes"
 import { useRef, useState, useEffect } from "react"
 import AnimatedText from "./common/animated-text"
 import Lobo from "./common/lobo"
@@ -41,10 +41,13 @@ const Logo = ({state}) => {
     return (
             <Div>
                 <Lobo 
-                    forceError={form?.errorMessage && true} 
+                    forceError={(
+                        form?.errorMessage || state.theme.contactError
+                    ) && true} 
                     css={loboStyles(
                         glowColor,
-                        form?.errorMessage && true
+                        (form?.errorMessage || state.theme.contactError) 
+                            && true
                     )}
                 />
                 <Svg width="143" height="173">
@@ -130,6 +133,11 @@ const Logo = ({state}) => {
 
 export default connect(Logo)
 
+const glowForPolygon = (color, from, to) => keyframes`
+    from {filter: drop-shadow(0 0 ${from}px ${color})}
+    to {filter: drop-shadow(0 0 ${to}px ${color})}
+`
+
 const textStyles = color => css`
     fill: ${color};
     font-family: 'Hacked';
@@ -202,7 +210,7 @@ const common = (
     stroke-linecap: round;
     animation:
         ${glowForPolygon(
-            glowColor, 7, 14, 1, 1
+            glowColor, 7, 14
         )} 3s ease-out ${delay}s forwards,
         ${draw} .25s ease-out ${delay}s forwards;
 `

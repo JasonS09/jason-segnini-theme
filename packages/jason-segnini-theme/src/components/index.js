@@ -46,19 +46,27 @@ const Root = ({state, actions}) => {
             window.innerWidth, window.innerHeight
         )
 
-        if (window.innerWidth <= 412) {
+        if (window.screen.width <= 412) {
             if (state.theme.showArchive)
                 actions.theme.toggleArchive()
             
             if (state.theme.showMenu)
                 actions.theme.toggleMenu()
+
+            actions.screen.setAsMobile()
         }
 
         window.addEventListener(
             'resize', 
-            () => actions.screen.getScreenSize(
-                window.innerWidth, window.innerHeight
-            )
+            () => {
+                if (window.innerWidth <= 412)
+                    actions.screen.setAsMobile()
+                else actions.screen.setAsMobile(false)
+                actions.screen.getScreenSize(
+                    window.innerWidth,
+                    window.innerHeight
+                )
+            }
         )
     }, [])
 

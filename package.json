@@ -27,7 +27,6 @@
     "frontity": "^1.17.0",
     "html-entities": "^1.4.0",
     "jason-segnini-theme": "file:packages/jason-segnini-theme",
-    "marked": "^3.0.7",
     "swipe-event-listener": "^1.2.1"
   },
   "devDependencies": {

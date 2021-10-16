@@ -31,7 +31,6 @@ const Header = ({state, actions, libraries}) => {
 
     const [contentWidth, setContentWidth] = useState(0)
     const refs = useRef({prevActive: active})
-    let timeout = 0
     let menu = [...menuStates]
     let changeState = false
 
@@ -69,8 +68,10 @@ const Header = ({state, actions, libraries}) => {
             }
         })
 
-        if (changeState)
-            timeout = setTimeout(setMenuStates, 30, menu)
+        if (changeState) {
+            const timeout = setTimeout(setMenuStates, 30, menu)
+            return () => clearTimeout(timeout)
+        }
     }, [menuStates])
 
     useEffect(() => {
@@ -85,7 +86,6 @@ const Header = ({state, actions, libraries}) => {
                         ).paddingRight)
         const width = headerContent.clientWidth
         setContentWidth(width-padding)
-        return () => clearTimeout(timeout)
     }, [])
 
     return (

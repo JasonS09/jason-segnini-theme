@@ -13,7 +13,7 @@ const jasonSegniniTheme = {
             isWelcomeReceived: false,
             showMenu: true,
             showArchive: true,
-            animatingPostText: false,
+            contactError: false,
             color: '#60d75a',
         },
 
@@ -53,9 +53,9 @@ const jasonSegniniTheme = {
 
             setThemeColor: ({state}) => color =>
                 state.theme.color = color,
-
-            toggleAnimatePostText: ({state}) => 
-                state.theme.animatingPostText = !state.theme.animatingPostText   
+                
+            setContactError: ({state}) => isError => 
+                state.theme.contactError = isError
         },
 
         comments: {
@@ -76,8 +76,10 @@ const jasonSegniniTheme = {
             getScreenSize: ({state}) => (width, height) => {
                 state.screen.screenSize[0] = width
                 state.screen.screenSize[1] = height
-                state.screen.isMobile = width <= 412 ? true : false
-            }
+            },
+
+            setAsMobile: ({state}) => (isMobile = true) =>
+                state.screen.isMobile = isMobile
         }
     },
     libraries: {

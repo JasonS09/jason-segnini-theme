@@ -1,6 +1,6 @@
 import { connect, styled, css } from "frontity"
 import { useState, useEffect } from "react"
-import { glow, glowForPolygon, makeAppear } from "../../styles/keyframes"
+import { glow, makeAppear } from "../../styles/keyframes"
 import { center } from "../../styles/common"
 import AnimatedText from "./animated-text"
 import AnimatedWrapper from "./animated-wrapper"
@@ -14,14 +14,17 @@ const Hide = ({
 }) => {
     const color = state.theme.color
     const [hideStyles, setHideStyles] = useState(false)
-    let timeout = 0
 
-    if (isComponentHidden && !hideStyles) 
-        timeout = setTimeout(() => {setHideStyles(true)}, 725)
-    else if (!isComponentHidden)
-        timeout = setTimeout(() => {setHideStyles(false)}, 300)
+    useEffect(() => {
+        let timeout = 0
 
-    useEffect(() => () => clearTimeout(timeout), [])
+        if (isComponentHidden && !hideStyles) 
+            timeout = setTimeout(() => {setHideStyles(true)}, 725)
+        else if (!isComponentHidden)
+            timeout = setTimeout(() => {setHideStyles(false)}, 300)
+        
+        return () => clearTimeout(timeout)
+    }, [isComponentHidden, hideStyles])
 
     return (
         <Switch>
@@ -233,10 +236,9 @@ const OuterWrapper = styled.div`
         }
 
         ${Shadow} {
-            animation: 
-                ${props => 
-                    glowForPolygon(props.color, 5, 9)
-                } .25s ease-out forwards;
+            filter: 
+                drop-shadow(0 0 9px ${props => props.color}) 
+                opacity(.85)
         }
     }
 `

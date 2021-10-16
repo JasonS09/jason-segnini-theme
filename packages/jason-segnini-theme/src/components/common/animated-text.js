@@ -6,7 +6,7 @@ import Switch from "@frontity/components/switch"
 const AnimatedText = ({
     state,
     actions,
-    'data-speed': speed = 5,
+    'data-speed': speed = 50,
     'data-is-cover-text': isCoverText,
     comp,
     text = '',
@@ -24,6 +24,7 @@ const AnimatedText = ({
         animationFinished: false
     });
     const animationSpeed = useRef(isFirefox ? speed : 5)
+    const animateRandon = !isFirefox && !isCoverText
 
     const writeText = () => {
         let timeout = 0
@@ -31,13 +32,13 @@ const AnimatedText = ({
         animationSpeed.current = isFirefox ? speed : 5
     
         if (isCoverText && text.charAt(states?.i-1) === '.') {
-            if (isFirefox)
+            if (!animateRandon)
                 animationSpeed.current = Math.random() < 0.5 ? speed*10 : speed*20
             else
                 animationSpeed.current = Math.random() < 0.5 ? 10 : 20
         }
 
-        if (isFirefox)
+        if (!animateRandon)
             timeout = setTimeout(
                 setStates,
                 animationSpeed.current,
@@ -80,12 +81,12 @@ const AnimatedText = ({
                         speed,
                         states => ({
                             ...states, 
-                            randChar: !isFirefox 
+                            randChar: animateRandon 
                                 ? String.fromCharCode(
                                     Math.random()*128
                                 )
                                 : '',
-                            j: isFirefox ? animationSpeed.current : states.j + 1
+                            j: animateRandon ? animationSpeed.current : states.j + 1
                         })
                     )
                 }

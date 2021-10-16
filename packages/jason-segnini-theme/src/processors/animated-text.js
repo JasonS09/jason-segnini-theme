@@ -48,7 +48,7 @@ const animatedText = {
         node.props['comp'] = node.component
 
         if (!node.props['data-speed'])
-            node.props['data-speed'] = 1
+            node.props['data-speed'] = 20
 
         node.component = AnimatedText
         return node

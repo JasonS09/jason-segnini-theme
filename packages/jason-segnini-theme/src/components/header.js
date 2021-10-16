@@ -125,6 +125,9 @@ const Header = ({state, actions, libraries}) => {
                                 onClick={() =>{
                                     if (item.link !== active)
                                         refs.current.prevActive = active
+                                    
+                                    if (state.screen.isMobile)
+                                        actions.theme.toggleMenu()
                                 }}
                                 css={setMenuElementStyle(
                                     item.link, 

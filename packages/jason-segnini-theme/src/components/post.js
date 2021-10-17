@@ -168,6 +168,7 @@ const imgWrapperStyles = (color, isMobile) => css`
 
 const Img = styled.img`
     display: block;
+    height: 34vh;
     max-width: 250px !important;
     max-height: 277px;
     border-radius: inherit;

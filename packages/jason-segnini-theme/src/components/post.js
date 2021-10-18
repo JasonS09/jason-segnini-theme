@@ -264,6 +264,11 @@ const PostContent = styled.div`
     transition: max-height 1s ease-out;
     p {margin-bottom: 1em;}
     h1, h2, h3, h4, h5, h6 {margin-bottom: 5px;}
+
+    li {
+        margin-left: 5px;
+        margin-bottom: 10px;
+    }
     
     ${props => props.isMobile 
         && css`

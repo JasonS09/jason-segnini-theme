@@ -93,7 +93,7 @@ const Root = ({state, actions}) => {
             <Head>
                 <title>Jason Segnini Theme</title>
                 <meta
-                    name='Description'
+                    name='description'
                     content='Jason Segnini theme, developed with Frontity.'
                 />
             </Head>

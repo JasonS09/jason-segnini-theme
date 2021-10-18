@@ -5,13 +5,13 @@ import { useState, useEffect, useRef } from "react"
 import dayjs from "dayjs"
 import AnimatedWrapper from "./common/animated-wrapper"
 import Comments from "./comments/comments"
-import Portrait from "../images/portrait.jpeg"
 import ContactForm from "./contact-form"
 
 const Post = ({state, actions, libraries}) => {
     const data = state.source.get(state.router.link)
     const post = state.source[data.type][data.id]
     const author = state.source.author[post.author]
+    const mediaUrl = state.source.attachment[post.featured_media]?.source_url
     const color = state.theme.color
     const maxHeight = data.isPost 
         ? state.screen.screenSize[1] - 160 - state.comments.commentsHeight.container
@@ -60,13 +60,16 @@ const Post = ({state, actions, libraries}) => {
             {data.isHome 
                 && 
                 <AnimatedWrapper shadows css={imgWrapperStyles(color, state.screen.isMobile)}> 
-                    <ImgShadow> <Img src={Portrait} alt='Picture of myself.'/> </ImgShadow>
+                    <ImgShadow> 
+                        <Img src={mediaUrl} alt='Picture of myself.'/> 
+                    </ImgShadow>
                 </AnimatedWrapper>
             }
             <AnimatedWrapper type='polygonal' css={wrapperStyles}>
                 <Head>
                     <title>{post.title.rendered}</title>
-                    <meta name="Description" content={post.excerpt.rendered}/>
+                    <meta name="description" content={post.excerpt.rendered}/>
+                    <meta name="image" content={mediaUrl}/>
                 </Head>
                 {!data.isHome && <H1>{post.title.rendered}</H1>}
                 {data.isPost 
@@ -143,6 +146,7 @@ const ImgShadow = styled.div`
 
 const imgWrapperStyles = (color, isMobile) => css`
     width: fit-content;
+    height: fit-content;
     padding: 10px;
     ${isMobile && css`margin: auto;`}
     margin-bottom: 10px;
@@ -228,6 +232,7 @@ const PostContent = styled.div`
     transition: max-height 1s ease-out;
     p {margin-bottom: 1em;}
     h1, h2, h3, h4, h5, h6 {margin-bottom: 5px;}
+    
     ${props => props.isMobile 
         && css`
             div {

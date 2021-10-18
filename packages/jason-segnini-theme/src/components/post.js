@@ -13,26 +13,40 @@ const Post = ({state, actions, libraries}) => {
     const author = state.source.author[post.author]
     const mediaUrl = state.source.attachment[post.featured_media]?.source_url
     const color = state.theme.color
-    const maxHeight = data.isPost 
-        ? state.screen.screenSize[1] - 160 - state.comments.commentsHeight.container
-        : state.screen.screenSize[1] - 100
     const formattedDate = dayjs(post.date).format('DD MMMM YYYY')
     const Html2React = libraries.html2react.Component
-    const [selection, setSelection] = useState('')
-    const ref = useRef(null)
+    const [states, setStates] = useState({})
+    const maxHeight = data.isPost 
+    ? state.screen.screenSize[1]
+        - (states.titleHeight || 0)
+        - (states.infoHeight || 0)
+        - state.comments.commentsHeight.container
+        - 32-25-13-3
+    : state.screen.screenSize[1] - 100
+    const refs = useRef({})
 
     const onSelectionChange = () => {
         const selected = select()+''
 
-        if (ref.current.textContent.includes(
+        if (ref.current.postcontent.textContent.includes(
                 selected.replace(/[\n\r]/g, '')
             )) {
-            setSelection(selected)
+            setStates(states => ({
+                ...states,
+                selection: selected
+            }))
         }
-        else setSelection('')
+        else setStates(states => ({
+            ...states,
+            selection: ''
+        }))
     }
 
-    const onMouseDown = () => setSelection('')
+    const onMouseDown = () => 
+        setStates(states => ({
+            ...states,
+            selection: ''
+        }))
 
     useEffect(() => {
         if (data.isPost) {
@@ -40,6 +54,12 @@ const Post = ({state, actions, libraries}) => {
                 document.addEventListener('selectionchange', onSelectionChange)
             else
                 window.addEventListener('mousedown', onMouseDown)
+
+            setStates(states => ({
+                ...states,
+                titleHeight: refs.current.title.clientHeight,
+                infoHeight: refs.current.postinfo.clientHeight
+            }))
 
             return () => {
                 document.removeEventListener('selectionchange', onSelectionChange)
@@ -71,10 +91,19 @@ const Post = ({state, actions, libraries}) => {
                     <meta name="description" content={post.excerpt.rendered}/>
                     <meta name="image" content={mediaUrl}/>
                 </Head>
-                {!data.isHome && <H1>{post.title.rendered}</H1>}
+                {!data.isHome 
+                    && 
+                    <H1 
+                        ref={title => refs.current.title = title}
+                    >{post.title.rendered}
+                    </H1>
+                }
                 {data.isPost 
                     && 
-                    <PostInfo color={color}>
+                    <PostInfo 
+                        ref={postinfo => refs.current.postinfo = postinfo}
+                        color={color}
+                    >
                         <p>
                             <strong>Posted: </strong>
                             {formattedDate}
@@ -90,10 +119,13 @@ const Post = ({state, actions, libraries}) => {
                     maxHeight={maxHeight}
                     isMobile={state.screen.isMobile} 
                     onMouseUp={!state.screen.isMobile
-                        ? () => setSelection(select()+'')
+                        ? () => setStates(states => ({
+                            ...states,
+                            selection: select()+''
+                        }))
                         : undefined
                     }
-                    ref={ref}
+                    ref={postcontent => refs.current.postcontent = postcontent}
                 >
                     {state.router.link === '/contact/'  
                         ? <ContactForm/>
@@ -103,7 +135,7 @@ const Post = ({state, actions, libraries}) => {
                 {data.isPost
                     &&
                     <Options color={color}>
-                        {selection
+                        {states.selection
                             &&
                             <span 
                                 onMouseDown={() =>
@@ -112,7 +144,7 @@ const Post = ({state, actions, libraries}) => {
                                         {content: 
                                             '<blockquote>\r\n'
                                                 +
-                                                `${author.name} said:\r\n\r\n${selection}\r\n`
+                                                `${author.name} said:\r\n\r\n${states.selection}\r\n`
                                             +
                                             '</blockquote>'
                                         }

@@ -80,7 +80,7 @@ const Comments = ({state, actions, postId}) => {
         actions.comments.getCommentsContainerHeight(
             refs.current.container.clientHeight - heightTohide
         ),
-        [states.isComponentHidden, states.isCommentsForm]
+        [heightTohide]
     )
     return (
         <Container 

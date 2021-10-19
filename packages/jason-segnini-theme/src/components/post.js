@@ -28,7 +28,7 @@ const Post = ({state, actions, libraries}) => {
     const onSelectionChange = () => {
         const selected = select()+''
 
-        if (ref.current.postcontent.textContent.includes(
+        if (refs.current.postcontent.textContent.includes(
                 selected.replace(/[\n\r]/g, '')
             )) {
             setStates(states => ({
@@ -101,8 +101,8 @@ const Post = ({state, actions, libraries}) => {
                 {data.isPost 
                     && 
                     <PostInfo 
-                        ref={postinfo => refs.current.postinfo = postinfo}
                         color={color}
+                        ref={postinfo => refs.current.postinfo = postinfo}
                     >
                         <p>
                             <strong>Posted: </strong>

@@ -11,6 +11,7 @@ const AnimatedText = ({
     comp,
     text = '',
     reanimate,
+    onAnimationFinished,
     ...rest
 }) => {
     const data = state.source.get(state.router.link)
@@ -18,11 +19,11 @@ const AnimatedText = ({
     const isFirefox = typeof(InstallTrigger) !== 'undefined'
     const [states, setStates] = useState({
         content: isFirefox ? text.charAt(0) : '',
-        randChar: !isFirefox ? 'j'  : '',
+        randChar: '',
         i: isFirefox ? 1 : 0,
         j: 0,
         animationFinished: false
-    });
+    })
     const animationSpeed = useRef(isFirefox ? speed : 5)
     const animateRandon = !isFirefox && !isCoverText
 
@@ -72,9 +73,11 @@ const AnimatedText = ({
                 )   
             }
         }   
+
         if (isWelcomeReceived || data.isHome) {
             if (!states.animationFinished) {
                 let timeout = 0
+
                 if (states.j < animationSpeed.current) {
                     timeout = setTimeout(
                         setStates,
@@ -91,9 +94,9 @@ const AnimatedText = ({
                     )
                 }
                 else if (text) timeout = writeText()
+
                 return () => clearTimeout(timeout)
             }
-
             else if (states.randChar !== '')
                 setStates(states => ({...states, randChar: ''}))
 
@@ -103,9 +106,10 @@ const AnimatedText = ({
     }, [states, text])
 
     useEffect(() => {
-        if (states.i === text.length) 
+        if (states.i === text.length)
             setStates(states => ({
                 ...states,
+                content: text,
                 animationFinished: true
             }))
     }, [states.i])
@@ -114,12 +118,18 @@ const AnimatedText = ({
         if (states.animationFinished && reanimate)
             setStates({
                 content: '',
-                randChar: 'j',
+                randChar: '',
                 i: 0,
                 j: 0,
                 animationFinished: false
             })
     }, [reanimate])
+
+    useEffect(() => {           
+        if (states.animationFinished
+            && typeof(onAnimationFinished) === 'function') 
+            onAnimationFinished()
+    }, [states.animationFinished])
 
     useEffect(() => {
         if (!data.isHome || 's' in data.query) {
@@ -128,9 +138,11 @@ const AnimatedText = ({
                 1000,
                 states => ({
                     ...states,
+                    content: text,
                     animationFinished: true
                 })
             )
+
             return () => clearTimeout(maxTimeout)
         }
     }, [])

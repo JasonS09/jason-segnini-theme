@@ -2,8 +2,7 @@ import { connect, styled, css } from "frontity"
 import {
     Fragment, 
     useState, 
-    useRef, 
-    useEffect
+    useRef
 } from "react"
 import AnimatedText from "../common/animated-text"
 
@@ -34,19 +33,31 @@ const CategoryList = ({
             ? details.clientHeight - content.clientHeight
             : details.clientHeight + content.clientHeight
 
-    useEffect(() => {
-        let reanimateListItemWithHeights = {}
+    const getInitDetailsHeight = category => {
+        const det = details.current[category]
+        setReanimateListItem(reanimateListItem => ({
+            ...reanimateListItem,
+            [category]: {detailsHeight: det.clientHeight}
+        }))
+    }
 
-        Object.keys(details.current).forEach(category => {
-            const det = details.current[category]
-            reanimateListItemWithHeights = {
-                ...reanimateListItemWithHeights,
-                [category]: {detailsHeight: det.clientHeight}
+    const onSummaryClick = (e, category) => {
+        e.preventDefault()
+        if (!reanimateListItem[category].detailsHeight) return
+        const det = details.current[category]
+        det.open = true
+        setReanimateListItem(reanimateListItem => ({
+            ...reanimateListItem, 
+            [category]: {
+                reanimate: !reanimateListItem[category].reanimate,
+                detailsHeight: calculateDetailsHeight(
+                    det, 
+                    category, 
+                    det.firstElementChild.nextElementSibling
+                )
             }
-        })
-
-        setReanimateListItem(reanimateListItemWithHeights)
-    }, [])
+        }))
+    }
 
     return (
         <Items color={color} {...rest}>
@@ -63,22 +74,8 @@ const CategoryList = ({
                                 key={`summary_${category.id}`} 
                                 text={category.name}
                                 comp='summary'
-                                onClick={e => {
-                                    const det = details.current[category.id]
-                                    e.preventDefault()
-                                    det.open = true
-                                    setReanimateListItem(reanimateListItem => ({
-                                        ...reanimateListItem, 
-                                        [category.id]: {
-                                            reanimate: !reanimateListItem[category.id].reanimate,
-                                            detailsHeight: calculateDetailsHeight(
-                                                det, 
-                                                category.id, 
-                                                det.firstElementChild.nextElementSibling
-                                            )
-                                        }
-                                    }))
-                                }}
+                                onAnimationFinished={() => getInitDetailsHeight(category.id)}
+                                onClick={e => onSummaryClick(e, category.id)}
                                 css={css`cursor: pointer`}
                             />
                             <Ul key={`list_${category.id}`}>

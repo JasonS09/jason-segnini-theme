@@ -34,7 +34,7 @@ const CategoryList = ({
             ? details.clientHeight - content.clientHeight
             : details.clientHeight + content.clientHeight
 
-    useEffect(() => {
+    const setHeights = () => {
         let reanimateListItemWithHeights = {}
 
         Object.keys(details.current).forEach(category => {
@@ -46,6 +46,11 @@ const CategoryList = ({
         })
 
         setReanimateListItem(reanimateListItemWithHeights)
+    }
+
+    useEffect(() => {
+        const timeout = setTimeout(setHeights, 2000)
+        return () => clearTimeout(timeout)
     }, [])
 
     return (

@@ -17,12 +17,12 @@ const Post = ({state, actions, libraries}) => {
     const Html2React = libraries.html2react.Component
     const [states, setStates] = useState({})
     const maxHeight = data.isPost 
-    ? state.screen.screenSize[1]
-        - (states.titleHeight || 0)
-        - (states.infoHeight || 0)
-        - state.comments.commentsHeight.container
-        - 32-25-13-3
-    : state.screen.screenSize[1] - 100
+        ? state.screen.screenSize[1]
+            - (states.titleHeight || 0)
+            - (states.infoHeight || 0)
+            - state.comments.commentsHeight.container
+            - 32-25-13-3
+        : state.screen.screenSize[1] - 100
     const refs = useRef({})
 
     const onSelectionChange = () => {
@@ -50,16 +50,30 @@ const Post = ({state, actions, libraries}) => {
 
     useEffect(() => {
         if (data.isPost) {
+            const titleResizeObserver = new ResizeObserver(entries => 
+                setStates(states => ({
+                    ...states,
+                    titleHeight: entries[0].contentRect.height
+                }))
+            )
+
+            setStates(states => ({
+                ...states,
+                infoHeight: refs.current.postinfo.clientHeight
+            }))
+
+            titleResizeObserver.observe(refs.current.title)
+
+            return () => titleResizeObserver.disconnect()
+        }
+    }, [data.isHome])
+
+    useEffect(() => {
+        if (data.isPost) {
             if (state.screen.isMobile)
                 document.addEventListener('selectionchange', onSelectionChange)
             else
                 window.addEventListener('mousedown', onMouseDown)
-
-            setStates(states => ({
-                ...states,
-                titleHeight: refs.current.title.clientHeight,
-                infoHeight: refs.current.postinfo.clientHeight
-            }))
 
             return () => {
                 document.removeEventListener('selectionchange', onSelectionChange)
@@ -69,93 +83,98 @@ const Post = ({state, actions, libraries}) => {
     }, [])
 
     return (
-        <div css={!state.screen.isMobile
-            ?
-            css`
-                display: flex;
-                gap: 10px;
-            `
-            : undefined
-        }>
-            {data.isHome 
-                && 
-                <AnimatedWrapper shadows css={imgWrapperStyles(color, state.screen.isMobile)}> 
-                    <ImgShadow> 
-                        <Img src={mediaUrl} alt='Picture of myself.'/> 
-                    </ImgShadow>
-                </AnimatedWrapper>
-            }
-            <AnimatedWrapper type='polygonal' css={wrapperStyles}>
-                <Head>
-                    <title>{post.title.rendered}</title>
-                    <meta name="description" content={post.excerpt.rendered}/>
-                    <meta name="image" content={mediaUrl}/>
-                </Head>
-                {!data.isHome 
-                    && 
-                    <H1 
-                        ref={title => refs.current.title = title}
-                    >{post.title.rendered}
-                    </H1>
-                }
-                {data.isPost 
-                    && 
-                    <PostInfo 
-                        color={color}
-                        ref={postinfo => refs.current.postinfo = postinfo}
-                    >
-                        <p>
-                            <strong>Posted: </strong>
-                            {formattedDate}
-                        </p>
-                        <p>
-                            <strong>Author: </strong>
-                            {author.name}
-                        </p>
-                    </PostInfo>
-                }
-                <PostContent
-                    color={color}
-                    maxHeight={maxHeight}
-                    isMobile={state.screen.isMobile} 
-                    onMouseUp={!state.screen.isMobile
-                        ? () => setStates(states => ({
-                            ...states,
-                            selection: select()+''
-                        }))
-                        : undefined
+        <>
+            {data.isReady 
+                &&
+                <div css={!state.screen.isMobile
+                    ?
+                    css`
+                        display: flex;
+                        gap: 10px;
+                    `
+                    : undefined
+                }>
+                    {data.isHome 
+                        && 
+                        <AnimatedWrapper shadows css={imgWrapperStyles(color, state.screen.isMobile)}> 
+                            <ImgShadow> 
+                                <Img src={mediaUrl} alt='Picture of myself.'/> 
+                            </ImgShadow>
+                        </AnimatedWrapper>
                     }
-                    ref={postcontent => refs.current.postcontent = postcontent}
-                >
-                    {state.router.link === '/contact/'  
-                        ? <ContactForm/>
-                        : <Html2React html={post.content.rendered}/>
-                    }
-                </PostContent>
-                {data.isPost
-                    &&
-                    <Options color={color}>
-                        {states.selection
-                            &&
-                            <span 
-                                onMouseDown={() =>
-                                    actions.comments.updateFields(
-                                        data.id,
-                                        {content: 
-                                            '<blockquote>\r\n'
-                                                +
-                                                `${author.name} said:\r\n\r\n${states.selection}\r\n`
-                                            +
-                                            '</blockquote>'
-                                        }
-                                    )}
-                            >Quote</span>
+                    <AnimatedWrapper type='polygonal' css={wrapperStyles}>
+                        <Head>
+                            <title>{post.title.rendered}</title>
+                            <meta name="description" content={post.excerpt.rendered}/>
+                            <meta name="image" content={mediaUrl}/>
+                        </Head>
+                        {!data.isHome 
+                            && 
+                            <H1 
+                                ref={title => refs.current.title = title}
+                            >{post.title.rendered}
+                            </H1>
                         }
-                    </Options>
-                }
-            </AnimatedWrapper>
-            {data.isPost && <Comments postId={data.id}/>}
-        </div>
+                        {data.isPost 
+                            && 
+                            <PostInfo 
+                                color={color}
+                                ref={postinfo => refs.current.postinfo = postinfo}
+                            >
+                                <p>
+                                    <strong>Posted: </strong>
+                                    {formattedDate}
+                                </p>
+                                <p>
+                                    <strong>Author: </strong>
+                                    {author.name}
+                                </p>
+                            </PostInfo>
+                        }
+                        <PostContent
+                            color={color}
+                            maxHeight={maxHeight}
+                            isMobile={state.screen.isMobile} 
+                            onMouseUp={!state.screen.isMobile
+                                ? () => setStates(states => ({
+                                    ...states,
+                                    selection: select()+''
+                                }))
+                                : undefined
+                            }
+                            ref={postcontent => refs.current.postcontent = postcontent}
+                        >
+                            {state.router.link === '/contact/'  
+                                ? <ContactForm/>
+                                : <Html2React html={post.content.rendered}/>
+                            }
+                        </PostContent>
+                        {data.isPost
+                            &&
+                            <Options color={color}>
+                                {states.selection
+                                    &&
+                                    <span 
+                                        onMouseDown={() =>
+                                            actions.comments.updateFields(
+                                                data.id,
+                                                {content: 
+                                                    '<blockquote>\r\n'
+                                                        +
+                                                        `${author.name} said:\r\n\r\n${states.selection}\r\n`
+                                                    +
+                                                    '</blockquote>'
+                                                }
+                                            )}
+                                    >Quote</span>
+                                }
+                            </Options>
+                        }
+                    </AnimatedWrapper>
+                    {data.isPost && <Comments postId={data.id}/>}
+                </div>
+            }
+        </>
     )
 }
 

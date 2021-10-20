@@ -51,7 +51,7 @@ const Archive = ({state, actions}) => {
                     <AnimatedText comp='h4' text='Categories'/>
                     <CategoryList css={css`margin-bottom: 1em`}/>
                     <AnimatedText comp='h4' text='Latest Posts'/>
-                    <PostList css={css`margin-bottom: 2em`}/>
+                    <PostList animationSpeed='10' css={css`margin-bottom: 2em`}/>
                     <SearchBar/>
                 </Scrollable>
             </ArchiveContent>

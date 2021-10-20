@@ -6,7 +6,7 @@ import Switch from "@frontity/components/switch"
 const AnimatedText = ({
     state,
     actions,
-    'data-speed': speed = 50,
+    'data-speed': speed = 20,
     'data-is-cover-text': isCoverText,
     comp,
     text = '',
@@ -16,42 +16,26 @@ const AnimatedText = ({
 }) => {
     const data = state.source.get(state.router.link)
     const isWelcomeReceived = state.theme.isWelcomeReceived
-    const isFirefox = typeof(InstallTrigger) !== 'undefined'
     const [states, setStates] = useState({
-        content: isFirefox ? text.charAt(0) : '',
+        content: text.charAt(0),
         randChar: '',
-        i: isFirefox ? 1 : 0,
+        i: 1,
         j: 0,
         animationFinished: false
     })
-    const animationSpeed = useRef(isFirefox ? speed : 5)
-    const animateRandon = !isFirefox && !isCoverText
+    const animationSpeed = useRef(speed)
 
     const writeText = () => {
         let timeout = 0
         const char = text.charAt(states.i)
-        animationSpeed.current = isFirefox ? speed : 5
+        animationSpeed.current = speed
     
-        if (isCoverText && text.charAt(states?.i-1) === '.') {
-            if (!animateRandon)
-                animationSpeed.current = Math.random() < 0.5 ? speed*10 : speed*20
-            else
-                animationSpeed.current = Math.random() < 0.5 ? 10 : 20
-        }
-
-        if (!animateRandon)
-            timeout = setTimeout(
-                setStates,
-                animationSpeed.current,
-                states => ({
-                    content: states.content + char,
-                    randChar: '',
-                    i: states.i + 1,
-                    j: 0
-                })
-            )
-        else 
-        setStates(
+        if (isCoverText && text.charAt(states?.i-1) === '.') 
+            animationSpeed.current = Math.random() < 0.5 ? speed*10 : speed*20
+    
+        timeout = setTimeout(
+            setStates,
+            animationSpeed.current,
             states => ({
                 content: states.content + char,
                 randChar: '',
@@ -84,12 +68,8 @@ const AnimatedText = ({
                         speed,
                         states => ({
                             ...states, 
-                            randChar: animateRandon 
-                                ? String.fromCharCode(
-                                    Math.random()*128
-                                )
-                                : '',
-                            j: animateRandon ? animationSpeed.current : states.j + 1
+                            randChar: '',
+                            j: animationSpeed.current
                         })
                     )
                 }
@@ -130,22 +110,6 @@ const AnimatedText = ({
             && typeof(onAnimationFinished) === 'function') 
             onAnimationFinished()
     }, [states.animationFinished])
-
-    useEffect(() => {
-        if (!data.isHome || 's' in data.query) {
-            const maxTimeout = setTimeout(
-                setStates,
-                1000,
-                states => ({
-                    ...states,
-                    content: text,
-                    animationFinished: true
-                })
-            )
-
-            return () => clearTimeout(maxTimeout)
-        }
-    }, [])
 
     return (
         <Switch>

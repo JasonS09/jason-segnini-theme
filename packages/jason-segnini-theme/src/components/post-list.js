@@ -79,24 +79,14 @@ const PostList = ({
                                             css={css`margin-bottom: 1em;`}
                                         >
                                             <Title key={`title_${item.id}`}>
-                                                {state.screen.isMobile 
-                                                    ? 
-                                                    <Link 
-                                                        link={post.link}
-                                                        css={linkStyles(color)}
-                                                    >
-                                                        {post.title.rendered}
-                                                    </Link>
-                                                    :
-                                                    <AnimatedText
-                                                       key={item.id}
-                                                       comp='a'
-                                                       link={post.link}
-                                                       text={post.title.rendered}
-                                                       data-speed={animationSpeed}
-                                                       css={linkStyles(color)}
-                                                   />
-                                                }
+                                                <AnimatedText
+                                                   key={item.id}
+                                                   comp='a'
+                                                   link={post.link}
+                                                   text={post.title.rendered}
+                                                   data-speed={animationSpeed}
+                                                   css={linkStyles(color)}
+                                                />
                                             </Title>
                                             <Excerpt key={`excerpt_${item.id}`}>
                                                 <Html2React 
@@ -137,8 +127,7 @@ const postsPageItems = css`
     position: relative;
     width: 100%;
     height: 93%;
-    padding-left: 1em;
-    padding-right: 1em;
+    padding: 10px 1em 0;
     overflow-y: scroll;
 `
 

@@ -2,7 +2,7 @@ import { connect, Global, css, styled, Head } from "frontity"
 import { useEffect } from "react"
 import { SwipeEventListener } from "swipe-event-listener"
 import Switch from "@frontity/components/switch"
-import List from "./post-list"
+import PostList from "./post-list"
 import Post from "./post"
 import Loading from "./common/loading"
 import Error from "./error"
@@ -189,7 +189,7 @@ const Root = ({state, actions}) => {
             >
                 <Switch>
                     <Loading when={data.isFetching}/>
-                    <List when={data.isArchive} postsPage/>
+                    <PostList when={data.isArchive} postsPage animationSpeed='5'/>
                     <Post when={(data.isPost || data.isPage)}/>
                     <Error when={data.isError}/>
                 </Switch>

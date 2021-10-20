@@ -1,5 +1,6 @@
 import Root from "./components"
 import link from "@frontity/html2react/processors/link"
+import image from "@frontity/html2react/processors/image"
 import animatedText from "./processors/animated-text"
 import customRest from "./handlers/custom-rest"
 
@@ -84,7 +85,7 @@ const jasonSegniniTheme = {
     },
     libraries: {
         html2react: {
-            processors: [animatedText, link]
+            processors: [animatedText, link, image]
         }
     }
 }

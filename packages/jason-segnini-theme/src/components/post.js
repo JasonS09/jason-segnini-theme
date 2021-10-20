@@ -6,6 +6,7 @@ import dayjs from "dayjs"
 import AnimatedWrapper from "./common/animated-wrapper"
 import Comments from "./comments/comments"
 import ContactForm from "./contact-form"
+import Image from "@frontity/components/image"
 
 const Post = ({state, actions, libraries}) => {
     const data = state.source.get(state.router.link)
@@ -98,7 +99,11 @@ const Post = ({state, actions, libraries}) => {
                         && 
                         <AnimatedWrapper shadows css={imgWrapperStyles(color, state.screen.isMobile)}> 
                             <ImgShadow> 
-                                <Img src={mediaUrl} alt='Picture of myself.'/> 
+                                <Image 
+                                    src={mediaUrl} 
+                                    alt='Picture of myself.'
+                                    css={imageStyles}
+                                /> 
                             </ImgShadow>
                         </AnimatedWrapper>
                     }
@@ -221,7 +226,7 @@ const imgWrapperStyles = (color, isMobile) => css`
     }
 `
 
-const Img = styled.img`
+const imageStyles = css`
     display: block;
     height: 34vh;
     max-width: 250px !important;

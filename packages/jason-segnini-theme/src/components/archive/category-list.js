@@ -6,53 +6,61 @@ import {
 } from "react"
 import AnimatedText from "../common/animated-text"
 
-const CategoryList = ({
-    state,
-    ...rest
-}) => {
+const CategoryList = ({state, ...rest}) => {
     const color = state.theme.color
     const data = state.source.get(state.source.customRestPage)
     const items = data.categories
-    const details = useRef({})
+    const ref = useRef({})
 
-    const [reanimateListItem, setReanimateListItem] = useState(() => {
-        let reanimates = {}
+    const [states, setStates] = useState(() => {
+        let states = {}
 
         items.forEach(category => 
-            reanimates = {
-                ...reanimates, 
+            states = {
+                ...states, 
                 [category.id]: {}
             }
         )
         
-        return reanimates
+        return states
     })
 
     const calculateDetailsHeight = (details, category, content) => 
-        reanimateListItem[category].reanimate
+        states[category].reanimate
             ? details.clientHeight - content.clientHeight
             : details.clientHeight + content.clientHeight
 
     const getInitDetailsHeight = category => {
-        const det = details.current[category]
-        setReanimateListItem(reanimateListItem => ({
-            ...reanimateListItem,
+        const det = ref.current[category]
+        setStates(states => ({
+            ...states,
             [category]: {detailsHeight: det.clientHeight}
         }))
     }
 
     const onSummaryClick = (e, category) => {
+        const checkAllAnimationsFinished = () => {
+            const finished = category.posts.filter(({id}) => 
+                states[category.id].animationFinished?.[id]
+            )
+
+            if (finished.length === category.posts.length)
+                return true
+        }
+
         e.preventDefault()
-        if (!reanimateListItem[category].detailsHeight) return
-        const det = details.current[category]
+        if (!states[category.id].detailsHeight
+            || (states[category.id].reanimate 
+                && !checkAllAnimationsFinished())) return
+        const det = ref.current[category.id]
         det.open = true
-        setReanimateListItem(reanimateListItem => ({
-            ...reanimateListItem, 
-            [category]: {
-                reanimate: !reanimateListItem[category].reanimate,
+        setStates(states => ({
+            ...states, 
+            [category.id]: {
+                reanimate: !states[category.id].reanimate,
                 detailsHeight: calculateDetailsHeight(
                     det, 
-                    category, 
+                    category.id, 
                     det.firstElementChild.nextElementSibling
                 )
             }
@@ -67,15 +75,15 @@ const CategoryList = ({
                     return (
                         <Details 
                             key={category.id}
-                            height={reanimateListItem[category.id].detailsHeight}
-                            ref={det => details.current[category.id] = det}
+                            height={states[category.id].detailsHeight}
+                            ref={det => ref.current[category.id] = det}
                         >
                             <AnimatedText 
                                 key={`summary_${category.id}`} 
                                 text={category.name}
                                 comp='summary'
                                 onAnimationFinished={() => getInitDetailsHeight(category.id)}
-                                onClick={e => onSummaryClick(e, category.id)}
+                                onClick={e => onSummaryClick(e, category)}
                                 css={css`cursor: pointer`}
                             />
                             <Ul key={`list_${category.id}`}>
@@ -88,7 +96,19 @@ const CategoryList = ({
                                                 link={post.link}
                                                 text={post.title}
                                                 data-speed='1'
-                                                reanimate={reanimateListItem[category.id].reanimate}
+                                                reanimate={states[category.id].reanimate}
+                                                onAnimationFinished={() => 
+                                                    setStates(states => ({
+                                                        ...states,
+                                                        [category.id]: {
+                                                            ...states[category.id],
+                                                            animationFinished: {
+                                                                ...states[category.id].animations,
+                                                                [post.id]: true
+                                                            }
+                                                        }
+                                                    }))
+                                                }
                                                 css={css`cursor: pointer`}
                                             />
                                         </Li>

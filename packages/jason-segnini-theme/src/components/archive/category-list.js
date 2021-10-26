@@ -103,7 +103,7 @@ const CategoryList = ({state, ...rest}) => {
                                                         [category.id]: {
                                                             ...states[category.id],
                                                             animationFinished: {
-                                                                ...states[category.id].animations,
+                                                                ...states[category.id].animationFinished,
                                                                 [post.id]: true
                                                             }
                                                         }

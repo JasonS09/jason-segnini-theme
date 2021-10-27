@@ -5,7 +5,7 @@ const animatedText = {
 
     priority: 9,
 
-    test: ({node}) => node.props['data-is-cover-text'],
+    test: ({node}) => node.props?.['data-is-cover-text'],
 
     processor: ({node}) => {
         node.props['text'] = node.children[0].content

@@ -65,12 +65,14 @@ const Scrollable = styled.div`
     max-height: calc(100vh - 8em);
     overflow-x: hidden;
     overflow-y: ${props => props.overflow};
+    padding-right: 6px;
+    ::-webkit-scrollbar {width: 7px;}
 `
 
 const ArchiveContent = styled.div`
     position: relative;
     max-width: 175px;
-    padding: 2em 10px 2em 1em;
+    padding: 2em 5px 2em 10px;
     margin-left: 6em;
     margin-top: 1em;
     z-index: 1;

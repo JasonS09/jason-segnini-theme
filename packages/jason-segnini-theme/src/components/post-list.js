@@ -165,7 +165,7 @@ const Items = styled.div`
 
     a {
         display: block;
-        margin: 6px 0;
+        margin: 6px 0 10px;
         color: ${props => props.color};
         text-decoration: none;
     }

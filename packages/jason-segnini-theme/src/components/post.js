@@ -14,6 +14,7 @@ const Post = ({state, actions, libraries}) => {
     const author = state.source.author[post.author]
     const mediaUrl = state.source.attachment[post.featured_media]?.source_url
     const color = state.theme.color
+    const isMobile = state.screen.isMobile
     const formattedDate = dayjs(post.date).format('DD MMMM YYYY')
     const Html2React = libraries.html2react.Component
     const [states, setStates] = useState({})
@@ -71,7 +72,7 @@ const Post = ({state, actions, libraries}) => {
 
     useEffect(() => {
         if (data.isPost) {
-            if (state.screen.isMobile)
+            if (isMobile)
                 document.addEventListener('selectionchange', onSelectionChange)
             else
                 window.addEventListener('mousedown', onMouseDown)
@@ -87,7 +88,7 @@ const Post = ({state, actions, libraries}) => {
         <>
             {data.isReady 
                 &&
-                <div css={!state.screen.isMobile
+                <div css={!isMobile
                     ?
                     css`
                         display: flex;
@@ -97,7 +98,7 @@ const Post = ({state, actions, libraries}) => {
                 }>
                     {data.isHome 
                         && 
-                        <AnimatedWrapper shadows css={imgWrapperStyles(color, state.screen.isMobile)}> 
+                        <AnimatedWrapper shadows css={imgWrapperStyles(color, isMobile)}> 
                             <ImgShadow> 
                                 <Image 
                                     src={mediaUrl} 
@@ -114,11 +115,20 @@ const Post = ({state, actions, libraries}) => {
                             <meta name="image" content={mediaUrl}/>
                         </Head>
                         {!data.isHome 
-                            && 
-                            <H1 
-                                ref={title => refs.current.title = title}
-                            >{post.title.rendered}
-                            </H1>
+                            && (isMobile
+                                ?
+                                <h3 
+                                    ref={title => refs.current.title = title}
+                                    css={titleStyles}
+                                >{post.title.rendered}
+                                </h3>
+                                :
+                                <h1 
+                                    ref={title => refs.current.title = title}
+                                    css={titleStyles}
+                                >{post.title.rendered}
+                                </h1>
+                            )
                         }
                         {data.isPost 
                             && 
@@ -139,8 +149,8 @@ const Post = ({state, actions, libraries}) => {
                         <PostContent
                             color={color}
                             maxHeight={maxHeight}
-                            isMobile={state.screen.isMobile} 
-                            onMouseUp={!state.screen.isMobile
+                            isMobile={isMobile} 
+                            onMouseUp={!isMobile
                                 ? () => setStates(states => ({
                                     ...states,
                                     selection: select()+''
@@ -184,6 +194,14 @@ const Post = ({state, actions, libraries}) => {
 }
 
 export default connect(Post)
+
+const titleStyles = css`
+    font-family: 'Hacked';
+    text-align: center;
+    padding: 0 5px;
+    margin-bottom: 3px;
+    box-decoration-break: clone;
+`
 
 const ImgShadow = styled.div`
     position: relative;
@@ -232,14 +250,6 @@ const imageStyles = css`
     max-width: 250px !important;
     max-height: 277px;
     border-radius: inherit;
-`
-
-const H1 = styled.h1`
-    font-family: 'Hacked';
-    text-align: center;
-    padding: 0 5px;
-    margin-bottom: 3px;
-    box-decoration-break: clone;
 `
 
 const Options = styled.div`

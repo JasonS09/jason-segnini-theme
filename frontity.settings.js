@@ -15,7 +15,7 @@ const settings = {
       "name": "@frontity/wp-source",
       "state": {
         "source": {
-          "url": "https://jasonsegnini-86848e.ingress-erytho.easywp.com/",
+          "url": "https://jasonsegnini-86848e.ingress-erytho.ewp.live/",
           "homepage": "/home",
           "postsPage": "/blog",
           "customRestPage": "/rest-page",
